@@ -776,6 +776,7 @@ void SLCVRaulMurOrb::detectAndCompute( InputArray _image, InputArray _mask, vect
         _keypoints.reserve(nkeypoints);
     }
     else {
+        KeyPointsFilter::runByImageBorder(_keypoints, _image.size(), 31);
         nkeypoints = _keypoints.size();
         int last_index = 0;
         int last_level = 0;
@@ -797,7 +798,6 @@ void SLCVRaulMurOrb::detectAndCompute( InputArray _image, InputArray _mask, vect
         descriptors = _descriptors.getMat();
     }
 
-
     int offset = 0;
     for (int level = 0; level < nlevels; ++level)
     {
@@ -813,6 +813,7 @@ void SLCVRaulMurOrb::detectAndCompute( InputArray _image, InputArray _mask, vect
 
         // Compute the descriptors
         Mat desc = descriptors.rowRange(offset, offset + nkeypointsLevel);
+
         computeDescriptors(workingMat, keypoints, desc, pattern);
         }
         offset += nkeypointsLevel;

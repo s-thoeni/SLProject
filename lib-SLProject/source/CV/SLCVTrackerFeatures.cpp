@@ -31,7 +31,7 @@ using namespace cv;
 
 #define DEBUG 0
 #define FORCE_REPOSE 1
-// #define SAVE_SNAPSHOTS_OUTPUT "/tmp/cv_tracking/"
+#define SAVE_SNAPSHOTS_OUTPUT "/tmp/cv_tracking/"
 
 // Feature detection and extraction
 const int nFeatures = 800;
@@ -57,8 +57,10 @@ float high_compute_milis;
 //-----------------------------------------------------------------------------
 SLCVTrackerFeatures::SLCVTrackerFeatures(SLNode *node) :
         SLCVTracker(node) {
-    SLScene::current->_detector->setDetector(new SLCVRaulMurOrb(nFeatures, 1.44f, 3, 30, 20));
-    SLScene::current->_descriptor->setDescriptor(ORB::create(nFeatures, 1.44f, 3, 31, 0, 2, ORB::HARRIS_SCORE, 31, 30));
+    SLCVRaulMurOrb* _blubb = new SLCVRaulMurOrb(nFeatures, 1.44f, 3, 30, 20);
+
+    SLScene::current->_detector->setDetector(_blubb);
+    SLScene::current->_descriptor->setDescriptor(_blubb);
 
     #if FLANN_BASED
     _matcher = new FlannBasedMatcher();
@@ -88,9 +90,7 @@ void SLCVTrackerFeatures::loadModelPoints() {
     cvtColor(img->cvMat(), _map.frameGray, CV_RGB2GRAY);
 
     // Detect and compute features in marker image
-     SLScene::current->_detector->detect(_map.frameGray, _map.keypoints);
-     SLScene::current->_descriptor->compute(_map.frameGray, _map.keypoints, _map.descriptors);
-
+     SLScene::current->_descriptor->detectAndCompute(_map.frameGray, _map.keypoints, _map.descriptors);
     // Calculates proprtion of MM and Pixel (sample measuring)
     const SLfloat lengthMM = 297.0;
     const SLfloat lengthPX = 2 * _calib->cx();
@@ -133,6 +133,7 @@ SLbool SLCVTrackerFeatures::track(SLCVMat imageGray,
     vector<DMatch> inlierMatches;
     vector<Point2f> points2D;
     SLCVVKeyPoint keypoints;
+    Mat descriptors;
     Mat rvec = cv::Mat::zeros(3, 3, CV_64FC1);      // rotation matrix
     Mat tvec = cv::Mat::zeros(3, 1, CV_64FC1);      // translation matrix
     bool foundPose = false;
@@ -152,6 +153,7 @@ SLbool SLCVTrackerFeatures::track(SLCVMat imageGray,
     // TODO: Handle detecting || tracking correctly!
     if (FORCE_REPOSE || frameCount % 20 == 0) { // || lastNmatchedKeypoints * 0.6f > _prev.points2D.size()) {
 
+#if DEBUG
         // Detect keypoints ####################################################
         keypoints = getKeypoints(imageGray);
         // #####################################################################
@@ -160,11 +162,13 @@ SLbool SLCVTrackerFeatures::track(SLCVMat imageGray,
         // Extract descriptors from keypoints ##################################
         Mat descriptors = getDescriptors(imageGray , keypoints);
         // #####################################################################
-
-
+#else
+        SLScene::current->_descriptor->detectAndCompute(imageGray, keypoints, descriptors);
+#endif
         // Feature matching ####################################################
         vector<DMatch> matches = getFeatureMatches(descriptors);
-        // #####################################################################
+
+//        // #####################################################################
 
 
         // POSE calculation ####################################################
@@ -261,6 +265,11 @@ Mat SLCVTrackerFeatures::getDescriptors(const Mat &imageGray, SLCVVKeyPoint &key
     Mat descriptors;
     SLfloat computeTimeMillis = SLScene::current->timeMilliSec();
     SLScene::current->_descriptor->compute(imageGray, keypoints, descriptors);
+//    cv::compare(old,imageGray, diff, cv::CMP_NE);
+//    int hans = cv::countNonZero(diff);
+//    if (hans > 0){
+//        int blub = 2;
+//    }
     #if TRACKING_MEASUREMENT
     SLfloat time = SLScene::current->timeMilliSec() - computeTimeMillis;
     if (time != 0.0f){
