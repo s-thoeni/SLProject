@@ -118,7 +118,7 @@ private:
 
         Map                     _map;
         FrameData               _current, _prev;
-
+        void                    rotateImage(SLCVMat imageGray, SLCVMat rvec,  SLCVMat &result);
         void                    initializeReference(string trackerName);
         void                    relocate();
         void                    tracking();
