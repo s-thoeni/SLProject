@@ -171,6 +171,56 @@ void SLCVTrackerFeatures::initializeReference(string trackerName)
     cv::rotate(_map.frameGray, _map.frameGray, ROTATE_180);
     cv::flip(_map.frameGray, _map.frameGray, 1);
 
+    float rotx = 0;
+    float roty = 0.523598776;
+    float rotz = 0;
+
+    float cx = cosf(rotx), sx = sinf(rotx);
+    float cy = cosf(roty), sy = sinf(roty);
+    float cz = cosf(rotz), sz = sinf(rotz);
+
+    Mat rot_vec = Mat::zeros(3,1, CV_64FC1);
+    Mat roto;
+    rot_vec.at<double>(1,0) = roty;
+
+    Rodrigues(rot_vec,roto); // last column not needed, our vector has z=0
+//    roto.at<double>(3,3) = 1;
+    Mat hpad = Mat::zeros(3,1, CV_64F);
+    Mat vpad = Mat::zeros(1,4, CV_64F);
+    vpad.at<double>(0,3) = 1;
+    hconcat(roto, hpad , roto);
+    vconcat(roto, vpad , roto);
+    cout << roto << endl;
+    double w = (double)_map.frameGray.cols;
+    double h = (double)_map.frameGray.rows;
+    // Projection 2D -> 3D matrix
+    Mat A1 = (Mat_<double>(4,3) <<
+              1, 0, -w/2,
+              0, 1, -h/2,
+              0, 0,    0,
+              0, 0,    1);
+
+    Mat A2 = (Mat_<double>(3,4) <<
+                  999999999999, 0, w/2, 0,
+                  0, 999999999999, h/2, 0,
+                  0, 0,   1, 0);
+    Mat T = (Mat_<double>(4, 4) <<
+             1, 0, 0, 0,
+             0, 1, 0, 0,
+             0, 0, 1, 0,
+             0, -100000, 0, 1);
+
+    Mat trans = A2 * T *(roto * A1);
+    cout << trans << endl;
+
+/*    Mat trans = (Mat_<double>(3,3) <<
+                 1, 0, 0,
+                 0, 0.86602540, 0.5,
+                 0, -0.5, 0.86602540)
+*/
+    Mat img_out;
+    cv::warpPerspective(img->cvMat(), img_out, trans, _map.frameGray.size(), INTER_LANCZOS4);
+    imwrite("/tmp/cv_tracking/warped_img.png", img_out);
     // Detect and compute features in marker image
      SLScene::current->_descriptor->detectAndCompute(_map.frameGray, _map.keypoints, _map.descriptors);
 
