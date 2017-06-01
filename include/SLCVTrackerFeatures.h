@@ -27,7 +27,7 @@ for a good top down information.
 using namespace cv;
 
 #define DEBUG_OUTPUT 0
-#define FORCE_REPOSE 0
+#define FORCE_REPOSE 1
 #define DISTINGUISH_FEATURE_DETECT_COMPUTE 0
 #define BENCHMARKING 1
 
@@ -53,7 +53,7 @@ using namespace cv;
 
 // Feature detection and extraction
 const int nFeatures = 2000;
-const float minRatio = 0.7f;
+const float minRatio = 0.8f;
 
 // RANSAC parameters
 const int iterations = 500;
@@ -94,6 +94,7 @@ private:
             SLCVVKeyPoint       keypoints;
             SLCVMat             descriptors;
             SLCVVKeyPoint       bboxModelKeypoints;
+            SLCVMat             frameGrayWarped;
         };
 
         struct FrameData {
@@ -118,7 +119,7 @@ private:
 
         Map                     _map;
         FrameData               _current, _prev;
-        void                    rotateImage(SLCVMat imageGray, SLCVMat rvec,  SLCVMat &result);
+        void                    rotateImage(SLCVMat imageGray, SLCVMat rvec,  SLCVMat &result, vector<Point2f> &edge_points);
         void                    initializeReference(string trackerName);
         void                    relocate();
         void                    tracking();

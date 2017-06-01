@@ -171,25 +171,76 @@ void SLCVTrackerFeatures::initializeReference(string trackerName)
     cv::rotate(_map.frameGray, _map.frameGray, ROTATE_180);
     cv::flip(_map.frameGray, _map.frameGray, 1);
 
-    float rotx = -0.523598776;
+    float rotx = -0.7854;
     float roty = 0;
     float rotz = 0;
 
     Mat rot_vec = Mat::zeros(3,1, CV_64FC1);
     rot_vec.at<double>(0,0) = rotx;
+    Mat rotated_image;
+    vector<Point2f> edge_points = vector<Point2f>();
+    rotateImage(_map.frameGray,rot_vec, rotated_image, edge_points);
 
+    double height = _map.frameGray.rows;
+    double width = _map.frameGray.cols;
+    vector<Point3d> old_edge_points = vector<Point3d>();
+    vector<Point3d> new_3d_points = vector<Point3d>();
+    old_edge_points.push_back(Point3d(-width/2, -height/2, 0));
+    old_edge_points.push_back(Point3d(width/2, -height/2, 0));
+    old_edge_points.push_back(Point3d(-width/2, height/2, 0));
+    old_edge_points.push_back(Point3d(width/2, height/2, 0));
+    Mat rot_mat;
+    Rodrigues(rot_vec, rot_mat);
+    for (int i = 0; i < old_edge_points.size(); i++){
+        Mat old_point = Mat(old_edge_points[i]);
+        Point3d new_point = Point3d(Mat(rot_mat * old_point));
+        Point3d warped_3d_point = Point3d(edge_points[i]);
+        warped_3d_point.z = new_point.z;
+        old_edge_points[i] = new_point;
+        new_3d_points.push_back(warped_3d_point);
+    }
     // Detect and compute features in marker image
-     SLScene::current->_descriptor->detectAndCompute(_map.frameGray, _map.keypoints, _map.descriptors);
+//     SLScene::current->_descriptor->detectAndCompute(_map.frameGray, _map.keypoints, _map.descriptors);
 
     // Scaling factor for the 3D point. Width of image is A4 size in image, 297 is real A4 height
     float pixelPerMM = img->width() / 297.0f;
 
     // Calculate 3D-Points based on the detected features
-    for (unsigned int i = 0; i< _map.keypoints.size(); i++) {
+/*    for (unsigned int i = 0; i< _map.keypoints.size(); i++) {
         Point2f refImageKeypoint = _map.keypoints[i].pt; // 2D location in image
         refImageKeypoint /= pixelPerMM;                  // Point scaling
         float Z = 0;                                     // Here we can use 0 because the tracker is planar
         _map.model.push_back(Point3f(refImageKeypoint.x, refImageKeypoint.y, Z));
+    }
+*/
+
+    vector<SLCVKeyPoint> rotated_keypoints;
+    SLCVMat rotated_descriptors;
+
+    Mat a;
+    Mat plane_points = Mat(0,3, CV_64F);
+    for (int i = 0; i < new_3d_points.size(); i++){
+       Mat point = Mat(new_3d_points[i]).t();
+       vconcat(plane_points, point, plane_points);
+    }
+    Mat concat = (Mat_<double>(4,1) << 1,1,1,1);
+    hconcat(plane_points, concat, plane_points);
+    SVD s = SVD(plane_points);
+    s.solveZ(plane_points,a);
+    _map.frameGrayWarped = rotated_image;
+    float max_z = new_3d_points[0].z;
+    float v = (new_3d_points[0].y + new_3d_points[2].y)/2;
+    float max_distance = new_3d_points[0].y - v;
+    SLScene::current->_descriptor->detectAndCompute(rotated_image, rotated_keypoints, rotated_descriptors);
+    for (unsigned int i = 0; i< rotated_keypoints.size(); i++) {
+        Point2f refImageKeypoint = rotated_keypoints[i].pt; // 2D location in image
+        float Z = 0;                                     // Here we can use 0 because the tracker is planar
+        Z = max_z*((refImageKeypoint.y - v)/max_distance);
+        refImageKeypoint /= pixelPerMM;                  // Point scaling
+        Z /= pixelPerMM;
+        _map.model.push_back(Point3f(refImageKeypoint.x, refImageKeypoint.y, Z));
+        _map.keypoints.push_back(rotated_keypoints[i]);
+        _map.descriptors.push_back(rotated_descriptors.row(i));
     }
 
     // Draw points and indices which should be reprojected later. Only a few (defined with reposeFrequency)
@@ -211,7 +262,7 @@ void SLCVTrackerFeatures::initializeReference(string trackerName)
 #endif
 }
 
-void SLCVTracker::rotateImage(SLCVMat imageGray, SLCVMat rvec,  SLCVMat &result){
+void SLCVTrackerFeatures::rotateImage(SLCVMat imageGray, SLCVMat rvec,  SLCVMat &result, vector<Point2f> &edge_points){
 
     Mat roto;
     Rodrigues(rvec,roto); // last column not needed, our vector has z=0
@@ -232,18 +283,25 @@ void SLCVTracker::rotateImage(SLCVMat imageGray, SLCVMat rvec,  SLCVMat &result)
               0, 0,    1);
 
     Mat A2 = (Mat_<double>(3,4) <<
-                  500, 0, w/2, 0,
-                  0, 500, h/2, 0,
+                  _calib->fx(), 0, w/2, 0,
+                  0, _calib->fx(), h/2, 0,
                   0, 0,   1, 0);
     Mat T = (Mat_<double>(4, 4) <<
              1, 0, 0, 0,
              0, 1, 0, 0,
-             0, 0, 1, 500,
+             0, 0, 1, _calib->fx(),
              0, 0, 0, 1);
 
     Mat trans = A2 * T *(roto * A1);
+    vector<Point2f> points = vector<Point2f>();
+
+    points.push_back(Point2f(0,0));
+    points.push_back(Point2f(w,0));
+    points.push_back(Point2f(0,h));
+    points.push_back(Point2f(w,h));
+    perspectiveTransform(points,edge_points, trans);
     cv::warpPerspective(imageGray, result, trans, imageGray.size(), INTER_LANCZOS4);
-    imwrite("/tmp/cv_tracking/warped_img.png", img_out);
+    imwrite("/tmp/cv_tracking/warped_img.png", result);
 
 
 }
@@ -404,7 +462,7 @@ void SLCVTrackerFeatures::drawDebugInformation()
     // Draw matches
     if (!_current.inlierMatches.empty()) {
         SLCVMat imgMatches;
-        drawMatches(_current.imageGray, _current.keypoints, _map.frameGray, _map.keypoints, _current.inlierMatches,
+        drawMatches(_current.imageGray, _current.keypoints, _map.frameGrayWarped, _map.keypoints, _current.matches,
                     imgMatches,CV_RGB(255,0,0), CV_RGB(255,0,0));
         imwrite(SAVE_SNAPSHOTS_OUTPUT + to_string(frameCount) + "_matching.png", imgMatches);
     }
@@ -605,6 +663,7 @@ vector<DMatch> SLCVTrackerFeatures::getFeatureMatches()
     }
 
     SLScene::current->setMatchTimesMS(SLScene::current->timeMilliSec() - SLCVMatchTimeMillis);
+    cout << "good maches" << goodMatches.size();
     return goodMatches;
 }
 
@@ -694,7 +753,7 @@ bool SLCVTrackerFeatures::calculatePose()
                               confidence,
                               inliersMask
     );
-
+    cout << "inliers " << countNonZero(inliersMask) << endl;
     // Get matches with help of inlier indices
     for (size_t i = 0; i < inliersMask.size(); i++) {
         size_t idx = inliersMask[i];
