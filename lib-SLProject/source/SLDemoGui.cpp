@@ -437,8 +437,8 @@ void SLDemoGui::buildDemoGui(SLScene* s, SLSceneView* sv)
 
 
         sprintf(m+strlen(m), "Uses Location       : %s\n",    s->usesLocation() ? "yes" : "no");
-        sprintf(m+strlen(m), "Longitude           : %f\n",    s->gpsLongitude());
         sprintf(m+strlen(m), "Latitude            : %f\n",    s->gpsLatitude());
+        sprintf(m+strlen(m), "Longitude           : %f\n",    s->gpsLongitude());
         sprintf(m+strlen(m), "Altitude            : %f\n",    s->gpsAltitude());
 
         // Switch to fixed font

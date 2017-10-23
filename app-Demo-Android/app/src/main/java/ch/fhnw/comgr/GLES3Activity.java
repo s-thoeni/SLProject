@@ -523,6 +523,7 @@ public class GLES3Activity extends Activity implements View.OnTouchListener, Sen
         if (gpsLocationListener != null) {
             Log.d(TAG, "Removing gpsLocationManager updates");
             gpsLocationManager.removeUpdates(gpsLocationListener);
+            gpsLocationListener = null;
         }
     }
 
@@ -553,7 +554,7 @@ public class GLES3Activity extends Activity implements View.OnTouchListener, Sen
         Log.i(TAG, String.valueOf(loc.getLatitude()) + "," + String.valueOf(loc.getLongitude()));
         myView.queueEvent(new Runnable() {
             public void run() {
-                GLES3Lib.onLocationGPS(loc.getLongitude(), loc.getLatitude(), loc.getAltitude());
+                GLES3Lib.onLocationGPS(loc.getLatitude(), loc.getLongitude(), loc.getAltitude());
             }
         });
     }

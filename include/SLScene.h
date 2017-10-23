@@ -126,8 +126,8 @@ class SLScene: public SLObject
 
             // Device GPS location stuff
             SLbool              usesLocation    () const {return _usesLocation;}
-            double              gpsLongitude    () const {return _gpsLongitude;}
             double              gpsLatitude     () const {return _gpsLatitude;}
+            double              gpsLongitude    () const {return _gpsLongitude;}
             double              gpsAltitude     () const {return _gpsAltitude;}
 
     // Misc.
@@ -155,8 +155,8 @@ class SLScene: public SLObject
                                                  SLuchar* data,
                                                  SLbool isContinuous,
                                                  SLbool isTopLeft);
-            void            onLocationGPS       (double longitude,
-                                                 double latitude,
+            void            onLocationGPS       (double latitude,
+                                                 double longitude,
                                                  double altitude);
 
      static SLScene*        current;            //!< global static scene pointer
