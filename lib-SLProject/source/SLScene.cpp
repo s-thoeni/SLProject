@@ -208,7 +208,8 @@ void SLScene::init()
     _poseTimesMS.init();
     _captureTimesMS.init(200);
 
-    _deviceRotation  = SLQuat4f::IDENTITY;
+//todo    _deviceRotation  = SLQuat4f::IDENTITY;
+    _deviceRotation.identity();
     _devicePitchRAD  = 0.0f;
     _deviceYawRAD    = 0.0f;
     _deviceRollRAD   = 0.0f;
@@ -297,7 +298,9 @@ example. AR tracking is only handled on the first scene view.
 */
 bool SLScene::onUpdate()
 {
-    // Return if not all sceneview got repainted
+    // Return if not all sceneview got repainted: This check if necessary if
+    // this function is called for multiple SceneViews. In this way we only 
+    // update the geometric representations if all SceneViews got painted once.
     for (auto sv : _sceneViews)
         if (sv != nullptr && !sv->gotPainted())
             return false;
@@ -543,20 +546,6 @@ void SLScene::onRotationPYR(SLfloat pitchRAD,
     _devicePitchRAD = pitchRAD;
     _deviceYawRAD   = yawRAD;
     _deviceRollRAD  = rollRAD;
-
-    // Build quaternion from euler angles
-    if (_zeroYawAtStart)
-    {
-        if (_deviceRotStarted)
-        {   _startYawRAD = yawRAD;
-            _deviceRotStarted = false;
-        }
-        _deviceRotation.fromEulerAngles(pitchRAD, yawRAD-_startYawRAD, rollRAD);
-    }
-    else
-    {
-        _deviceRotation.fromEulerAngles(pitchRAD, yawRAD, rollRAD);
-    }
 }
 //-----------------------------------------------------------------------------
 /*! SLScene::onRotationQUAT: Event handler for rotation change of a mobile
@@ -567,9 +556,18 @@ void SLScene::onRotationQUAT(SLfloat quatX,
                              SLfloat quatZ,
                              SLfloat quatW)
 {
-    _deviceRotation.set(quatX, quatY, quatZ, quatW);
-    SLMat3f z90(-90, 0,0,1);
-    _deviceRotation.rotate(z90);
+    SLQuat4f quat(quatX, quatY, quatZ, quatW);
+    _deviceRotation = quat.toMat3();
+
+    if (_zeroYawAtStart)
+    {
+        if (_deviceRotStarted  )
+        {
+            //store initial rotation in yaw for referencing of initial alignment
+            _startYawRAD = _deviceYawRAD;
+            _deviceRotStarted = false;
+        }
+    }
 }
 //-----------------------------------------------------------------------------
 //! Sets the _selectedNode to the passed Node and flags it as selected

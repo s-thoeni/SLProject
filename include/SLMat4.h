@@ -53,6 +53,7 @@ class SLMat4
         // Constructors
                     SLMat4      ();                     //!< Sets identity matrix
                     SLMat4      (const SLMat4& A);      //!< Sets mat by other SLMat4
+                    SLMat4      (const SLMat3f& A);     //!< Sets mat by other SLMat3
                     SLMat4      (const T* M);           //!< Sets mat by array
                     SLMat4      (const T M0, const T M4, const T M8,  const T M12,
                                  const T M1, const T M5, const T M9,  const T M13,
@@ -74,7 +75,8 @@ class SLMat4
                                  const SLVec3<T>& scale); //!< Set matrix by translation, rotation & scale
          
         // Setters
-        void        setMatrix   (const SLMat4& A);      //!< Set matrix by other matrix
+        void        setMatrix   (const SLMat4& A);      //!< Set matrix by other 4x4 matrix
+        void        setMatrix   (const SLMat3f& A);     //!< Set matrix by other 3x3 matrix
         void        setMatrix   (const SLMat4* A);      //!< Set matrix by other matrix pointer
         void        setMatrix   (const T* M);           //!< Set matrix by float[16] array
         void        setMatrix   (T M0, T M4, T M8 , T M12, 
@@ -84,7 +86,8 @@ class SLMat4
         void        setMatrix   (const SLVec3<T>& translation,
                                  const SLMat3<T>& rotation,
                                  const SLVec3<T>& scale);   //!< Set matrix by translation, rotation & scale
-
+        void        setRotation (const SLMat3<T>& rotation); //!< Set 3x3 submatrix describing the rotational part
+        void        setTranslation (const SLVec3<T>& translation); //!< Set vector as submatrix describing the translational part
         // Getters
   const T*          m           () const        {return _m;}
         T           m           (int i) const   {assert(i>=0 && i<16); return _m[i];}
@@ -106,7 +109,6 @@ class SLMat4
         SLMat4<T>&  operator/=  (const T a);               //!< scalar division
         T&          operator    ()(int row, int col)      {return _m[4*col+row];}
   const T&          operator    ()(int row, int col)const {return _m[4*col+row];}
-            
         // Transformation corresponding to the equivalent gl* OpenGL function
         // They all set a transformation that is multiplied onto the matrix
         void        multiply    (const SLMat4& A);
@@ -208,8 +210,9 @@ class SLMat4
          // Misc. methods
          void        identity    ();
          void        transpose   ();
+         SLMat4<T>   transposed  ();
          void        invert      ();
-         SLMat4<T>   inverse     () const;
+         SLMat4<T>   inverted    () const;
          SLMat3<T>   inverseTransposed();
          T           trace       () const;
 
@@ -246,6 +249,11 @@ SLMat4<T>::SLMat4()
 //-----------------------------------------------------------------------------
 template<class T>
 SLMat4<T>::SLMat4(const SLMat4& A) 
+{  setMatrix(A);
+}
+//-----------------------------------------------------------------------------
+template<class T>
+SLMat4<T>::SLMat4(const SLMat3f& A)
 {  setMatrix(A);
 }
 //-----------------------------------------------------------------------------
@@ -314,6 +322,15 @@ void SLMat4<T>::setMatrix(const SLMat4& A)
 }
 //-----------------------------------------------------------------------------
 template<class T>
+void SLMat4<T>::setMatrix(const SLMat3f& A)
+{
+    _m[0]=A._m[0]; _m[4]=A._m[3]; _m[ 8]=A._m[6];  _m[12]=0;
+    _m[1]=A._m[1]; _m[5]=A._m[4]; _m[ 9]=A._m[7];  _m[13]=0;
+    _m[2]=A._m[2]; _m[6]=A._m[5]; _m[10]=A._m[8];  _m[14]=0;
+    _m[3]=0;       _m[7]=0;       _m[11]=0;        _m[15]=1;
+}
+//-----------------------------------------------------------------------------
+template<class T>
 void SLMat4<T>::setMatrix(const SLMat4* A)
 {
     for (int i=0; i<16; ++i) _m[i] = A->_m[i];
@@ -346,6 +363,22 @@ void SLMat4<T>::setMatrix(const SLVec3<T>& translation,
               scale.x * rotation[1], scale.y * rotation[4], scale.z * rotation[7], translation.y,
               scale.x * rotation[2], scale.y * rotation[5], scale.z * rotation[8], translation.z,
               0                    , 0                    , 0                    , 1);
+}
+//-----------------------------------------------------------------------------
+template<class T>
+void SLMat4<T>::setRotation (const SLMat3<T>& rotation) //!< Set 3x3 submatrix describing the rotational part
+{
+    _m[0]=rotation[0]; _m[4]=rotation[3]; _m[8]=rotation[6];
+    _m[1]=rotation[1]; _m[5]=rotation[4]; _m[9]=rotation[7];
+    _m[2]=rotation[2]; _m[6]=rotation[5]; _m[10]=rotation[8];
+}
+//-----------------------------------------------------------------------------
+template<class T>
+void SLMat4<T>::setTranslation (const SLVec3<T>& translation) //!< Set vector as submatrix describing the translational part
+{
+    _m[12]=translation.x;
+    _m[13]=translation.y;
+    _m[14]=translation.z;
 }
 //-----------------------------------------------------------------------------
 // Operators
@@ -1216,16 +1249,27 @@ void SLMat4<T>::transpose()
     swap(_m[11],_m[14]);
 }
 //-----------------------------------------------------------------------------
+//! Returns the transposed of the matrix and leaves the itself unchanged
+template<class T>
+SLMat4<T> SLMat4<T>::transposed()
+{
+    SLMat4<T> t( _m[0], _m[1], _m[2], _m[3],
+                 _m[4], _m[5], _m[6], _m[7],
+                 _m[8], _m[9],_m[10],_m[11],
+                _m[12],_m[13],_m[14],_m[15]);
+    return t;
+}
+//-----------------------------------------------------------------------------
 //! Inverts the matrix
 template<class T>
 void SLMat4<T>::invert()
 {
-    setMatrix(inverse());
+    setMatrix(inverted());
 }
 //-----------------------------------------------------------------------------
 //! Computes the inverse of a 4x4 non-singular matrix.
 template<class T>
-SLMat4<T> SLMat4<T>::inverse() const
+SLMat4<T> SLMat4<T>::inverted() const
 {
     SLMat4<T> i;
    
