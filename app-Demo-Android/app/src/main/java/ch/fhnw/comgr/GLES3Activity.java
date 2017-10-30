@@ -550,7 +550,6 @@ public class GLES3Activity extends Activity implements View.OnTouchListener, Sen
             return;
         }
 
-
         Log.i(TAG, String.valueOf(loc.getLatitude()) + "," + String.valueOf(loc.getLongitude()));
         myView.queueEvent(new Runnable() {
             public void run() {

@@ -129,6 +129,8 @@ class SLScene: public SLObject
             double              gpsLatitude     () const {return _gpsLatitude;}
             double              gpsLongitude    () const {return _gpsLongitude;}
             double              gpsAltitude     () const {return _gpsAltitude;}
+            SLVec3d             enu             () const {return _enu;}
+            SLVec3d             enuOrigin       () const {return _enuOrigin;}
 
     // Misc.
    virtual  void            onLoad              (SLSceneView* sv, 
@@ -224,8 +226,10 @@ class SLScene: public SLObject
             SLbool              _usesLocation;      //!< Flag if GPS Sensor is used
             SLbool              _deviceLocStarted;  //!< Flag for the first sensor values
             double              _gpsLongitude;      //!< gps longitude value
-            double              _gpsLatitude;      //!< gps latitude value
-            double              _gpsAltitude;      //!< gps altitude value
+            double              _gpsLatitude;       //!< gps latitude value
+            double              _gpsAltitude;       //!< gps altitude value
+            SLVec3d              _enu;               //!< gps in enu
+            SLVec3d              _enuOrigin;         //!< enu origin location
 };
 //-----------------------------------------------------------------------------
 #endif
