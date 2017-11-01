@@ -45,24 +45,18 @@ public class GLES3Activity extends Activity implements View.OnTouchListener, Sen
     static long lastTouchMS = 0;    // Time of last touch in ms
 
     private static final String TAG = "SLProject";
-<<<<<<< HEAD
-    private int _currentVideoType;
-    private boolean _cameraPermissionGranted;
+
     private boolean _gpsPermissionGranted;
-    private boolean _permissionRequestIsOpen;
-    private boolean _rotationSensorIsRunning = false;
     private boolean _gpsSensorIsRunning = false;
     protected LocationManager gpsLocationManager;
     private GeneralLocationListener gpsLocationListener;
     private static int MY_PERMISSION_ACCESS_COURSE_LOCATION = 0;
-=======
+
     private int                 _currentVideoType;
     private boolean             _cameraPermissionGranted;
     private boolean             _permissionRequestIsOpen;
     private boolean             _rotationSensorIsRunning = false;
     private long                _rotationSensorStartTime = 0; //Time when rotation sensor was started
-
->>>>>>> refs/remotes/origin/develop
 
     @Override
     protected void onCreate(Bundle icicle) {
@@ -195,43 +189,11 @@ public class GLES3Activity extends Activity implements View.OnTouchListener, Sen
             float[] YPR = new float[3];
             SensorManager.getOrientation(R, YPR);
 
-<<<<<<< HEAD
-            // Check display orientation (a preset orientation is set in the AndroidManifext.xml)
-            Display display = getWindowManager().getDefaultDisplay();
-            DisplayMetrics displaymetrics = new DisplayMetrics();
-            display.getMetrics(displaymetrics);
-            int screenWidth = displaymetrics.widthPixels;
-            int screenHeight = displaymetrics.heightPixels;
-
-            if (screenWidth < screenHeight) {    // Map pitch, yaw and roll to portrait display orientation
-                final float p = YPR[1] * -1.0f - (float) Math.PI * 0.5f;
-                final float y = YPR[0] * -1.0f;
-                final float r = YPR[2] * -1.0f;
-                myView.queueEvent(new Runnable() {
-                    public void run() {
-                        GLES3Lib.onRotationPYR(p, y, r);
-                    }
-                });
-                //Log.i(TAG, String.format("onSensorChanged: Pitch(%3.0f), Yaw(%3.0f), Roll(%3.0f)", p, y, r));
-            }
-            else {    // Map pitch, yaw and roll to landscape display orientation for Oculus Rift conformance
-                final float p = YPR[2] * -1.0f - (float) Math.PI * 0.5f;
-                final float y = YPR[0] * -1.0f - (float) Math.PI * 0.5f;
-                final float r = YPR[1];
-                myView.queueEvent(new Runnable() {
-                    public void run() {
-                        GLES3Lib.onRotationPYR(p, y, r);
-                    }
-                });
-                //Log.i(TAG, String.format("onSensorChanged: Pitch(%3.0f), Yaw(%3.0f), Roll(%3.0f)", p, y, r));
-            }
-=======
             // Send the euler angles as pitch, yaw & roll to SLScene::onRotationPYR
             final float y = YPR[0];
             final float p = YPR[1];
             final float r = YPR[2];
             myView.queueEvent(new Runnable() {public void run() {GLES3Lib.onRotationPYR(p, y, r);}});
->>>>>>> refs/remotes/origin/develop
 
             // Get the rotation quaternion from the XYZ-rotation vector (see docs)
             final float Q[] = new float[4];
@@ -239,12 +201,9 @@ public class GLES3Activity extends Activity implements View.OnTouchListener, Sen
 
             // Send the quaternion as x,y,z & w to SLScene::onRotationQUAT
             myView.queueEvent(new Runnable() {public void run() {GLES3Lib.onRotationQUAT(Q[1],Q[2],Q[3],Q[0]);}});
-<<<<<<< HEAD
-            */
-=======
 
             // See SLCamera::setView how the device rotation is processed for the camera's view
->>>>>>> refs/remotes/origin/develop
+
         }
     }
 
@@ -479,14 +438,9 @@ public class GLES3Activity extends Activity implements View.OnTouchListener, Sen
         try {
             SensorManager sm = (SensorManager) getSystemService(SENSOR_SERVICE);
             sm.registerListener(this,
-<<<<<<< HEAD
-                    sm.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR),
-                    sm.SENSOR_DELAY_GAME);
-=======
                                 sm.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR),
                                 sm.SENSOR_DELAY_GAME);
             _rotationSensorStartTime = System.currentTimeMillis();
->>>>>>> refs/remotes/origin/develop
             _rotationSensorIsRunning = true;
         } catch (Exception e) {
             Log.i(TAG, "Exception: " + e.getMessage());
