@@ -1004,6 +1004,9 @@ void SLDemoGui::buildMenuBar(SLScene* s, SLSceneView* sv)
                 if (ImGui::MenuItem("Device Rotated Y up", 0, ca==CA_deviceRotYUp))
                     sv->onCommand(C_camAnimDeviceRotYUp);
 
+                if (ImGui::MenuItem("Device Rotated Y up and GPS positioned", 0, ca == CA_deviceRotYUpPosGPS))
+                    sv->onCommand(C_camAnimDeviceRotYUpPosGPS);
+
                 if (ca==CA_walkingZUp || ca==CA_walkingYUp || ca==CA_deviceRotYUp)
                 {
                     static SLfloat ms = cam->maxSpeed();

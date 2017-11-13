@@ -130,9 +130,13 @@ class SLScene: public SLObject
             double              gpsLatitude     () const {return _gpsLatitude;}
             double              gpsLongitude    () const {return _gpsLongitude;}
             double              gpsAltitude     () const {return _gpsAltitude;}
+
             SLVec3d             enu             () const {return _enu;}
             SLVec3d             enuOrigin       () const {return _enuOrigin;}
 
+            SLbool              hasGlobalRefPos () const {return _hasGlobalRefPos; }
+            const SLVec3d&      globalRefPosEcef() const {return _globalRefPosEcef; }
+            const SLMat3<double>& wRecef        () const {return _wRecef; }
     // Misc.
    virtual  void            onLoad              (SLSceneView* sv, 
                                                  SLCommand _currentID);
@@ -164,7 +168,9 @@ class SLScene: public SLObject
 
      static SLScene*        current;            //!< global static scene pointer
 
-   protected:
+            void            initGlobalRefPos    (double latDeg, double lonDeg, double altM);
+
+protected:
             SLVSceneView    _sceneViews;        //!< Vector of all sceneview pointers
             SLVMesh         _meshes;            //!< Vector of all meshes
             SLVMaterial     _materials;         //!< Vector of all materials pointers
@@ -229,8 +235,13 @@ class SLScene: public SLObject
             double              _gpsLongitude;      //!< gps longitude value
             double              _gpsLatitude;       //!< gps latitude value
             double              _gpsAltitude;       //!< gps altitude value
+
             SLVec3d              _enu;               //!< gps in enu
             SLVec3d              _enuOrigin;         //!< enu origin location
+
+            SLbool              _hasGlobalRefPos;  //!< Flag if this scene has a global reference position
+            SLVec3d             _globalRefPosEcef; //!< Global ecef reference position of scene origin (world)
+            SLMat3<double>      _wRecef;           //!< ecef frame to world frame rotation: rotates a point defined in ecef frame to world frame
 };
 //-----------------------------------------------------------------------------
 #endif

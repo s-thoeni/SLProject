@@ -250,38 +250,78 @@ void SLScene::onLoad(SLSceneView* sv, SLCommand sceneName)
         name("Sensor Test");
         _info = "Minimal scene to test out the Sensors";
 
-        // Create textures and materials
-        SLGLTexture* texC = new SLGLTexture("earth1024_C.jpg");
-        SLMaterial* m1 = new SLMaterial("m1", texC);
+        SLCamera* cam1 = new SLCamera("Camera 1");
+        cam1->translation(0,0,60);
+        cam1->lookAt(0,0,0);
+        cam1->fov(_activeCalib->cameraFovDeg());
+        cam1->clipNear(0.1f);
+        cam1->clipFar(10000.0f); // Increase to infinity?
+        cam1->background().texture(&_videoTexture);
+        cam1->setInitialState();
+        videoType(VT_MAIN);
 
-        // Create a scene group node
-        SLNode* scene = new SLNode("scene node");
+        SLLightSpot* light1 = new SLLightSpot(420,420,420, 1);
+        light1->ambient(SLCol4f(1,1,1));
+        light1->diffuse(SLCol4f(1,1,1));
+        light1->specular(SLCol4f(1,1,1));
+        light1->attenuation(1,0,0);
 
-        // Create a light source node
-        SLLightSpot* light1 = new SLLightSpot(0.3f);
-        light1->translation(0,0,5);
-        light1->lookAt(0,0,0);
-        light1->name("light node");
+        SLLightSpot* light2 = new SLLightSpot(-450,-340,420, 1);
+        light2->ambient(SLCol4f(1,1,1));
+        light2->diffuse(SLCol4f(1,1,1));
+        light2->specular(SLCol4f(1,1,1));
+        light2->attenuation(1,0,0);
+
+        SLLightSpot* light3 = new SLLightSpot(450,-370,0, 1);
+        light3->ambient(SLCol4f(1,1,1));
+        light3->diffuse(SLCol4f(1,1,1));
+        light3->specular(SLCol4f(1,1,1));
+        light3->attenuation(1,0,0);
+
+        SLNode *axisNode = new SLNode(new SLCoordAxis(), "Axis Node");
+        axisNode->setDrawBitsRec(SL_DB_WIREMESH, false);
+        axisNode->scale(100);
+        axisNode->rotate(-90, 1, 0, 0);
+
+        // Christoffel tower
+        SLAssimpImporter importer;
+        #if defined(SL_OS_IOS) || defined(SL_OS_ANDROID)
+        SLNode* tower = importer.load("christoffelturm.obj");
+        #else
+        SLNode* tower = importer.load("Wavefront-OBJ/Christoffelturm/christoffelturm.obj");
+        #endif
+        tower->rotate(-90, 1, 0,0);
+
+        // Scene structure
+        SLNode* scene = new SLNode("Scene");
         scene->addChild(light1);
-
-        // Create meshes and nodes
-        SLMesh* rectMesh = new SLRectangle(SLVec2f(-5,-5),SLVec2f(5,5),1,1,"rectangle mesh",m1);
-        SLNode* rectNode = new SLNode(rectMesh,"rectangle node");
-        scene->addChild(rectNode);
-        SLNode* axisNode = new SLNode(new SLCoordAxis(),"axis node");
+        scene->addChild(light2);
+        scene->addChild(light3);
         scene->addChild(axisNode);
+        if (tower) scene->addChild(tower);
+        scene->addChild(cam1);
 
-        // Set background color and the root scene node
-        sv->sceneViewCamera()->background().colors(SLCol4f(0.7f,0.7f,0.7f),SLCol4f(0.2f,0.2f,0.2f));
+        //_trackers.push_back(new SLCVTrackedFeatures(cam1, "features_stones.png"));
 
-        // pass the scene group as root node
+        sv->camera(cam1);
+
         _root3D = scene;
 
+        #if defined(SL_OS_MACIOS) || defined(SL_OS_ANDROID)
+        //initialize global reference position of this scene
+        initGlobalRefPos(47.140624, 7.247405, 442.0);
+
+
+        //activate rotation and gps sensor
         _usesRotation = true;
         _usesLocation = true;
+        cam1->camAnim(SLCamAnim::CA_deviceRotYUpPosGPS);
+        _zeroYawAtStart = false;
+        #else
+        cam1->camAnim(SLCamAnim::CA_turntableYUp);
+        #endif
 
-        // Save energy
-        sv->waitEvents(false);
+        sv->waitEvents(false); // for constant video feed
     }
     else
     if (SL::currentSceneID == C_sceneFigure) //....................................................

@@ -737,7 +737,7 @@ SLCamera* SLScene::nextCameraInScene(SLSceneView* activeSV)
     // return next if not last else return first
     if (activeIndex < cams.size()-1)
         return cams[activeIndex+1];
-    else 
+    else
         return cams[0];
 
 }
@@ -765,17 +765,37 @@ void SLScene::onLocationGPS(double latitude, double longitude, double altitude)
     _gpsLatitude = latitude;
     _gpsLongitude = longitude;
     _gpsAltitude = altitude;
-    SLVec3d locOrigin = SLVec3d(0, 0, 0);
-    locOrigin.lla2ecef(locOrigin);
-    double longi = 0.0000470267608;
-    double lat = 0.0000458145;
-    SLVec3d loc = SLVec3d(longi, lat, 0);
-    loc.lla2ecef(loc);
-    SLMat3<double> rotation = SLMat3<double>(-sin(longi), cos(longi), 0,
-                             -cos(longi)*sin(lat), -sin(longi)*sin(lat), cos(lat),
-                             cos(longi)*cos(lat), sin(longi)*cos(lat), sin(lat));
-    _enuOrigin = rotation*locOrigin;
-    _enu = rotation*loc;
+
+    SLVec3d locLla = SLVec3d(_gpsLatitude, _gpsLongitude, _gpsAltitude);
+    SLVec3d locEcef;
+    locEcef.lla2ecef(locLla);
+    _enu = _wRecef * locEcef;
 
 }
 //-----------------------------------------------------------------------------
+//! Initialize global reference position in latitude, longitude and altitude.
+//! The calculated values can be used for global camera positioning via gps sensor
+void SLScene::initGlobalRefPos(double latDeg, double lonDeg, double altM )
+{
+    SLVec3d globalRefLla = SLVec3d(latDeg, lonDeg, altM);
+    _globalRefPosEcef.lla2ecef(globalRefLla);
+    //calculation of ecef to world (scene) rotation matrix
+
+    //definition of rotation matrix for ecef to world frame rotation:
+    //world frame (scene) w.r.t. enu frame
+    double phiRad = latDeg * SL_DEG2RAD;  //phi == lattitude
+    double lamRad = lonDeg * SL_DEG2RAD;  //lambda == longitude
+    SLMat3<double> enuRecef( -sin(lamRad),                          cos(lamRad),           0,
+                             -cos(lamRad)*sin(phiRad), -sin(lamRad)*sin(phiRad), cos(phiRad),
+                             cos(lamRad)*cos(phiRad),  sin(lamRad)*cos(phiRad), sin(phiRad));
+    //world frame (scene) w.r.t. enu frame
+    SLMat3<double> wRenu; //same as before
+    wRenu.rotation(-90, 1, 0, 0);
+    //world frame (scene) w.r.t. ecef
+    _wRecef = wRenu * enuRecef;
+    _enuOrigin = _wRecef * _globalRefPosEcef;
+
+    //flag, that this scene has a valid global reference position. The values can
+    //be used for camera positioning
+    _hasGlobalRefPos = true;
+}
