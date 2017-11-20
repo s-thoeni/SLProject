@@ -127,17 +127,15 @@ class SLScene: public SLObject
 
             // Device GPS location stuff
             SLbool              usesLocation    () const {return _usesLocation;}
-            double              gpsLatitude     () const {return _gpsLatitude;}
-            double              gpsLongitude    () const {return _gpsLongitude;}
-            double              gpsAltitude     () const {return _gpsAltitude;}
-
+            SLVec3d             lla             () const {return _lla;}
+            float               accuracyM       () const {return _accuracyM;}
             SLVec3d             enu             () const {return _enu;}
             SLVec3d             enuOrigin       () const {return _enuOrigin;}
+            SLbool              hasGlobalRefPos () const {return _hasGlobalRefPos;}
+            const SLVec3d&      globalRefPosEcef() const {return _globalRefPosEcef;}
+            const SLMat3d&      wRecef          () const {return _wRecef;}
 
-            SLbool              hasGlobalRefPos () const {return _hasGlobalRefPos; }
-            const SLVec3d&      globalRefPosEcef() const {return _globalRefPosEcef; }
-            const SLMat3<double>& wRecef        () const {return _wRecef; }
-    // Misc.
+            // Misc.
    virtual  void            onLoad              (SLSceneView* sv, 
                                                  SLCommand _currentID);
    virtual  void            onLoadAsset         (SLstring assetFile, 
@@ -162,15 +160,17 @@ class SLScene: public SLObject
                                                  SLuchar* data,
                                                  SLbool isContinuous,
                                                  SLbool isTopLeft);
-            void            onLocationGPS       (double latitude,
-                                                 double longitude,
-                                                 double altitude);
+
+            void            onLocationLLA       (double latitudeDEG,
+                                                 double longitudeDEG,
+                                                 double altitudeM,
+                                                 float accuracyM);
+            void            initGlobalRefPos    (double latDeg, 
+                                                 double lonDeg, 
+                                                 double altM);
 
      static SLScene*        current;            //!< global static scene pointer
-
-            void            initGlobalRefPos    (double latDeg, double lonDeg, double altM);
-
-protected:
+   protected:
             SLVSceneView    _sceneViews;        //!< Vector of all sceneview pointers
             SLVMesh         _meshes;            //!< Vector of all meshes
             SLVMaterial     _materials;         //!< Vector of all materials pointers
@@ -232,16 +232,13 @@ protected:
             // GPS Sensor stuff
             SLbool              _usesLocation;      //!< Flag if GPS Sensor is used
             SLbool              _deviceLocStarted;  //!< Flag for the first sensor values
-            double              _gpsLongitude;      //!< gps longitude value
-            double              _gpsLatitude;       //!< gps latitude value
-            double              _gpsAltitude;       //!< gps altitude value
-
-            SLVec3d              _enu;               //!< gps in enu
-            SLVec3d              _enuOrigin;         //!< enu origin location
-
-            SLbool              _hasGlobalRefPos;  //!< Flag if this scene has a global reference position
-            SLVec3d             _globalRefPosEcef; //!< Global ecef reference position of scene origin (world)
-            SLMat3<double>      _wRecef;           //!< ecef frame to world frame rotation: rotates a point defined in ecef frame to world frame
+            SLVec3d             _lla;               //!< GPS location in latitudeDEG, longitudeDEG & AltitudeM
+            SLfloat             _accuracyM;         //!< Horizontal accuracy radius in m with 68% probability
+            SLVec3d             _enu;               //!< gps in enu
+            SLVec3d             _enuOrigin;         //!< enu origin location
+            SLbool              _hasGlobalRefPos;   //!< Flag if this scene has a global reference position
+            SLVec3d             _globalRefPosEcef;  //!< Global ecef reference position of scene origin (world)
+            SLMat3d             _wRecef;            //!< ecef frame to world frame rotation: rotates a point defined in ecef
 };
 //-----------------------------------------------------------------------------
 #endif

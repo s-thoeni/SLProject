@@ -208,7 +208,6 @@ void SLScene::init()
     _poseTimesMS.init();
     _captureTimesMS.init(200);
 
-//todo    _deviceRotation  = SLQuat4f::IDENTITY;
     _deviceRotation.identity();
     _devicePitchRAD  = 0.0f;
     _deviceYawRAD    = 0.0f;
@@ -216,8 +215,10 @@ void SLScene::init()
     _zeroYawAtStart  = true;
     _startYawRAD     = 0.0f;
 
-    _gpsLongitude    = 0.0;
-    _gpsLatitude     = 0.0;
+    _lla.set(0,0,0);
+    _accuracyM = 0.0f;
+    _enu.set(0,0,0);
+    _wRecef.identity();
 }
 //-----------------------------------------------------------------------------
 /*! The scene uninitializing clears the scenegraph (_root3D) and all global
@@ -760,17 +761,21 @@ void SLScene::usesLocation (SLbool use)
     _usesLocation = use;
 }
 //-----------------------------------------------------------------------------
-void SLScene::onLocationGPS(double latitude, double longitude, double altitude)
+/*! Global event handler for device GPS location with longitude and latitude in
+degrees and altitude in meters. This location uses the World Geodetic System
+1984 (WGS 84). The accuracy in meters is a radius in which the location is with
+a probability of 68% (2 sigma).
+*/
+void SLScene::onLocationLLA(double latitudeDEG,
+                            double longitudeDEG,
+                            double altitudeM,
+                            float  accuracyM)
 {
-    _gpsLatitude = latitude;
-    _gpsLongitude = longitude;
-    _gpsAltitude = 442.0;
-
-    SLVec3d locLla = SLVec3d(_gpsLatitude, _gpsLongitude, _gpsAltitude);
+    _lla.set(latitudeDEG, longitudeDEG, altitudeM);
+    _accuracyM = accuracyM;
     SLVec3d locEcef;
-    locEcef.lla2ecef(locLla);
+    locEcef.lla2ecef(_lla);
     _enu = _wRecef * locEcef;
-
 }
 //-----------------------------------------------------------------------------
 //! Initialize global reference position in latitude, longitude and altitude.
@@ -780,17 +785,18 @@ void SLScene::initGlobalRefPos(double latDeg, double lonDeg, double altM )
     SLVec3d globalRefLla = SLVec3d(latDeg, lonDeg, altM);
     _globalRefPosEcef.lla2ecef(globalRefLla);
     //calculation of ecef to world (scene) rotation matrix
-
     //definition of rotation matrix for ecef to world frame rotation:
     //world frame (scene) w.r.t. enu frame
     double phiRad = latDeg * SL_DEG2RAD;  //phi == lattitude
     double lamRad = lonDeg * SL_DEG2RAD;  //lambda == longitude
-    SLMat3<double> enuRecef( -sin(lamRad),                          cos(lamRad),           0,
-                             -cos(lamRad)*sin(phiRad), -sin(lamRad)*sin(phiRad), cos(phiRad),
-                             cos(lamRad)*cos(phiRad),  sin(lamRad)*cos(phiRad), sin(phiRad));
+    SLMat3d enuRecef(-sin(lamRad),                          cos(lamRad),           0,
+                     -cos(lamRad)*sin(phiRad), -sin(lamRad)*sin(phiRad), cos(phiRad),
+                      cos(lamRad)*cos(phiRad),  sin(lamRad)*cos(phiRad), sin(phiRad));
+
     //world frame (scene) w.r.t. enu frame
-    SLMat3<double> wRenu; //same as before
+    SLMat3d wRenu; //same as before
     wRenu.rotation(-90, 1, 0, 0);
+
     //world frame (scene) w.r.t. ecef
     _wRecef = wRenu * enuRecef;
     _enuOrigin = _wRecef * _globalRefPosEcef;
@@ -799,3 +805,4 @@ void SLScene::initGlobalRefPos(double latDeg, double lonDeg, double altM )
     //be used for camera positioning
     _hasGlobalRefPos = true;
 }
+//------------------------------------------------------------------------------

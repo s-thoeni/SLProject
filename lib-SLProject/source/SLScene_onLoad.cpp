@@ -285,7 +285,6 @@ void SLScene::onLoad(SLSceneView* sv, SLCommand sceneName)
         axisNode->scale(100);
         axisNode->rotate(-90, 1, 0, 0);
 
-
         SLMaterial* yellow = new SLMaterial("mY", SLCol4f(1,1,0,0.5f));
         SLBox* box1 = new SLBox(0.0f,0.0f, 0.0f, 40.0f, 15.0f, 61.0f, "Box 1", yellow);
         SLNode* boxNode1 = new SLNode(box1, "Box Node 1");
