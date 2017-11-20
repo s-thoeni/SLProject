@@ -485,8 +485,6 @@ void SLDemoGui::buildMenuBar(SLScene* s, SLSceneView* sv)
 
                     if (ImGui::MenuItem("Minimal Scene", 0, curS==C_sceneMinimal))
                         sv->onCommand(C_sceneMinimal);
-                    if (ImGui::MenuItem("Sensor Test Scene", 0, curS==C_sceneSensorTest))
-                        sv->onCommand(C_sceneSensorTest);
                     if (ImGui::MenuItem("Figure Scene", 0, curS==C_sceneFigure))
                         sv->onCommand(C_sceneFigure);
                     if (ImGui::MenuItem("Large Model", 0, curS==C_sceneLargeModel, largeFileExists))
@@ -563,6 +561,8 @@ void SLDemoGui::buildMenuBar(SLScene* s, SLSceneView* sv)
                         sv->onCommand(C_sceneVideoTrackFeature2DMain);
                     if (ImGui::MenuItem("Texture from live video", 0, curS==C_sceneVideoTexture))
                         sv->onCommand(C_sceneVideoTexture);
+                    if (ImGui::MenuItem("GPS Display Scene", 0, curS==C_sceneSensorTest))
+                        sv->onCommand(C_sceneSensorTest);
 
                     ImGui::EndMenu();
                 }

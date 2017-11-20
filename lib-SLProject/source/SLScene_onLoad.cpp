@@ -285,22 +285,33 @@ void SLScene::onLoad(SLSceneView* sv, SLCommand sceneName)
         axisNode->scale(100);
         axisNode->rotate(-90, 1, 0, 0);
 
-        // Christoffel tower
+
+        SLMaterial* yellow = new SLMaterial("mY", SLCol4f(1,1,0,0.5f));
+        SLBox* box1 = new SLBox(0.0f,0.0f, 0.0f, 40.0f, 15.0f, 61.0f, "Box 1", yellow);
+        SLNode* boxNode1 = new SLNode(box1, "Box Node 1");
+        boxNode1->setDrawBitsRec(SL_DB_CULLOFF, true);
+        boxNode1->rotate(45, 0, 1, 0);
+
+        /*// Christoffel tower
         SLAssimpImporter importer;
         #if defined(SL_OS_IOS) || defined(SL_OS_ANDROID)
-        SLNode* tower = importer.load("christoffelturm.obj");
+        //SLNode* tower = importer.load("christoffelturm.obj");
+        SLNode* tower = importer.load("transparent.obj");
         #else
-        SLNode* tower = importer.load("Wavefront-OBJ/Christoffelturm/christoffelturm.obj");
+        //SLNode* tower = importer.load("Wavefront-OBJ/Christoffelturm/christoffelturm.obj");
+        SLNode* tower = importer.load("Wavefront-OBJ/transparent.obj");
         #endif
-        tower->rotate(-90, 1, 0,0);
+        //tower->rotate(-90, 1, 0,0);
+        tower->rotate(-90, 0, 1, 0);*/
 
         // Scene structure
         SLNode* scene = new SLNode("Scene");
-        scene->addChild(light1);
-        scene->addChild(light2);
-        scene->addChild(light3);
+        //scene->addChild(light1);
+        //scene->addChild(light2);
+        //scene->addChild(light3);
         scene->addChild(axisNode);
-        if (tower) scene->addChild(tower);
+        //if (tower) scene->addChild(tower);
+        scene->addChild(boxNode1);
         scene->addChild(cam1);
 
         //_trackers.push_back(new SLCVTrackedFeatures(cam1, "features_stones.png"));

@@ -764,7 +764,7 @@ void SLScene::onLocationGPS(double latitude, double longitude, double altitude)
 {
     _gpsLatitude = latitude;
     _gpsLongitude = longitude;
-    _gpsAltitude = altitude;
+    _gpsAltitude = 442.0;
 
     SLVec3d locLla = SLVec3d(_gpsLatitude, _gpsLongitude, _gpsAltitude);
     SLVec3d locEcef;
