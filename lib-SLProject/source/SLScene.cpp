@@ -771,7 +771,7 @@ void SLScene::onLocationLLA(double latitudeDEG,
                             double altitudeM,
                             float  accuracyM)
 {
-    _lla.set(latitudeDEG, longitudeDEG, altitudeM);
+    _lla.set(latitudeDEG, longitudeDEG, _lla.z);
     _accuracyM = accuracyM;
     SLVec3d locEcef;
     locEcef.lla2ecef(_lla);
@@ -783,6 +783,7 @@ void SLScene::onLocationLLA(double latitudeDEG,
 void SLScene::initGlobalRefPos(double latDeg, double lonDeg, double altM )
 {
     SLVec3d globalRefLla = SLVec3d(latDeg, lonDeg, altM);
+    _lla.set(latDeg, lonDeg, altM + 1.7);
     _globalRefPosEcef.lla2ecef(globalRefLla);
     //calculation of ecef to world (scene) rotation matrix
     //definition of rotation matrix for ecef to world frame rotation:
@@ -791,7 +792,7 @@ void SLScene::initGlobalRefPos(double latDeg, double lonDeg, double altM )
     double lamRad = lonDeg * SL_DEG2RAD;  //lambda == longitude
     SLMat3d enuRecef(-sin(lamRad),                          cos(lamRad),           0,
                      -cos(lamRad)*sin(phiRad), -sin(lamRad)*sin(phiRad), cos(phiRad),
-                      cos(lamRad)*cos(phiRad),  sin(lamRad)*cos(phiRad), sin(phiRad));
+                     cos(lamRad)*cos(phiRad),  sin(lamRad)*cos(phiRad), sin(phiRad));
 
     //world frame (scene) w.r.t. enu frame
     SLMat3d wRenu; //same as before

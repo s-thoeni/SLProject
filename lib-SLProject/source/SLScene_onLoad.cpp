@@ -286,10 +286,10 @@ void SLScene::onLoad(SLSceneView* sv, SLCommand sceneName)
         axisNode->rotate(-90, 1, 0, 0);
 
         SLMaterial* yellow = new SLMaterial("mY", SLCol4f(1,1,0,0.5f));
-        SLBox* box1 = new SLBox(0.0f,0.0f, 0.0f, 40.0f, 15.0f, 61.0f, "Box 1", yellow);
+        SLBox* box1 = new SLBox(0.0f,0.0f, 0.0f, 80.0f, 45.0f, 61.0f, "Box 1", yellow);
         SLNode* boxNode1 = new SLNode(box1, "Box Node 1");
         boxNode1->setDrawBitsRec(SL_DB_CULLOFF, true);
-        boxNode1->rotate(45, 0, 1, 0);
+        boxNode1->rotate(30, 0, 1, 0);
 
         /*// Christoffel tower
         SLAssimpImporter importer;
@@ -321,7 +321,7 @@ void SLScene::onLoad(SLSceneView* sv, SLCommand sceneName)
 
         #if defined(SL_OS_MACIOS) || defined(SL_OS_ANDROID)
         //initialize global reference position of this scene
-        initGlobalRefPos(47.140624, 7.247405, 442.0);
+        initGlobalRefPos(47.140300, 7.247200, 442.0);
 
 
         //activate rotation and gps sensor
