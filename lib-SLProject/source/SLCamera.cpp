@@ -471,14 +471,16 @@ void SLCamera::setView(SLSceneView* sv, const SLEyeType eye)
 
         //sensor rotation w.r.t. east-north-down
         SLMat3f enuRs;
-        enuRs.setMatrix(s->deviceRotation());
+        enuRs.setMatrix(s->devRot().rotation());
 
-        //east-north-down w.r.t. world-yaw
-        SLfloat rotYawOffsetDEG = s->startYawRAD() * SL_RAD2DEG + 90;
-        if(rotYawOffsetDEG > 180 )
-            rotYawOffsetDEG -= 360;
         SLMat3f wyRenu;
-        wyRenu.rotation(rotYawOffsetDEG, 0, 0, 1);
+        if(s->devRot().zeroYawAtStart()) {
+            //east-north-down w.r.t. world-yaw
+            SLfloat rotYawOffsetDEG = -s->devRot().startYawRAD() * SL_RAD2DEG + 90;
+            if (rotYawOffsetDEG > 180)
+                rotYawOffsetDEG -= 360;
+            wyRenu.rotation(rotYawOffsetDEG, 0, 0, 1);
+        }
 
         //world-yaw rotation w.r.t. world
         SLMat3f wRwy;
@@ -511,22 +513,25 @@ void SLCamera::setView(SLSceneView* sv, const SLEyeType eye)
         om(wTc);
     } else
     //location sensor is turned on and the scene has a global reference position
-    if(_camAnim == CA_deviceRotYUpPosGPS) {
-
-        if(s->usesRotation()) {
-            SLMat3f sRc;
+    if(_camAnim == CA_deviceRotLocYUp)
+    {
+        if(s->devRot().isUsed())
+        {   SLMat3f sRc;
             sRc.rotation(-90, 0, 0, 1);
 
             //sensor rotation w.r.t. east-north-down
             SLMat3f enuRs;
-            enuRs.setMatrix(s->deviceRotation());
+            enuRs.setMatrix(s->devRot().rotation());
 
             //east-north-down w.r.t. world-yaw
-            SLfloat rotYawOffsetDEG = s->startYawRAD() * SL_RAD2DEG + 90;
-            if (rotYawOffsetDEG > 180)
-                rotYawOffsetDEG -= 360;
             SLMat3f wyRenu;
-            wyRenu.rotation(rotYawOffsetDEG, 0, 0, 1);
+            if(s->devRot().zeroYawAtStart()) {
+                //east-north-down w.r.t. world-yaw
+                SLfloat rotYawOffsetDEG = -s->devRot().startYawRAD() * SL_RAD2DEG + 90;
+                if (rotYawOffsetDEG > 180)
+                    rotYawOffsetDEG -= 360;
+                wyRenu.rotation(rotYawOffsetDEG, 0, 0, 1);
+            }
 
             //world-yaw rotation w.r.t. world
             SLMat3f wRwy;
@@ -540,74 +545,19 @@ void SLCamera::setView(SLSceneView* sv, const SLEyeType eye)
         }
 
         //location sensor is turned on and the scene has a global reference position
-        if( s->usesLocation() && s->hasGlobalRefPos()) {
+        if( s->devLoc().isUsed() && s->devLoc().hasOrigin())
+        {
+            // Direction vector from camera to world origin
+            SLVec3d wtc = s->devLoc().locENU() - s->devLoc().originENU();
 
+            // Reset to default if device is too far away
+            if (wtc.length() > s->devLoc().locMaxDistanceM())
+                wtc = s->devLoc().defaultENU() - s->devLoc().originENU();
 
-            //representation of direction vector in world frame (scene)
-            SLVec3d wtc = s->enu() - s->enuOrigin();
-
-            //set camera pose
+            // Set the camera position
             SLVec3f wtc_f((SLfloat)wtc.x, (SLfloat)wtc.y, (SLfloat)wtc.z);
             _om.setTranslation(wtc_f);
             needUpdate();
-
-            //combination of rotation and translation:
-            //SLMat4f wTc;
-            //wTc.setRotation(wRc);
-            //wTc.setTranslation(wtc_f);
-
-            // set camera pose to the object matrix;
-            //om(wTc);
-        }
-    }
-    //location sensor is turned on and the scene has a global reference position
-    if(_camAnim == CA_deviceRotYUpPosGPS) {
-
-        if(s->usesRotation()) {
-            SLMat3f sRc;
-            sRc.rotation(-90, 0, 0, 1);
-
-            //sensor rotation w.r.t. east-north-down
-            SLMat3f enuRs;
-            enuRs.setMatrix(s->deviceRotation());
-
-            //east-north-down w.r.t. world-yaw
-            SLfloat rotYawOffsetDEG = s->startYawRAD() * SL_RAD2DEG + 90;
-            if (rotYawOffsetDEG > 180)
-                rotYawOffsetDEG -= 360;
-            SLMat3f wyRenu;
-            wyRenu.rotation(rotYawOffsetDEG, 0, 0, 1);
-
-            //world-yaw rotation w.r.t. world
-            SLMat3f wRwy;
-            wRwy.rotation(-90, 1, 0, 0);
-
-            //combiniation of partial rotations to orientation of camera w.r.t world
-            //SLMat3f wRc = wRwy * wyRenu * enuRs * sRc;
-            SLMat3f wRc = wRwy * enuRs * sRc;
-            _om.setRotation(wRc);
-            needUpdate();
-        }
-
-        //location sensor is turned on and the scene has a global reference position
-        if( s->usesLocation() && s->hasGlobalRefPos()) {
-
-
-            //representation of direction vector in world frame (scene)
-            SLVec3d wtc = s->enu() - s->enuOrigin();
-
-            //set camera pose
-            SLVec3f wtc_f(wtc.x, wtc.y, wtc.z);
-            _om.setTranslation(wtc_f);
-            needUpdate();
-
-            //combination of rotation and translation:
-            //SLMat4f wTc;
-            //wTc.setRotation(wRc);
-            //wTc.setTranslation(wtc_f);
-
-            // set camera pose to the object matrix;
-            //om(wTc);
         }
     }
 

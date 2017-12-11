@@ -21,6 +21,8 @@
 #include <SLAnimManager.h>
 #include <SLAverage.h>
 #include <SLCVCalibration.h>
+#include <SLDeviceRotation.h>
+#include <SLDeviceLocation.h>
 
 class SLSceneView;
 class SLCVTracked;
@@ -61,10 +63,6 @@ class SLScene: public SLObject
             void            stopAnimations      (SLbool stop) {_stopAnimations = stop;}
             void            videoType           (SLVideoType vt);
             void            showDetection       (SLbool st) {_showDetection = st;}
-            void            usesRotation        (SLbool use);
-            void            deviceRotStarted    (SLbool started) {_deviceRotStarted = started;}
-            void            zeroYawAtStart      (SLbool set) {_zeroYawAtStart = set;}
-            void            usesLocation        (SLbool use);
                            
             // Getters
             SLAnimManager&  animManager         () {return _animManager;}
@@ -74,8 +72,8 @@ class SLScene: public SLObject
             SLNode*         root2D              () {return _root2D;}
             SLstring&       info                () {return _info;}
             void            timerStart          () {_timer.start();}
-            SLfloat         timeSec             () {return (SLfloat)_timer.getElapsedTimeInSec();}
-            SLfloat         timeMilliSec        () {return (SLfloat)_timer.getElapsedTimeInMilliSec();}
+            SLfloat         timeSec             () {return (SLfloat)_timer.elapsedTimeInSec();}
+            SLfloat         timeMilliSec        () {return (SLfloat)_timer.elapsedTimeInMilliSec();}
             SLfloat         elapsedTimeMS       () {return _elapsedTimeMS;}
             SLfloat         elapsedTimeSec      () {return _elapsedTimeMS * 0.001f;}
             SLVEventHandler& eventHandlers      () {return _eventHandlers;}
@@ -106,34 +104,19 @@ class SLScene: public SLObject
             SLint           numSceneCameras     ();
             SLCamera*       nextCameraInScene   (SLSceneView* activeSV);
 
-            // Video and OpenCV stuff
+            // Video stuff
             SLVideoType         videoType       () {return _videoType;}
             SLGLTexture*        videoTexture    () {return &_videoTexture;}
+            SLGLTexture*        videoTextureErr () {return &_videoTextureErr;}
             SLCVCalibration*    activeCalib     () {return _activeCalib;}
             SLCVCalibration*    calibMainCam    () {return &_calibMainCam;}
             SLCVCalibration*    calibScndCam    () {return &_calibScndCam;}
             SLVCVTracker&       trackers        () {return _trackers;}
             SLbool              showDetection   () {return _showDetection;}
 
-            // Device rotation stuff
-            SLbool              usesRotation    () const {return _usesRotation;}
-            SLMat3f             deviceRotation  () const {return _deviceRotation;}
-
-            SLfloat             devicePitchRAD  () const {return _devicePitchRAD;}
-            SLfloat             deviceYawRAD    () const {return _deviceYawRAD;}
-            SLfloat             deviceRollRAD   () const {return _deviceRollRAD;}
-            SLbool              zeroYawAtStart  () const {return _zeroYawAtStart;}
-            SLfloat             startYawRAD     () const {return _startYawRAD;}
-
-            // Device GPS location stuff
-            SLbool              usesLocation    () const {return _usesLocation;}
-            SLVec3d             lla             () const {return _lla;}
-            float               accuracyM       () const {return _accuracyM;}
-            SLVec3d             enu             () const {return _enu;}
-            SLVec3d             enuOrigin       () const {return _enuOrigin;}
-            SLbool              hasGlobalRefPos () const {return _hasGlobalRefPos;}
-            const SLVec3d&      globalRefPosEcef() const {return _globalRefPosEcef;}
-            const SLMat3d&      wRecef          () const {return _wRecef;}
+            // Device sensors stuff
+            SLDeviceRotation&   devRot          () {return _devRot;}
+            SLDeviceLocation&   devLoc          () {return _devLoc;}
 
             // Misc.
    virtual  void            onLoad              (SLSceneView* sv, 
@@ -142,13 +125,6 @@ class SLScene: public SLObject
                                                  SLuint processFlags);
    virtual  void            onAfterLoad         ();
             bool            onUpdate            ();
-            void            onRotationPYR       (SLfloat pitchRAD,
-                                                 SLfloat yawRAD,
-                                                 SLfloat rollRAD);
-            void            onRotationQUAT      (SLfloat quatX,
-                                                 SLfloat quatY,
-                                                 SLfloat quatZ,
-                                                 SLfloat quatW);
             void            init                ();
             void            unInit              ();
             SLbool          onCommandAllSV      (const SLCommand cmd);
@@ -161,15 +137,18 @@ class SLScene: public SLObject
                                                  SLbool isContinuous,
                                                  SLbool isTopLeft);
 
-            void            onLocationLLA       (double latitudeDEG,
+
+/*            void            onLocationLLA       (double latitudeDEG,
                                                  double longitudeDEG,
                                                  double altitudeM,
                                                  float accuracyM);
             void            initGlobalRefPos    (double latDeg, 
                                                  double lonDeg, 
-                                                 double altM);
+                                                 double altM);*/
+
 
      static SLScene*        current;            //!< global static scene pointer
+
    protected:
             SLVSceneView    _sceneViews;        //!< Vector of all sceneview pointers
             SLVMesh         _meshes;            //!< Vector of all meshes
@@ -213,12 +192,14 @@ class SLScene: public SLObject
             // Video stuff
             SLVideoType         _videoType;         //!< Flag for using the live video image
             SLGLTexture         _videoTexture;      //!< Texture for live video image
+            SLGLTexture         _videoTextureErr;   //!< Texture for live video error
             SLCVCalibration*    _activeCalib;       //!< Pointer to the active calibration
             SLCVCalibration     _calibMainCam;      //!< OpenCV calibration for main video camera
             SLCVCalibration     _calibScndCam;      //!< OpenCV calibration for secondary video camera
             SLVCVTracker        _trackers;          //!< Vector of all AR trackers
             SLbool              _showDetection;     //!< Flag if detection should be visualized
 
+/*
             // IMU Sensor stuff
             SLbool              _usesRotation;      //!< Flag if device rotation is used
             SLfloat             _devicePitchRAD;    //!< Device pitch angle in radians
@@ -239,6 +220,10 @@ class SLScene: public SLObject
             SLbool              _hasGlobalRefPos;   //!< Flag if this scene has a global reference position
             SLVec3d             _globalRefPosEcef;  //!< Global ecef reference position of scene origin (world)
             SLMat3d             _wRecef;            //!< ecef frame to world frame rotation: rotates a point defined in ecef
+*/
+            // Mobile device sensor data
+            SLDeviceRotation    _devRot;            //!< Mobile device rotation from IMU
+            SLDeviceLocation    _devLoc;            //!< Mobile device location from GPS
 };
 //-----------------------------------------------------------------------------
 #endif
