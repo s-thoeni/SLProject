@@ -2347,6 +2347,149 @@ void appDemoLoadScene(SLScene* s, SLSceneView* sv, SLSceneID sceneID)
         sv->camera(cam1);
         s->root3D(scene);
     }
+    else if (SLApplication::sceneID == SID_VideoKalmanFilter)
+    {
+        // Set scene name and info string
+        s->name("Kalmanfilter Data Fusion");
+        s->info("Example for fusion of different sensor data using kalman filter.");
+
+        s->videoType(VT_MAIN);
+
+        SLstring slamStateFilePath = SLCVCalibration::calibIniPath + "street1_manip.json";
+
+        SLCamera* cam1 = new SLCamera("Camera 1");
+        cam1->translation(0, 2, 60);
+        cam1->lookAt(15, 15, 0);
+        cam1->fov(SLApplication::activeCalib->cameraFovDeg());
+        cam1->clipNear(0.001f);
+        cam1->clipFar(1000000.0f); // Increase to infinity?
+        cam1->setInitialState();
+        cam1->background().texture(s->videoTexture());
+        //add coord axes to camera
+        SLNode* axisNodeCam = new SLNode(new SLCoordAxis(), "axis node cam");
+        cam1->addChild(axisNodeCam);
+
+        //load map points and keyframes
+        SLCVMap* map = new SLCVMap("Map");
+        ORBVocabulary* vocabulary = new ORBVocabulary();
+        SLCVKeyFrameDB* kfDB = new SLCVKeyFrameDB(*vocabulary);
+        SLCVSlamStateLoader loader(slamStateFilePath, vocabulary, false);
+        loader.load(map->mapPoints(), *kfDB);
+
+        SLNode* scene = new SLNode("scene");
+
+        SLLightSpot* light1 = new SLLightSpot(10, 10, 10, 0.3f);
+        light1->ambient(SLCol4f(0.2f, 0.2f, 0.2f));
+        light1->diffuse(SLCol4f(0.8f, 0.8f, 0.8f));
+        light1->specular(SLCol4f(1, 1, 1));
+        light1->attenuation(1, 0, 0);
+        scene->addChild(light1);
+
+        SLNode* mapNode = new SLNode("map");
+        //the map is rotated w.r.t world because ORB-SLAM uses x-axis right, 
+        //y-axis down and z-forward
+        mapNode->rotate(180, 1, 0, 0);
+        scene->addChild(mapNode);
+        //mapNode->addChild(cam1);
+        scene->addChild(cam1);
+
+        ////add visual representations of map and keyFrame database to scene
+        //bool addVisualMap = true;
+        //bool addVisualKFs = true;
+        //SLNode* mapPC = NULL;
+        //SLNode* mapMatchedPC = NULL;
+        //SLNode* mapLocalPC = NULL;
+        //if (addVisualMap)
+        //{
+        //    mapPC = new SLNode(map->getSceneObject(), "MapPoints");
+        //    mapNode->addChild(mapPC);
+
+        //    //add additional empty point clouds for visualization of local map and map point matches:
+        //    //1. map point matches
+        //    //material
+        //    SLMaterial* pcMat1 = new SLMaterial("Green", SLCol4f::GREEN);
+        //    pcMat1->program(new SLGLGenericProgram("ColorUniformPoint.vert", "Color.frag"));
+        //    pcMat1->program()->addUniform1f(new SLGLUniform1f(UT_const, "u_pointSize", 3.0f));
+        //    //mesh
+        //    SLVVec3f points, normals;
+        //    points.push_back(SLVec3f(0.f, 0.f, 0.f));
+        //    normals.push_back(SLVec3f(0.0001f, 0.0001f, 0.0001f));
+        //    SLPoints* mapMatchesMesh = new SLPoints(points, normals, "MapPointsMatches", pcMat1);
+        //    //node
+        //    mapMatchedPC = new SLNode(mapMatchesMesh, "MapMatchedPC");
+        //    mapNode->addChild(mapMatchedPC);
+
+        //    //2. local map points
+        //    //material
+        //    SLMaterial* pcMat2 = new SLMaterial("Magenta", SLCol4f::MAGENTA);
+        //    pcMat2->program(new SLGLGenericProgram("ColorUniformPoint.vert", "Color.frag"));
+        //    pcMat2->program()->addUniform1f(new SLGLUniform1f(UT_const, "u_pointSize", 4.0f));
+        //    //mesh
+        //    SLPoints* mapLocalMesh = new SLPoints(points, normals, "MapPointsLocal", pcMat2);
+        //    //node
+        //    mapLocalPC = new SLNode(mapLocalMesh, "MapLocalPC");
+        //    mapNode->addChild(mapLocalPC);
+        //}
+
+        //SLNode* keyFrames = NULL;
+        //if (addVisualKFs)
+        //{
+        //    keyFrames = new SLNode("KeyFrames");
+        //    //add keyFrames
+        //    for (auto* kf : kfDB->keyFrames()) {
+        //        SLCVCamera* cam = kf->getSceneObject();
+        //        cam->fov(SLApplication::activeCalib->cameraFovDeg());
+        //        cam->focalDist(0.11);
+        //        cam->clipNear(0.1);
+        //        cam->clipFar(1000.0);
+        //        keyFrames->addChild(cam);
+        //    }
+        //    mapNode->addChild(keyFrames);
+        //}
+
+        //add yellow augmented box
+        SLMaterial* yellow = new SLMaterial("mY", SLCol4f(1, 1, 0, 0.5f));
+        //SLfloat he = 25.;
+        //SLBox* box1 = new SLBox(-he, -he, 0.0f, he, he, 2 * he, "Box 1", yellow);
+        SLfloat l = 1.0, b = 1.0, h = 3.0;
+        SLBox* box1 = new SLBox(0.0f, 0.0f, 0.0f, l, h, b, "Box 1", yellow);
+
+        SLNode* boxNode = new SLNode(box1, "boxNode");
+        scene->addChild(boxNode);
+
+        SLNode* axisNode = new SLNode(new SLCoordAxis(), "axis node");
+        scene->addChild(axisNode);
+
+        //initialize sensor stuff
+        SLApplication::devLoc.originLLA(47.142653, 7.243349, 486.0);          // Garage
+        SLApplication::devLoc.defaultLLA(47.142681, 7.243184, 486.0 + 1.7);   // Andere strassenseite gegenüber
+        SLApplication::devLoc.locMaxDistanceM(1000.0f);               // Max. Distanz. zur Garage
+        SLApplication::devLoc.improveOrigin(false);                   // Keine autom. Verbesserung vom Origin
+        SLApplication::devLoc.useOriginAltitude(true);
+        SLApplication::devLoc.hasOrigin(true);
+        SLApplication::devRot.zeroYawAtStart(false);
+
+#if defined(SL_OS_MACIOS) || defined(SL_OS_ANDROID)
+        SLApplication::devLoc.isUsed(true);
+        SLApplication::devRot.isUsed(true);
+        cam1->camAnim(SLCamAnim::CA_trackball);
+#else
+        SLApplication::devLoc.isUsed(false);
+        SLApplication::devRot.isUsed(false);
+        SLVec3d pos_d = SLApplication::devLoc.defaultENU() - SLApplication::devLoc.originENU();;
+        SLVec3f pos_f((SLfloat)pos_d.x, (SLfloat)pos_d.y, (SLfloat)pos_d.z);
+        cam1->translation(pos_f);
+        cam1->lookAt(SLVec3f::ZERO);
+        cam1->camAnim(SLCamAnim::CA_trackball);
+#endif
+        sv->sceneViewCamera()->camAnim(SLCamAnim::CA_trackball);
+
+        // Save no energy
+        sv->doWaitOnIdle(false); //for constant video feed
+        sv->camera(cam1);
+
+        s->root3D(scene);
+    }
     else if (SLApplication::sceneID == SID_VideoTrackKeyFrames)
     {
         // Set scene name and info string

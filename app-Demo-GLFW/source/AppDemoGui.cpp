@@ -711,6 +711,8 @@ void AppDemoGui::buildMenuBar(SLScene* s, SLSceneView* sv)
                         s->onLoad(s, sv, SID_VideoChristoffel);
                     if (ImGui::MenuItem("Track Features from Keyframes", 0, sid == sid==SID_VideoTrackKeyFrames))
                         s->onLoad(s, sv, SID_VideoTrackKeyFrames);
+                    if (ImGui::MenuItem("Kalman Filter Test", 0, sid == sid == SID_VideoKalmanFilter))
+                        s->onLoad(s, sv, SID_VideoKalmanFilter);
 
                     ImGui::EndMenu();
                 }
