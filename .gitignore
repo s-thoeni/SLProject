@@ -45,3 +45,5 @@ GenerateHTMLDoc.log
 *.project
 .settings
 .vs
+
+.DS_Store
