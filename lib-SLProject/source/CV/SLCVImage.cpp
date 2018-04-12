@@ -347,8 +347,8 @@ SLbool SLCVImage::load(SLint width,
 void SLCVImage::load(const SLstring filename, 
                      SLbool flipVertical, 
                      SLbool loadGrayscaleIntoAlpha)
-{    
-    SLstring ext = SLUtils::getFileExt(filename);
+{
+    _ext  = SLUtils::getFileExt(filename);
     _name = SLUtils::getFileName(filename);
     _path = SLUtils::getPath(filename);
 
@@ -404,6 +404,14 @@ void SLCVImage::load(const SLstring filename,
         //SLstring pathfilename = _path + name();
         //SLstring filename = SLUtils::getFileNameWOExt(pathfilename);
         //savePNG(_path + filename + "_InAlpha.png");
+    }
+    
+    if (_ext=="hdr")
+    {
+        SLCVMat ldr;
+        cv::Ptr<cv::TonemapReinhard> tonemap = cv::createTonemapReinhard(1.5f,0,0,0);
+        tonemap->process(_cvMat, ldr);
+        ldr.convertTo(_cvMat, CV_8UC3, 255);
     }
     
     _bytesPerLine  = bytesPerLine(_cvMat.cols, _format, _cvMat.isContinuous());

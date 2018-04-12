@@ -90,6 +90,7 @@ class SLCVImage : public SLObject
             SLPixelFormat   format          () {return _format;}
             SLstring        formatString    ();
             SLstring        path            () {return _path;}
+            SLstring        ext             () {return _ext;}
                                             
     private:
             SLint           bytesPerPixel   (SLPixelFormat pixelFormat);
@@ -103,6 +104,7 @@ class SLCVImage : public SLObject
             SLint           _bytesPerLine;  //!< Number of bytes per line (stride)
             SLint           _bytesPerImage; //!< Number of bytes per image
             SLstring        _path;          //!< path on the filesystem
+            SLstring        _ext;           //!< extension of the image
 };
 //-----------------------------------------------------------------------------
 typedef std::vector<SLCVImage*> SLCVVImage;

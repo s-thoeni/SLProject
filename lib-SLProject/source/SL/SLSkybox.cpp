@@ -54,6 +54,20 @@ SLSkybox::SLSkybox(SLstring cubeMapXPos,
 }
 //-----------------------------------------------------------------------------
 //! Draw the skybox with a cube map with the camera in its center.
+SLSkybox::SLSkybox(SLstring hdrImage,
+                   SLstring name) : SLNode(name)
+{
+    SLGLTexture* cubeMap = new SLGLTexture(hdrImage,
+                                           GL_LINEAR, GL_LINEAR,
+                                           SLTextureType::TT_unknown,
+                                           GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
+    
+    SLMaterial* matCubeMap = new SLMaterial("matCubeMap");
+    matCubeMap->textures().push_back(cubeMap);
+}
+
+//-----------------------------------------------------------------------------
+//! Draw the skybox with a cube map with the camera in its center.
 void SLSkybox::drawAroundCamera(SLSceneView* sv)
 {
     assert(sv && "No SceneView passed to SLSkybox::drawAroundCamera");

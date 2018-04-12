@@ -39,6 +39,8 @@
 #include <SLCVTrackedFeatures.h>
 #include <SLTransferFunction.h>
 #include <SLSkybox.h>
+#include <photo.hpp>
+#include <imgcodecs.hpp>
 
 //-----------------------------------------------------------------------------
 // Foreward declarations for helper functions used only in this file
@@ -1336,6 +1338,25 @@ void appDemoLoadScene(SLScene* s, SLSceneView* sv, SLSceneID sceneID)
         // pass the scene group as root node
         s->root3D(scene);
 
+        // Save energy
+        sv->doWaitOnIdle(true);
+    }
+    else
+    if (SLApplication::sceneID == SID_ShaderIBL)
+    {
+        s->name("HDR IBL Shader");
+        s->info("Image-based Lighting from skybox using High Dynamic Range images");
+        
+        
+        // DEVELOPING IN COURSE! ///////////////////
+        SLCVImage hdrImage("/Users/arauzca/Downloads/Arches_E_PineTree/Arches_E_PineTree_3k.hdr", true, false);        
+        ////////////////////////////////////////////
+        
+        
+        // Create a scene group noce
+        SLNode* scene = new SLNode("scene node");
+        s->root3D(scene);
+        
         // Save energy
         sv->doWaitOnIdle(true);
     }

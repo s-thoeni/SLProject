@@ -656,6 +656,8 @@ void AppDemoGui::buildMenuBar(SLScene* s, SLSceneView* sv)
                         s->onLoad(s, sv, SID_ShaderBumpParallax);
                     if (ImGui::MenuItem("Skybox Shader", 0, sid==SID_ShaderSkyBox))
                         s->onLoad(s, sv, SID_ShaderSkyBox);
+                    if (ImGui::MenuItem("HDR IBL Shader", 0, sid==SID_ShaderIBL))
+                        s->onLoad(s, sv, SID_ShaderIBL);
                     if (ImGui::MenuItem("Earth Shader", 0, sid==SID_ShaderEarth))
                         s->onLoad(s, sv, SID_ShaderEarth);
 
