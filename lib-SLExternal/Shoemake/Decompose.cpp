@@ -512,6 +512,8 @@ Quat snuggle(Quat q, HVect *k)
       }
       k->x = ka[X]; k->y = ka[Y]; k->z = ka[Z];
       return (p);
+
+#undef swap
 }
 
 

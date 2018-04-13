@@ -14,7 +14,7 @@
 #endif
 
 #include <SLDeviceLocation.h>
-#include <spa.h>
+#include <spa/spa.h>
 
 //-----------------------------------------------------------------------------
 void SLDeviceLocation::init()
@@ -73,7 +73,7 @@ void SLDeviceLocation::onLocationLLA(SLdouble latDEG,
         {   _improveTimer.start();
             _isFirstSensorValue = false;
         }
-
+        
         // Only improve if accuracy is higher and the improve time has not elapsed
         if (accuracyM < _originAccuracyM || _improveTimer.elapsedTimeInSec() < _improveTimeSEC)
         {   _originAccuracyM = accuracyM;
@@ -81,14 +81,14 @@ void SLDeviceLocation::onLocationLLA(SLdouble latDEG,
             defaultLLA(latDEG, lonDEG, altM);
         }
     }
-
+    
     _locLLA.set(latDEG, lonDEG, _useOriginAltitude ? _originLLA.alt : altM);
-
+    
     _locAccuracyM = accuracyM;
-
+    
     // Convert to cartesian ECEF coordinates
     _locECEF.lla2ecef(_locLLA);
-
+    
     // Transform to local east-north-up frame
     _locENU = _wRecef * _locECEF;
 }
@@ -101,7 +101,7 @@ void SLDeviceLocation::originLLA(SLdouble latDEG, SLdouble lonDEG, SLdouble altM
 {
     _originLLA = SLVec3d(latDEG, lonDEG, altM);
     _originECEF.lla2ecef(_originLLA);
-
+    
     //calculation of ecef to world (scene) rotation matrix
     //definition of rotation matrix for ECEF to world frame rotation:
     //world frame (scene) w.r.t. ENU frame
@@ -111,22 +111,22 @@ void SLDeviceLocation::originLLA(SLdouble latDEG, SLdouble lonDEG, SLdouble altM
     double cosPhi = cos(phiRad);
     double sinLam = sin(lamRad);
     double cosLam = cos(lamRad);
-
+    
     SLMat3d enuRecef(-sinLam,                cosLam,      0,
                      -cosLam*sinPhi, -sinLam*sinPhi, cosPhi,
-                      cosLam*cosPhi,  sinLam*cosPhi, sinPhi);
-
+                     cosLam*cosPhi,  sinLam*cosPhi, sinPhi);
+    
     //world frame (scene) w.r.t. ENU frame
     SLMat3d wRenu; //same as before
     wRenu.rotation(-90, 1, 0, 0);
-
+    
     //world frame (scene) w.r.t. ECEF
     _wRecef = wRenu * enuRecef;
     _originENU = _wRecef * _originECEF;
-
+    
     //Indicate that origin is set. Otherwise it would be reset on each update
     _hasOrigin = true;
-
+    
     calculateSolarAngles(latDEG, lonDEG, altM);
 }
 //-----------------------------------------------------------------------------
@@ -139,11 +139,11 @@ _originENU is greater than _locMaxDistanceM.
 void SLDeviceLocation::defaultLLA(SLdouble latDEG, SLdouble lonDEG, SLdouble altM)
 {
     _defaultLLA.set(latDEG, lonDEG, _useOriginAltitude ? _originLLA.alt : altM);
-
+    
     // Convert to cartesian ECEF coordinates
     SLVec3d defaultECEF;
     defaultECEF.lla2ecef(_defaultLLA);
-
+    
     // Transform to local east-north-up frame
     _defaultENU = _wRecef * defaultECEF;
 }
@@ -153,7 +153,7 @@ void SLDeviceLocation::isUsed (SLbool use)
 {
     if (!_isUsed && use==true)
         _isFirstSensorValue = true;
-
+    
     _isUsed = use;
 }
 //-----------------------------------------------------------------------------
@@ -169,21 +169,21 @@ SLbool SLDeviceLocation::calculateSolarAngles(SLdouble latDEG,
 {
     // leave default angles if origin has not been set
     if (!_hasOrigin) return false;
-
+    
     std::time_t t = std::time(nullptr);
     tm ut; memcpy(&ut, std::gmtime(&t), sizeof(tm));
     tm lt; memcpy(&lt, std::localtime(&t), sizeof(tm));
-
+    
     SL_LOG("\n");
     SL_LOG("Universal time  : %d.%d.%d %d:%d:%d\n", ut.tm_mday, ut.tm_mon, ut.tm_year,
-                                                    ut.tm_hour, ut.tm_min, ut.tm_sec);
+           ut.tm_hour, ut.tm_min, ut.tm_sec);
     SL_LOG("Local time      : %d.%d.%d %d:%d:%d\n", lt.tm_mday, lt.tm_mon, lt.tm_year,
-                                                    lt.tm_hour, lt.tm_min, lt.tm_sec);
+           lt.tm_hour, lt.tm_min, lt.tm_sec);
     SL_LOG("Timezone        : %d\n", lt.tm_hour - ut.tm_hour);
-
+    
     spa_data spa;  //declare the SPA structure
     SLint result;
-
+    
     //enter required input values into SPA structure
     spa.year            = lt.tm_year;
     spa.month           = lt.tm_mon;
@@ -204,21 +204,21 @@ SLbool SLDeviceLocation::calculateSolarAngles(SLdouble latDEG,
     spa.azm_rotation    = 0;
     spa.atmos_refract   = 0.5667;
     spa.function        = SPA_ALL;
-
+    
     /////////////////////////////
     result = spa_calculate(&spa);
     /////////////////////////////
-
+    
     if (result == 0)  //check for SPA errors
     {
         _originSolarZenit  = (SLfloat)spa.zenith;
         _originSolarAzimut = (SLfloat)spa.azimuth;
-
+        
         SLfloat minSR = (SLfloat)(60.0*(spa.sunrise - (int)(spa.sunrise)));
         SLfloat secSR = (SLfloat)(60.0*(minSR - (int)minSR));
         SLfloat minSS = (SLfloat)(60.0*(spa.sunset - (int)(spa.sunset)));
         SLfloat secSS = (SLfloat)(60.0*(minSS - (int)minSS));
-
+        
         SL_LOG("Zenith          : %.6f degrees\n", _originSolarZenit);
         SL_LOG("Azimuth         : %.6f degrees\n", _originSolarAzimut);
         SL_LOG("Sunrise         : %02d:%02d:%02d Local Time\n", (int)(spa.sunrise), (int)minSR, (int)secSR);
@@ -226,16 +226,16 @@ SLbool SLDeviceLocation::calculateSolarAngles(SLdouble latDEG,
         SL_LOG("\n");
     }
     else SL_LOG("SPA Error Code: %d\n", result);
-
+    
     if (_sunLightNode)
     {
         // The azimut is from north eastwards
         _sunLightNode->rotation(180.0f - _originSolarAzimut, SLVec3f::AXISY);
-
+        
         // The zenith angle is from up downwards
         _sunLightNode->rotate(90.0f - _originSolarZenit, -SLVec3f::AXISX);
     }
-
+    
     return (result == 0);
 }
 //------------------------------------------------------------------------------

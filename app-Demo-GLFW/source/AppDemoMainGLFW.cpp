@@ -18,11 +18,15 @@
 
 #include <GLFW/glfw3.h>
 
-#include <AppDemoGui.h>
+#include "AppDemoGui.h"
 #include <SLInterface.h>
 #include <SLSceneView.h>
 #include <SLEnums.h>
 #include <SLCVCapture.h>
+
+#include <spa/spa.cpp>
+#include "AppDemoGui.cpp"
+#include "AppDemoLoad.cpp"
 
 //-----------------------------------------------------------------------------
 //! Forward declaration of the scene definition function from AppDemoLoad.cpp

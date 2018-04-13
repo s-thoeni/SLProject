@@ -14,7 +14,7 @@
 #include <debug_new.h>        // memory leak detector
 #endif
 
-#include <AppDemoGui.h>
+#include "AppDemoGui.h"
 #include <SLApplication.h>
 #include <SLScene.h>
 #include <SLSceneView.h>
@@ -36,7 +36,7 @@
 #include <SLTransferFunction.h>
 #include <SLCVTrackedFeatures.h>
 
-#include <imgui.h>
+#include <imgui/imgui.h>
 
 #define IM_ARRAYSIZE(_ARR)  ((int)(sizeof(_ARR)/sizeof(*_ARR)))
 
