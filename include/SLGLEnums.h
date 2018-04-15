@@ -63,5 +63,11 @@ enum SLGLBufferUsage
     BU_dynamic = GL_DYNAMIC_DRAW,       //!< Buffer will be modified repeatedly and used many times.
 };
 //-----------------------------------------------------------------------------
+//! Enumeration for buffer internal formats
+enum SLGLInternalFormat
+{   IF_depth24         = GL_DEPTH_COMPONENT24,
+    IF_depthAttachment = GL_DEPTH_ATTACHMENT
+};
+//-----------------------------------------------------------------------------
 
 #endif

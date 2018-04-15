@@ -42,6 +42,9 @@
 #include <photo.hpp>
 #include <imgcodecs.hpp>
 
+#include <SLGLFrameBuffer.h>
+#include <SLGLRenderBuffer.h>
+
 //-----------------------------------------------------------------------------
 // Foreward declarations for helper functions used only in this file
 SLNode* SphereGroup(SLint, SLfloat, SLfloat, SLfloat, SLfloat, SLint, SLMaterial*, SLMaterial*);
@@ -1349,7 +1352,24 @@ void appDemoLoadScene(SLScene* s, SLSceneView* sv, SLSceneID sceneID)
         
         
         // DEVELOPING IN COURSE! ///////////////////
-        SLCVImage hdrImage("/Users/arauzca/Downloads/Arches_E_PineTree/Arches_E_PineTree_3k.hdr", true, false);        
+        SLCVImage hdrImage("/Users/arauzca/Downloads/Arches_E_PineTree/Arches_E_PineTree_3k.hdr", true, false);    
+        
+        SLGLFrameBuffer*  captureFBO = new SLGLFrameBuffer();
+        SLGLRenderBuffer* captureRBO = new SLGLRenderBuffer();
+        SLGLRenderBuffer* captureRB2 = new SLGLRenderBuffer();
+        
+        captureFBO->generate();
+        captureRBO->generate();
+        captureRB2->generate();
+        
+        std::cout << "--------------------------------------------------------" << std::endl;
+        std::cout << "CAPTURE FBO = " << captureFBO->id() << std::endl;
+        std::cout << "  Total FBO = " << captureFBO->totalBufferCount << std::endl;
+        std::cout << "CAPTURE RBO = " << captureRBO->id() << std::endl;
+        std::cout << "CAPTURE RBO = " << captureRB2->id() << std::endl;
+        std::cout << "  Total RBO = " << captureRBO->totalBufferCount << std::endl;
+        std::cout << "--------------------------------------------------------" << std::endl;
+            
         ////////////////////////////////////////////
         
         
