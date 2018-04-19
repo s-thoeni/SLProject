@@ -1,6 +1,6 @@
 //#############################################################################
 //  File:      CubeMap.vert
-//  Purpose:   GLSL vertex program for unlit skybox with a cube map
+//  Purpose:   GLSL vertex program to convert equirectangular images to cubemap
 //  Author:    Carlos Arauz
 //  Date:      April 2018
 //  Copyright: Marcus Hudritsch
@@ -8,16 +8,16 @@
 //             Please visit: http://opensource.org/licenses/GPL-3.0
 //#############################################################################
 
-attribute   vec4 a_position;     // Vertex position attribute
-
-uniform     mat4 u_mvpMatrix;    // = projection * modelView
-
 varying vec4 P_VS;
 
-//-----------------------------------------------------------------------------
-void main ()
+uniform samplerCube u_texture0;  // Equirectagular map
+
+void main()
 {
-    P_VS = a_position;
-    gl_Position = u_mvpMatrix * P_VS;
+    vec3 envColor = texture(u_texture0, vec3(P_VS)).rgb;
+    
+    envColor = envColor / (envColor + vec3(1.0));
+    envColor = pow(envColor, vec3(1.0/2.2));
+    
+    gl_FragColor = vec4(envColor, 1.0);
 }
-//-----------------------------------------------------------------------------

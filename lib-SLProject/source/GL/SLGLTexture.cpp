@@ -197,7 +197,7 @@ SLGLTexture::SLGLTexture         (SLsizei        width,
     _autoCalcTM3D = false;
     _needsUpdate  = false;
     _bytesOnGPU   = 0;
-    _images.push_back(new SLCVImage(width, height, SLPixelFormat::PF_unknown, "cube face"));
+    _images.push_back(new SLCVImage(width, height, SLPixelFormat::PF_rgba, "cube face"));
     _images[0]->setExtension("hdr");
     
     SLApplication::scene->textures().push_back(this);

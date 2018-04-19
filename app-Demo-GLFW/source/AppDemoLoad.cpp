@@ -1352,7 +1352,7 @@ void appDemoLoadScene(SLScene* s, SLSceneView* sv, SLSceneID sceneID)
         
         
         // DEVELOPING IN COURSE! ///////////////////
-        SLSkybox* cubeMap = new SLSkybox("/Users/arauzca/Downloads/Milkyway/Milkyway_small.hdr", "cube");
+        SLSkybox* cubeMap = new SLSkybox("/Users/arauzca/Downloads/Frozen_Waterfall/Frozen_Waterfall_Ref.hdr", "cube");
         ////////////////////////////////////////////
         
         

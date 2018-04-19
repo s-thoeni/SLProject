@@ -732,6 +732,12 @@ void SLCVImage::setPixeliRGBA(SLint x, SLint y, SLCol4f color)
                                            (SLuchar)(color.a * 255.0f + 0.5f));
 }
 //-----------------------------------------------------------------------------
+//! setExtension sets the extension of the images in case it's not read from file
+void SLCVImage::setExtension(SLstring ext)
+{
+    _ext = ext;
+}
+//-----------------------------------------------------------------------------
 /*!
 SLCVImage::Resize does a scaling with bilinear interpolation.
 */

@@ -440,6 +440,8 @@
 		BD075D992080B688003C9DA9 /* SLGLFrameBuffer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = SLGLFrameBuffer.cpp; path = source/GL/SLGLFrameBuffer.cpp; sourceTree = "<group>"; };
 		BD15E0702083E2E900B77C2F /* SLGLRenderBuffer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = SLGLRenderBuffer.cpp; path = source/GL/SLGLRenderBuffer.cpp; sourceTree = "<group>"; };
 		BD15E0762083E6AE00B77C2F /* SLGLBuffer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = SLGLBuffer.cpp; path = source/GL/SLGLBuffer.cpp; sourceTree = "<group>"; };
+		BD17D43A20891FB600FDF3D7 /* Background.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = Background.vert; path = ../_data/shaders/Background.vert; sourceTree = "<group>"; };
+		BD17D43B2089399800FDF3D7 /* Background.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = Background.frag; path = ../_data/shaders/Background.frag; sourceTree = "<group>"; };
 		BD8B94B72083F0E700E124EE /* SLGLFrameBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SLGLFrameBuffer.h; path = ../include/SLGLFrameBuffer.h; sourceTree = "<group>"; };
 		BD8B94B82083F0E800E124EE /* SLGLBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SLGLBuffer.h; path = ../include/SLGLBuffer.h; sourceTree = "<group>"; };
 		BD8B94B92083F0E900E124EE /* SLGLRenderBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SLGLRenderBuffer.h; path = ../include/SLGLRenderBuffer.h; sourceTree = "<group>"; };
@@ -818,6 +820,8 @@
 				BD99183D20872DE900B65614 /* CubeMap.vert */,
 				BD99183E208738FB00B65614 /* EquirectangularToCubeMap.frag */,
 				BD99183F2087443100B65614 /* CubeMap.frag */,
+				BD17D43A20891FB600FDF3D7 /* Background.vert */,
+				BD17D43B2089399800FDF3D7 /* Background.frag */,
 			);
 			name = Shaders;
 			sourceTree = "<group>";
