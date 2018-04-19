@@ -42,6 +42,11 @@ void SLGLFrameBuffer::bind()
     glBindFramebuffer(GL_FRAMEBUFFER, this->_id);
 }
 //-----------------------------------------------------------------------------
+void SLGLFrameBuffer::unbind()
+{
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+//-----------------------------------------------------------------------------
 /*! Attaches a render buffer as depth attachment for the frame buffer
  */
 void SLGLFrameBuffer::attachRenderBuffer(SLuint rbo)
@@ -49,3 +54,10 @@ void SLGLFrameBuffer::attachRenderBuffer(SLuint rbo)
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rbo);
 }
 //-----------------------------------------------------------------------------
+void SLGLFrameBuffer::attachTexture2D(SLGLInternalFormat attachment,
+                                      SLGLInternalFormat target,
+                                      SLGLTexture*       texture,
+                                      SLint              level)
+{
+    glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, target, texture->texName(), level);
+}

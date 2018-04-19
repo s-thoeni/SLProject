@@ -13,6 +13,7 @@
 #define SLGLBUFFER_H
 
 #include <stdafx.h>
+#include <SLGLTexture.h>
 #include <SLGLEnums.h>
 
 //-----------------------------------------------------------------------------
@@ -29,6 +30,7 @@ class SLGLBuffer
         virtual void        bind                () = 0;
         
                 void        deleteGL            ();
+                void        clearBuffers        ();
     
         // Getters
                 SLuint      id                  () {return _id;}

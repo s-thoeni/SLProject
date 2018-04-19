@@ -65,8 +65,23 @@ enum SLGLBufferUsage
 //-----------------------------------------------------------------------------
 //! Enumeration for buffer internal formats
 enum SLGLInternalFormat
-{   IF_depth24         = GL_DEPTH_COMPONENT24,
-    IF_depthAttachment = GL_DEPTH_ATTACHMENT
+{   IF_depth24          = GL_DEPTH_COMPONENT24,
+    IF_depthAttachment  = GL_DEPTH_ATTACHMENT,
+    IF_colorAttachment0 = GL_COLOR_ATTACHMENT0,
+    IF_colorAttachment1 = GL_COLOR_ATTACHMENT1,
+    IF_colorAttachment2 = GL_COLOR_ATTACHMENT2,
+    IF_colorAttachment3 = GL_COLOR_ATTACHMENT3,
+    IF_colorAttachment4 = GL_COLOR_ATTACHMENT4,
+    IF_positiveX        = GL_TEXTURE_CUBE_MAP_POSITIVE_X,
+    IF_negativeX        = GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
+    IF_positiveY        = GL_TEXTURE_CUBE_MAP_POSITIVE_Y,
+    IF_negativeY        = GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,
+    IF_positiveZ        = GL_TEXTURE_CUBE_MAP_POSITIVE_Z,
+    IF_negativeZ        = GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
+};
+//-----------------------------------------------------------------------------
+enum SLGLCubemapSides
+{
 };
 //-----------------------------------------------------------------------------
 

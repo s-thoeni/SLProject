@@ -443,6 +443,9 @@
 		BD8B94B72083F0E700E124EE /* SLGLFrameBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SLGLFrameBuffer.h; path = ../include/SLGLFrameBuffer.h; sourceTree = "<group>"; };
 		BD8B94B82083F0E800E124EE /* SLGLBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SLGLBuffer.h; path = ../include/SLGLBuffer.h; sourceTree = "<group>"; };
 		BD8B94B92083F0E900E124EE /* SLGLRenderBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SLGLRenderBuffer.h; path = ../include/SLGLRenderBuffer.h; sourceTree = "<group>"; };
+		BD99183D20872DE900B65614 /* CubeMap.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = CubeMap.vert; path = ../_data/shaders/CubeMap.vert; sourceTree = "<group>"; };
+		BD99183E208738FB00B65614 /* EquirectangularToCubeMap.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = EquirectangularToCubeMap.frag; path = ../_data/shaders/EquirectangularToCubeMap.frag; sourceTree = "<group>"; };
+		BD99183F2087443100B65614 /* CubeMap.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = CubeMap.frag; path = ../_data/shaders/CubeMap.frag; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -812,6 +815,9 @@
 				41B5767A1FF539A400542824 /* Wave.frag */,
 				41B5764D1FF5399E00542824 /* Wave.vert */,
 				41B576811FF539A500542824 /* WaveRefractReflect.vert */,
+				BD99183D20872DE900B65614 /* CubeMap.vert */,
+				BD99183E208738FB00B65614 /* EquirectangularToCubeMap.frag */,
+				BD99183F2087443100B65614 /* CubeMap.frag */,
 			);
 			name = Shaders;
 			sourceTree = "<group>";

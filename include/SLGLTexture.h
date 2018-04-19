@@ -94,6 +94,12 @@ class SLGLTexture : public SLObject
                                                  SLint          min_filter = GL_LINEAR,
                                                  SLint          mag_filter = GL_LINEAR,
                                                  SLTextureType  type = TT_unknown);
+    
+                            //! ctor for preallocating hdr cube map
+                            SLGLTexture         (SLsizei        width,
+                                                 SLsizei        height,
+                                                 SLint          min_filter = GL_LINEAR,
+                                                 SLint          mag_filter = GL_LINEAR);
 
     virtual                ~SLGLTexture         ();
 

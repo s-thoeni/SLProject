@@ -31,8 +31,18 @@ class SLGLFrameBuffer : public SLGLBuffer
         //! Binds the framebuffer
         void        bind                ();
     
+        //! Unbinds the framebuffer
+        void        unbind              ();
+    
         //! Attaches a renderbuffer
         void        attachRenderBuffer  (SLuint rbo);
+    
+        //! Attaches texture image to framebuffer
+        void        attachTexture2D     (SLGLInternalFormat attachment,
+                                         SLGLInternalFormat target,
+                                         SLGLTexture*       texture,
+                                         SLint              level = 0);
+    
             
         // Some statistics
         static  SLuint      totalBufferCount;     //! static total no. of buffers in use

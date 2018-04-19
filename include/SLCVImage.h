@@ -67,6 +67,7 @@ class SLCVImage : public SLObject
             void            setPixeliRGB    (SLint x, SLint y, SLCol3f color);
             void            setPixeliRGB    (SLint x, SLint y, SLCol4f color);
             void            setPixeliRGBA   (SLint x, SLint y, SLCol4f color);
+            void            setExtension    (SLstring ext);
             void            resize          (SLint width,
                                              SLint height);
             void            flipY           ();

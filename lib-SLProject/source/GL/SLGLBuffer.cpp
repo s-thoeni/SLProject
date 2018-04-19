@@ -28,3 +28,9 @@ void SLGLBuffer::deleteGL()
         _id = 0;
     }
 }
+//-----------------------------------------------------------------------------
+void SLGLBuffer::clearBuffers()
+{
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+//-----------------------------------------------------------------------------

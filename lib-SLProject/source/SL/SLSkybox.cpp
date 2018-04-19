@@ -15,6 +15,8 @@
 
 #include <SLSkybox.h>
 #include <SLGLTexture.h>
+#include <SLGLFrameBuffer.h>
+#include <SLGLRenderBuffer.h>
 #include <SLMaterial.h>
 #include <SLBox.h>
 #include <SLCamera.h>
@@ -57,13 +59,34 @@ SLSkybox::SLSkybox(SLstring cubeMapXPos,
 SLSkybox::SLSkybox(SLstring hdrImage,
                    SLstring name) : SLNode(name)
 {
-    SLGLTexture* cubeMap = new SLGLTexture(hdrImage,
+    // setup framebuffer
+    SLGLFrameBuffer*  captureFBO = new SLGLFrameBuffer();
+    SLGLRenderBuffer* captureRBO = new SLGLRenderBuffer();
+    
+    captureFBO->generate();
+    captureRBO->generate();
+    
+    captureFBO->bind();
+    captureRBO->bind();
+    captureRBO->initilizeStorage(SLGLInternalFormat::IF_depth24, 512, 512);
+    captureFBO->attachRenderBuffer(captureRBO->id());
+    
+    SLGLTexture* envCubemap = new SLGLTexture(512, 512);
+    
+    captureFBO->unbind();
+    captureFBO->clear();
+    captureRBO->clear();
+    
+    SLGLTexture* equiImage = new SLGLTexture(hdrImage,
                                            GL_LINEAR, GL_LINEAR,
                                            SLTextureType::TT_unknown,
                                            GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
     
-    SLMaterial* matCubeMap = new SLMaterial("matCubeMap");
-    matCubeMap->textures().push_back(cubeMap);
+    SLMaterial* hdrTexture = new SLMaterial("matCubeMap", equiImage);
+    SLGLProgram* sp = new SLGLGenericProgram("CubeMap.vert", "EquirectangularToCubeMap.frag");
+    hdrTexture->program(sp);
+    
+    this->addMesh(new SLBox(1,1,1,-1,-1,-1, "box", hdrTexture));
 }
 
 //-----------------------------------------------------------------------------

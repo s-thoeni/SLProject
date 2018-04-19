@@ -178,6 +178,31 @@ SLGLTexture::SLGLTexture(SLstring  filenameXPos,
     SLApplication::scene->textures().push_back(this);
 }
 //-----------------------------------------------------------------------------
+SLGLTexture::SLGLTexture         (SLsizei        width,
+                                  SLsizei        height,
+                                  SLint          min_filter,
+                                  SLint          mag_filter)
+{
+    _stateGL = SLGLState::getInstance();
+    _texType = TT_unknown;
+    
+    _min_filter  = min_filter;
+    _mag_filter  = mag_filter;
+    _wrap_s      = GL_CLAMP_TO_EDGE;
+    _wrap_t      = GL_CLAMP_TO_EDGE;
+    _target      = GL_TEXTURE_CUBE_MAP;
+    _texName     = 0;
+    _bumpScale   = 1.0f;
+    _resizeToPow2 = false;
+    _autoCalcTM3D = false;
+    _needsUpdate  = false;
+    _bytesOnGPU   = 0;
+    _images.push_back(new SLCVImage(width, height, SLPixelFormat::PF_unknown, "cube face"));
+    _images[0]->setExtension("hdr");
+    
+    SLApplication::scene->textures().push_back(this);
+}
+//-----------------------------------------------------------------------------
 SLGLTexture::~SLGLTexture()
 {  
     //SL_LOG("~SLGLTexture(%s)\n", name().c_str());
@@ -463,21 +488,39 @@ void SLGLTexture::build(SLint texID)
     } else
     if (_target == GL_TEXTURE_CUBE_MAP)
     {
-        for (SLint i=0; i<6; i++)
+        if (internalFormat == GL_RGB16F)
         {
-            //////////////////////////////////////////////
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X+i,
-                         0,
-                         internalFormat,
-                         _images[i]->width(),
-                         _images[i]->height(),
-                         0,
-                         _images[i]->format(),
-                         GL_UNSIGNED_BYTE,
-                         (GLvoid*)_images[i]->data());
-            //////////////////////////////////////////////
-
-            _bytesOnGPU += _images[0]->bytesPerImage();
+            for (SLint i=0; i<6; i++)
+            {
+                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X+i,
+                             0,
+                             GL_RGB16,
+                             _images[0]->width(),
+                             _images[0]->height(),
+                             0,
+                             GL_RGB,
+                             GL_FLOAT,
+                             nullptr);
+            }
+        }
+        else
+        {
+            for (SLint i=0; i<6; i++)
+            {
+                //////////////////////////////////////////////
+                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X+i,
+                             0,
+                             internalFormat,
+                             _images[i]->width(),
+                             _images[i]->height(),
+                             0,
+                             _images[i]->format(),
+                             GL_UNSIGNED_BYTE,
+                             (GLvoid*)_images[i]->data());
+                //////////////////////////////////////////////
+                
+                _bytesOnGPU += _images[0]->bytesPerImage();
+            }
         }
 
         numBytesInTextures += _bytesOnGPU;

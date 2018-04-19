@@ -1352,29 +1352,30 @@ void appDemoLoadScene(SLScene* s, SLSceneView* sv, SLSceneID sceneID)
         
         
         // DEVELOPING IN COURSE! ///////////////////
-        SLCVImage hdrImage("/Users/arauzca/Downloads/Arches_E_PineTree/Arches_E_PineTree_3k.hdr", true, false);    
-        
-        SLGLFrameBuffer*  captureFBO = new SLGLFrameBuffer();
-        SLGLRenderBuffer* captureRBO = new SLGLRenderBuffer();
-        SLGLRenderBuffer* captureRB2 = new SLGLRenderBuffer();
-        
-        captureFBO->generate();
-        captureRBO->generate();
-        captureRB2->generate();
-        
-        std::cout << "--------------------------------------------------------" << std::endl;
-        std::cout << "CAPTURE FBO = " << captureFBO->id() << std::endl;
-        std::cout << "  Total FBO = " << captureFBO->totalBufferCount << std::endl;
-        std::cout << "CAPTURE RBO = " << captureRBO->id() << std::endl;
-        std::cout << "CAPTURE RBO = " << captureRB2->id() << std::endl;
-        std::cout << "  Total RBO = " << captureRBO->totalBufferCount << std::endl;
-        std::cout << "--------------------------------------------------------" << std::endl;
-            
+        SLSkybox* cubeMap = new SLSkybox("/Users/arauzca/Downloads/Milkyway/Milkyway_small.hdr", "cube");
         ////////////////////////////////////////////
         
         
         // Create a scene group noce
         SLNode* scene = new SLNode("scene node");
+        
+        // Create camera in the center
+        SLCamera* cam1 = new SLCamera("Camera 1");
+        cam1->translation(0,0,5);
+        cam1->setInitialState();
+        scene->addChild(cam1);
+        
+        SLLightDirect* light = new SLLightDirect(0.5f);
+        light->ambient(SLCol4f(0.3f, 0.3f, 0.3f));
+        light->attenuation(1,0,0);
+        light->translate(1,1,-1);
+        light->lookAt(-1, -1, 1);
+        scene->addChild(light);
+        
+        
+        sv->camera(cam1);
+        sv->skybox(cubeMap);
+        
         s->root3D(scene);
         
         // Save energy
