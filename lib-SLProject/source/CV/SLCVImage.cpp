@@ -161,6 +161,7 @@ SLint SLCVImage::bytesPerPixel(SLPixelFormat format)
         case PF_bgra:
         case PF_rgba_integer:
         case PF_bgra_integer: return 4;
+        case PF_hdr: return 12;
         default:
             SL_EXIT_MSG("SLCVImage::bytesPerPixel: unknown pixel format");
     }
@@ -361,7 +362,7 @@ void SLCVImage::load(const SLstring filename,
     }
 
     // Convert greater component depth than 8 bit to 8 bit
-    if (_cvMat.depth() > CV_8U)
+    if (_cvMat.depth() > CV_8U && _ext!="hdr")
         _cvMat.convertTo(_cvMat, CV_8U, 1.0/256.0);
 
     _format = cv2glPixelFormat(_cvMat.type());
@@ -376,6 +377,10 @@ void SLCVImage::load(const SLstring filename,
     {   cv::cvtColor(_cvMat, _cvMat, CV_BGRA2RGBA);
         _format = PF_rgba;
     } else
+    if (_format == PF_hdr)
+    {
+        cv::cvtColor(_cvMat, _cvMat, CV_BGR2RGB);
+    }
     if (_format == PF_red && loadGrayscaleIntoAlpha)
     {
         SLCVMat rgbaImg;
@@ -404,14 +409,6 @@ void SLCVImage::load(const SLstring filename,
         //SLstring pathfilename = _path + name();
         //SLstring filename = SLUtils::getFileNameWOExt(pathfilename);
         //savePNG(_path + filename + "_InAlpha.png");
-    }
-    
-    if (_ext=="hdr")
-    {
-        SLCVMat ldr;
-        cv::Ptr<cv::TonemapReinhard> tonemap = cv::createTonemapReinhard(1.5f,0,0,0);
-        tonemap->process(_cvMat, ldr);
-        ldr.convertTo(_cvMat, CV_8UC3, 255);
     }
     
     _bytesPerLine  = bytesPerLine(_cvMat.cols, _format, _cvMat.isContinuous());
@@ -448,7 +445,7 @@ SLPixelFormat SLCVImage::cv2glPixelFormat(SLint cvType)
         case CV_32SC4: SL_EXIT_MSG("OpenCV image format CV_32SC4 not supported"); break;
         case CV_32FC1: SL_EXIT_MSG("OpenCV image format CV_32FC1 not supported"); break;
         case CV_32FC2: SL_EXIT_MSG("OpenCV image format CV_32FC2 not supported"); break;
-        case CV_32FC3: SL_EXIT_MSG("OpenCV image format CV_32FC3 not supported"); break;
+        case CV_32FC3: return PF_hdr; break;
         case CV_32FC4: SL_EXIT_MSG("OpenCV image format CV_32FC4 not supported"); break;
         default: SL_EXIT_MSG("OpenCV image format not supported");
     }

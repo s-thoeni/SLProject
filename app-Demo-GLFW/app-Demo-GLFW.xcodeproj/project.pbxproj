@@ -237,7 +237,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/sh;
-			shellScript = "cp /usr/local/Cellar/opencv/3.4.1_2/lib/libopencv_* ../_bin-Debug-macxcode/";
+			shellScript = "cp /usr/local/Cellar/opencv/3.4.1_3/lib/libopencv_* ../_bin-Debug-macxcode/";
 		};
 /* End PBXShellScriptBuildPhase section */
 

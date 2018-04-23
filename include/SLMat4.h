@@ -234,6 +234,9 @@ class SLMat4
          SLstring    toString    () const;
 
   static void        swap        (T& a, T& b) {T t; t=a;a=b;b=t;}
+  static SLMat4<T>   sLookAt      (const T EyeX, const T EyeY, const T EyeZ,
+                                   const T AtX=0,const T AtY=0,const T AtZ=0,
+                                   const T UpX=0,const T UpY=0,const T UpZ=0);
 
   private:
          T           _m[16];     //!< The 16 elements of the matrix
@@ -1475,6 +1478,19 @@ SLstring SLMat4<T>::toString() const
             _m[3],_m[7],_m[11],_m[15]);
     SLstring cppstr = cstr;
     return cppstr;
+}
+//-----------------------------------------------------------------------------
+/*!
+Returns a LookAt matrix
+*/
+template<class T>
+SLMat4<T> SLMat4<T>::sLookAt(const T EyeX, const T EyeY, const T EyeZ,
+                             const T AtX,  const T AtY,  const T AtZ,
+                             const T UpX,  const T UpY,  const T UpZ)
+{
+    SLMat4<T> t;
+    t.lookAt(EyeX, EyeY, EyeZ, AtX, AtY, AtZ, UpX, UpY, UpZ);
+    return t;
 }
 //-----------------------------------------------------------------------------
 typedef SLMat4<SLfloat>  SLMat4f;

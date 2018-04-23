@@ -1,23 +1,31 @@
 //#############################################################################
-//  File:      CubeMap.vert
-//  Purpose:   GLSL vertex program to convert equirectangular images to cubemap
-//  Author:    Carlos Arauz
-//  Date:      April 2018
+//  File:      SkyBox.frag
+//  Purpose:   GLSL vertex program for unlit skybox with a cube map
+//  Author:    Marcus Hudritsch
+//  Date:      October 2017
 //  Copyright: Marcus Hudritsch
 //             This software is provide under the GNU General Public License
 //             Please visit: http://opensource.org/licenses/GPL-3.0
 //#############################################################################
 
-varying vec4 P_VS;
+#ifdef GL_ES
+precision mediump float;
+#endif
 
-uniform samplerCube u_texture0;  // Equirectagular map
+uniform float       u_exposure;
+uniform samplerCube u_texture0; // cube map texture
+varying vec3        v_texCoord; // Interpol. 3D texture coordinate
 
 void main()
 {
-    vec3 envColor = texture(u_texture0, vec3(P_VS)).rgb;
+    const float gamma = 2.2;
+    vec3 hdrColor = textureCube(u_texture0, v_texCoord).rgb;
     
-    envColor = envColor / (envColor + vec3(1.0));
-    envColor = pow(envColor, vec3(1.0/2.2));
+    // Exposure tone mapping
+    vec3 mapped = vec3(1.0) - exp(-hdrColor * u_exposure);
     
-    gl_FragColor = vec4(envColor, 1.0);
+    // Gamma correction
+    mapped = pow(mapped, vec3(1.0 / gamma));
+    
+    gl_FragColor = vec4(mapped, 1.0);
 }

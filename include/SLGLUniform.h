@@ -83,6 +83,7 @@ class SLGLUniform : public SLEventHandler
                 {   if (mod==K_none) 
                     {   if (_value <_max)
                         {   _value+=_inc;
+                            _value = SL_clamp(_value, _min, _max);
                             cout << "Uniform: " << _name.c_str() << " = " << _value << endl;
                             return true;
                         } else
@@ -95,6 +96,7 @@ class SLGLUniform : public SLEventHandler
                     if (mod==K_shift) 
                     {   if (_value>_min)
                         {   _value-=_inc;
+                            _value = SL_clamp(_value, _min, _max);
                             cout << "Uniform: " << _name.c_str() << " = " << _value << endl;
                             return true;
                         }

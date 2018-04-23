@@ -36,7 +36,8 @@ class SLSkybox: public SLNode
                                      SLstring cubeMapZPos,
                                      SLstring cubeMapZNeg,
                                      SLstring name = "Default Skybox");
-                    SLSkybox        (SLstring hdrImage,
+                    SLSkybox        (SLScene* s,
+                                     SLstring hdrImage,
                                      SLstring name = "Default Skybox");
                    ~SLSkybox        (){;}
     

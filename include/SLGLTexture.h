@@ -41,7 +41,8 @@ enum SLTextureType
     TT_gloss,       //*_G.{ext}
     TT_roughness,   //*_R.{ext} Cook-Torrance roughness 0-1
     TT_metallic,    //*_M.{ext} Cook-Torrance metallic 0-1
-    TT_font         //*_F.{ext}
+    TT_font,        //*_F.{ext}
+    TT_hdr          //*_D.{ext}
 };
 //-----------------------------------------------------------------------------
 //! Texture object for OpenGL texturing
@@ -73,7 +74,9 @@ class SLGLTexture : public SLObject
                                                  SLint          mag_filte = GL_LINEAR,
                                                  SLTextureType  type = TT_unknown,
                                                  SLint          wrapS = GL_REPEAT,
-                                                 SLint          wrapT = GL_REPEAT);
+                                                 SLint          wrapT = GL_REPEAT,
+                                                 SLsizei        rboWidth  = 512,
+                                                 SLsizei        rboHeight = 512);
 
                             //! ctor for 3D texture with internal image allocation
                             SLGLTexture         (SLVstring      imageFilenames,
@@ -169,10 +172,22 @@ class SLGLTexture : public SLObject
                                              SLbool flipVertical = true,
                                              SLbool loadGrayscaleIntoAlpha = false);
             void            load            (const SLVCol4f& colors);
+            
+            // converting the hdr image file to cubemap
+            void            generateFBO              ();
+            void            equirectangularToCubeMap ();
+            void            renderCube               ();
+            
+            SLuint          _cubeVAO = 0;
+            SLuint          _cubeVBO = 0;
                                
             SLGLState*      _stateGL;        //!< Pointer to global SLGLState instance
             SLCVVImage      _images;         //!< vector of SLCVImage pointers
             SLuint          _texName;        //!< OpenGL texture "name" (= ID)
+            SLuint          _captureFBO;
+            SLuint          _captureRBO;
+            SLsizei         _rboWidth;
+            SLsizei         _rboHeight;
             SLTextureType   _texType;        //!< [unknown, ColorMap, NormalMap, HeightMap, GlossMap]
             SLint           _min_filter;     //!< Minification filter
             SLint           _mag_filter;     //!< Magnification filter

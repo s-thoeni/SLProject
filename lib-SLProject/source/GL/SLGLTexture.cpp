@@ -51,7 +51,9 @@ SLGLTexture::SLGLTexture(SLstring       filename,
                          SLint          mag_filter,
                          SLTextureType  type,
                          SLint          wrapS,
-                         SLint          wrapT) :
+                         SLint          wrapT,
+                         SLsizei        rboWidth,
+                         SLsizei        rboHeight) :
             SLObject(SLUtils::getFileName(filename), filename)
 {  
     assert(filename!="");
@@ -71,6 +73,14 @@ SLGLTexture::SLGLTexture(SLstring       filename,
     _autoCalcTM3D = false;
     _needsUpdate  = false;
     _bytesOnGPU   = 0;
+    _rboWidth     = rboWidth;
+    _rboHeight    = rboHeight;
+    
+    if (type == TT_hdr)
+    {
+        equirectangularToCubeMap();
+        _target = GL_TEXTURE_CUBE_MAP;
+    }
    
     // Add pointer to the global resource vectors for deallocation
     SLApplication::scene->textures().push_back(this);
@@ -178,31 +188,6 @@ SLGLTexture::SLGLTexture(SLstring  filenameXPos,
     SLApplication::scene->textures().push_back(this);
 }
 //-----------------------------------------------------------------------------
-SLGLTexture::SLGLTexture         (SLsizei        width,
-                                  SLsizei        height,
-                                  SLint          min_filter,
-                                  SLint          mag_filter)
-{
-    _stateGL = SLGLState::getInstance();
-    _texType = TT_unknown;
-    
-    _min_filter  = min_filter;
-    _mag_filter  = mag_filter;
-    _wrap_s      = GL_CLAMP_TO_EDGE;
-    _wrap_t      = GL_CLAMP_TO_EDGE;
-    _target      = GL_TEXTURE_CUBE_MAP;
-    _texName     = 0;
-    _bumpScale   = 1.0f;
-    _resizeToPow2 = false;
-    _autoCalcTM3D = false;
-    _needsUpdate  = false;
-    _bytesOnGPU   = 0;
-    _images.push_back(new SLCVImage(width, height, SLPixelFormat::PF_rgba, "cube face"));
-    _images[0]->setExtension("hdr");
-    
-    SLApplication::scene->textures().push_back(this);
-}
-//-----------------------------------------------------------------------------
 SLGLTexture::~SLGLTexture()
 {  
     //SL_LOG("~SLGLTexture(%s)\n", name().c_str());
@@ -251,6 +236,177 @@ void SLGLTexture::load(const SLVCol4f& colors)
     assert(colors.size() > 1);
 
     _images.push_back(new SLCVImage(colors));
+}
+//-----------------------------------------------------------------------------
+//! Frame buffer generation to set up the HDR convertion
+void SLGLTexture::generateFBO()
+{
+    glGenFramebuffers(1, &this->_captureFBO);
+    glGenRenderbuffers(1, &this->_captureRBO);
+    
+    glBindFramebuffer(GL_FRAMEBUFFER, this->_captureFBO);
+    glBindRenderbuffer(GL_RENDERBUFFER, this->_captureRBO);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, this->_rboWidth, this->_rboHeight);
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+    
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, this->_captureRBO);
+    
+    // test if the generated fbo is valid
+    if ((glCheckFramebufferStatus(GL_FRAMEBUFFER)) != GL_FRAMEBUFFER_COMPLETE) 
+        SL_EXIT_MSG("Frame buffer creation failed!");
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    GET_GL_ERROR;
+}
+//-----------------------------------------------------------------------------
+//! converts the equirectagular HDR image to a cube map
+void SLGLTexture::equirectangularToCubeMap()
+{
+    this->generateFBO();
+    
+    if (this->_captureFBO && this->_captureRBO)
+    {
+        glBindFramebuffer(GL_FRAMEBUFFER, this->_captureFBO);
+        glBindRenderbuffer(GL_RENDERBUFFER, this->_captureRBO);
+        
+        SLuint hdrTexture;
+        if (this->_images[0]->data())
+        {
+            glGenTextures(1, &hdrTexture);
+            glBindTexture(GL_TEXTURE_2D, hdrTexture);
+            
+            glTexImage2D(GL_TEXTURE_2D,
+                         0,
+                         GL_RGB16F,
+                         this->_images[0]->width(),
+                         this->_images[0]->height(),
+                         0,
+                         GL_RGB,
+                         GL_FLOAT, 
+                         (GLvoid*)_images[0]->data());
+            
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, this->_wrap_s);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, this->_wrap_t);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, this->_min_filter);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, this->_mag_filter);
+        }
+        
+        glGenTextures(1, &this->_texName);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, this->_texName);
+        for (SLuint i = 0; i < 6; i++)
+        {
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, 
+                         this->_rboWidth, this->_rboHeight, 0, GL_RGB, GL_FLOAT, nullptr);
+        }
+        
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, this->_wrap_s);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, this->_wrap_t);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, this->_wrap_t);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, this->_min_filter);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, this->_mag_filter);
+        
+        SLMat4f captureProjection; captureProjection.perspective(90.0f, 1.0f, 0.1f, 10.0f);
+        SLMat4f captureViews[] =
+        {
+            SLMat4f::sLookAt(0.0f, 0.0f, 0.0f, 1.0f,  0.0f,  0.0f, 0.0f, -1.0f,  0.0f),
+            SLMat4f::sLookAt(0.0f, 0.0f, 0.0f,-1.0f,  0.0f,  0.0f, 0.0f, -1.0f,  0.0f),
+            SLMat4f::sLookAt(0.0f, 0.0f, 0.0f, 0.0f,  1.0f,  0.0f, 0.0f,  0.0f,  1.0f),
+            SLMat4f::sLookAt(0.0f, 0.0f, 0.0f, 0.0f, -1.0f,  0.0f, 0.0f,  0.0f, -1.0f),
+            SLMat4f::sLookAt(0.0f, 0.0f, 0.0f, 0.0f,  0.0f,  1.0f, 0.0f, -1.0f,  0.0f),
+            SLMat4f::sLookAt(0.0f, 0.0f, 0.0f, 0.0f,  0.0f, -1.0f, 0.0f, -1.0f,  0.0f)
+        };
+        
+        SLGLProgram* sp = new SLGLGenericProgram("CubeMap.vert", "EquirectangularToCubeMap.frag");
+        sp->useProgram();
+        sp->uniform1i("u_texture0", 0);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, hdrTexture);
+        
+        glViewport(0, 0, this->_rboWidth, this->_rboHeight);
+        glBindFramebuffer(GL_FRAMEBUFFER, this->_captureFBO);
+        for (SLuint i = 0; i < 6; i++)
+        {
+            SLMat4f mvp = captureProjection * captureViews[i];
+            sp->uniformMatrix4fv("u_mvpMatrix", 1, mvp.m());
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, _texName, 0);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            
+            this->renderCube();
+        }
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+}
+//-----------------------------------------------------------------------------
+//! renders 1x1 cube
+void SLGLTexture::renderCube()
+{
+    // initialize (if necessary)
+    if (_cubeVAO == 0)
+    {
+        float vertices[] = {
+            // back face
+            -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
+             1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, // top-right
+             1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 0.0f, // bottom-right         
+             1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, // top-right
+            -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
+            -1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 1.0f, // top-left
+            // front face
+            -1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 0.0f, // bottom-left
+             1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 0.0f, // bottom-right
+             1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 1.0f, // top-right
+             1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 1.0f, // top-right
+            -1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 1.0f, // top-left
+            -1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 0.0f, // bottom-left
+            // left face
+            -1.0f,  1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-right
+            -1.0f,  1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 1.0f, // top-left
+            -1.0f, -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-left
+            -1.0f, -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-left
+            -1.0f, -1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 0.0f, // bottom-right
+            -1.0f,  1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-right
+            // right face
+             1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-left
+             1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-right
+             1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 1.0f, // top-right         
+             1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-right
+             1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-left
+             1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 0.0f, // bottom-left     
+            // bottom face
+            -1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f, // top-right
+             1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 1.0f, // top-left
+             1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f, // bottom-left
+             1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f, // bottom-left
+            -1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 0.0f, // bottom-right
+            -1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f, // top-right
+            // top face
+            -1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f, // top-left
+             1.0f,  1.0f , 1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f, // bottom-right
+             1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 1.0f, // top-right     
+             1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f, // bottom-right
+            -1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f, // top-left
+            -1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 0.0f  // bottom-left        
+        };
+        glGenVertexArrays(1, &_cubeVAO);
+        glGenBuffers(1, &_cubeVBO);
+        // fill buffer
+        glBindBuffer(GL_ARRAY_BUFFER, _cubeVBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+        // link vertex attributes
+        glBindVertexArray(_cubeVAO);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
+    }
+    // render Cube
+    glBindVertexArray(_cubeVAO);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+    glBindVertexArray(0);
 }
 //-----------------------------------------------------------------------------
 void SLGLTexture::setVideoImage(SLstring videoImageFile)
@@ -350,7 +506,7 @@ void SLGLTexture::build(SLint texID)
     }
 
     // check 2D size
-    if (_target == GL_TEXTURE_2D)
+    if (_target == GL_TEXTURE_2D && _texType != TT_hdr)
     {   if (_images[0]->width()  > (SLuint)texMaxSize)
             SL_EXIT_MSG("SLGLTexture::build: Texture width is too big.");
         if (_images[0]->height() > (SLuint)texMaxSize)
@@ -422,7 +578,7 @@ void SLGLTexture::build(SLint texID)
     SLint internalFormat = _images[0]->format();
     if (internalFormat==PF_red)
         internalFormat = GL_R8;
-    if (_images[0]->ext()=="hdr")
+    if (_texType == TT_hdr)
         internalFormat = GL_RGB16F;
       
     // Build textures
@@ -488,39 +644,21 @@ void SLGLTexture::build(SLint texID)
     } else
     if (_target == GL_TEXTURE_CUBE_MAP)
     {
-        if (internalFormat == GL_RGB16F)
+        for (SLint i=0; i<6; i++)
         {
-            for (SLint i=0; i<6; i++)
-            {
-                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X+i,
-                             0,
-                             GL_RGB16,
-                             _images[0]->width(),
-                             _images[0]->height(),
-                             0,
-                             GL_RGB,
-                             GL_FLOAT,
-                             nullptr);
-            }
-        }
-        else
-        {
-            for (SLint i=0; i<6; i++)
-            {
-                //////////////////////////////////////////////
-                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X+i,
-                             0,
-                             internalFormat,
-                             _images[i]->width(),
-                             _images[i]->height(),
-                             0,
-                             _images[i]->format(),
-                             GL_UNSIGNED_BYTE,
-                             (GLvoid*)_images[i]->data());
-                //////////////////////////////////////////////
-                
-                _bytesOnGPU += _images[0]->bytesPerImage();
-            }
+            //////////////////////////////////////////////
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X+i,
+                         0,
+                         internalFormat,
+                         _images[i]->width(),
+                         _images[i]->height(),
+                         0,
+                         _images[i]->format(),
+                         GL_UNSIGNED_BYTE,
+                         (GLvoid*)_images[i]->data());
+            //////////////////////////////////////////////
+            
+            _bytesOnGPU += _images[0]->bytesPerImage();
         }
 
         numBytesInTextures += _bytesOnGPU;
@@ -564,7 +702,7 @@ void SLGLTexture::bindActive(SLint texID)
         //{   SL_LOG("\n\n****** SLGLTexture::bindActive: Invalid texName: %u, texID: %u, File: %s\n\n",
         //           _texName, texID, _images[0]->name().c_str());
         //}
-
+        
         SLScene* s = SLApplication::scene;
         
         if (this == s->videoTexture() &&
@@ -735,6 +873,7 @@ SLTextureType SLGLTexture::detectType(SLstring filename)
     if (appendix=="_R") return TT_roughness;
     if (appendix=="_M") return TT_metallic;
     if (appendix=="_F") return TT_font;
+    if (appendix=="_D") return TT_hdr;
     return TT_color;
 }
 //-----------------------------------------------------------------------------

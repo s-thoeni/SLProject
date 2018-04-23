@@ -1352,7 +1352,8 @@ void appDemoLoadScene(SLScene* s, SLSceneView* sv, SLSceneID sceneID)
         
         
         // DEVELOPING IN COURSE! ///////////////////
-        SLSkybox* cubeMap = new SLSkybox("/Users/arauzca/Downloads/Frozen_Waterfall/Frozen_Waterfall_Ref.hdr", "cube");
+        SLSkybox* cubeMap = new SLSkybox(s, "/Users/arauzca/Downloads/Arches_E_PineTree/Arches_E_PineTree_3k.hdr", "cube");
+        
         ////////////////////////////////////////////
         
         
@@ -1371,11 +1372,10 @@ void appDemoLoadScene(SLScene* s, SLSceneView* sv, SLSceneID sceneID)
         light->translate(1,1,-1);
         light->lookAt(-1, -1, 1);
         scene->addChild(light);
-        
-        
+    
+    
         sv->camera(cam1);
         sv->skybox(cubeMap);
-        
         s->root3D(scene);
         
         // Save energy

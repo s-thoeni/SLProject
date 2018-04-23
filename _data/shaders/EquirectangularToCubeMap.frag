@@ -8,12 +8,12 @@
 //             Please visit: http://opensource.org/licenses/GPL-3.0
 //#############################################################################
 
-varying vec4 P_VS;
+varying vec3 P_VS;
 
 uniform sampler2D u_texture0;  // Equirectagular map
 
 const vec2 invAtan = vec2(0.1591, 0.3183);
-vec2 SampleSphericalMap(vec4 v)
+vec2 SampleSphericalMap(vec3 v)
 {
     vec2 uv = vec2(atan(v.z, v.x), asin(v.y));
     uv *= invAtan;
