@@ -15,8 +15,8 @@
 
 #include <SLSkybox.h>
 #include <SLGLTexture.h>
+#include <SLGLGeneratedTexture.h>
 #include <SLGLFrameBuffer.h>
-#include <SLGLRenderBuffer.h>
 #include <SLMaterial.h>
 #include <SLBox.h>
 #include <SLCamera.h>
@@ -58,24 +58,36 @@ SLSkybox::SLSkybox(SLstring cubeMapXPos,
 //! Draw the skybox with a cube map with the camera in its center.
 SLSkybox::SLSkybox(SLScene* s,
                    SLstring hdrImage,
+                   SLVec2i  resolution,
                    SLstring name) : SLNode(name)
 {
     SLGLProgram* backgroundShader = new SLGLGenericProgram("Background.vert", "Background.frag");
-    SLGLUniform1f* exposure = new SLGLUniform1f(UT_const, "u_exposure", 1.0f, 0.02f, 0.1, 10.0, (SLKey)'H');
+    SLGLUniform1f* exposure = new SLGLUniform1f(UT_const, "u_exposure", 1.0f, 0.02f, 0.01f, 10.0f, (SLKey)'H');
     s->eventHandlers().push_back(exposure);
     backgroundShader->addUniform1f(exposure);
     
-    SLGLTexture* envCubemap = new SLGLTexture(hdrImage,
+    SLGLFrameBuffer* captureBuffer = new SLGLFrameBuffer(true, resolution.x, resolution.y);
+    captureBuffer->generate();
+    
+    SLGLTexture* hdrTexture = new SLGLTexture(hdrImage,
                                               GL_LINEAR,
                                               GL_LINEAR,
                                               TT_hdr,
                                               GL_CLAMP_TO_EDGE,
-                                              GL_CLAMP_TO_EDGE,
-                                              1024,
-                                              1024);
+                                              GL_CLAMP_TO_EDGE);
+    
+    SLGLTexture* envCubemap = new SLGLGeneratedTexture(hdrTexture, captureBuffer, TT_environment, GL_TEXTURE_CUBE_MAP, GL_LINEAR_MIPMAP_LINEAR);
+    
+    captureBuffer->bufferStorage(32, 32);
+    SLGLTexture* irradiancemap  = new SLGLGeneratedTexture(envCubemap, captureBuffer, TT_irradiance);
+    SLGLTexture* prefilter      = new SLGLGeneratedTexture(envCubemap, captureBuffer, TT_prefilter);
+    SLGLTexture* brdfLUTTexture = new SLGLGeneratedTexture(nullptr, captureBuffer, TT_lut, GL_TEXTURE_2D);
 
     SLMaterial* hdrMaterial = new SLMaterial("matCubeMap");
     hdrMaterial->textures().push_back(envCubemap);
+    hdrMaterial->textures().push_back(irradiancemap);
+    hdrMaterial->textures().push_back(prefilter);
+    hdrMaterial->textures().push_back(brdfLUTTexture);
     hdrMaterial->program(backgroundShader);
 
     this->addMesh(new SLBox(10,10,10,-10,-10,-10, "box", hdrMaterial));

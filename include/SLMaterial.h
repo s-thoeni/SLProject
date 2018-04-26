@@ -61,6 +61,28 @@ class SLMaterial : public SLObject
                                        SLCol4f diffuse,
                                        SLfloat roughness,
                                        SLfloat metalness);
+                                       
+                            //! Ctor for PBR shading with IBL
+                            SLMaterial(const SLchar* name,
+                                       SLCol4f diffuse,
+                                       SLfloat roughness,
+                                       SLfloat metalness,
+                                       SLGLProgram* shaderProg,
+                                       SLGLTexture* texture1,
+                                       SLGLTexture* texture2,
+                                       SLGLTexture* texture3);
+                        
+                            //! Ctor for textures with IBL
+                            SLMaterial(const SLchar* name,
+                                       SLGLProgram* shaderProg,
+                                       SLGLTexture* texture1,
+                                       SLGLTexture* texture2,
+                                       SLGLTexture* texture3,
+                                       SLGLTexture* texture4,
+                                       SLGLTexture* texture5,
+                                       SLGLTexture* texture6,
+                                       SLGLTexture* texture7,
+                                       SLGLTexture* texture8);
 
                             //! Ctor for uniform color material without lighting
                             SLMaterial(SLCol4f uniformColor, 

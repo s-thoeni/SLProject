@@ -12,41 +12,64 @@
 #ifndef SLGLFRAMEBUFFER_H
 #define SLGLFRAMEBUFFER_H
 
-#include <SLGLBuffer.h>
+#include <stdafx.h>
+#include <SLGLTexture.h>
 
 //-----------------------------------------------------------------------------
 /*!
  */
-class SLGLFrameBuffer : public SLGLBuffer
+class SLGLFrameBuffer
 {
-    public:         SLGLFrameBuffer     ();
-                   ~SLGLFrameBuffer     () {clear();}
+    public:                     SLGLFrameBuffer     (SLbool  renderBuffer = false,
+                                                     SLsizei rboWidth  = 512,
+                                                     SLsizei rboHeight = 512);
+    virtual                    ~SLGLFrameBuffer     () {clear();}
     
-        //! Calls delete and clears data
-        void        clear               ();
+            //! Calls delete and clears data
+            void                clear               ();
+        
+            //! Deletes this buffers
+            void                deleteGL            ();
     
-        //! Generates the framebuffer
-        void        generate            ();
+            //! Generates the framebuffer
+            void                generate            ();
     
-        //! Binds the framebuffer
-        void        bind                ();
+            //! Binds the framebuffer
+            void                bind                ();
+        
+            //! Binds the renderbuffer
+            void                bindRenderBuffer    ();
     
-        //! Unbinds the framebuffer
-        void        unbind              ();
-    
-        //! Attaches a renderbuffer
-        void        attachRenderBuffer  (SLuint rbo);
-    
-        //! Attaches texture image to framebuffer
-        void        attachTexture2D     (SLGLInternalFormat attachment,
-                                         SLGLInternalFormat target,
-                                         SLGLTexture*       texture,
-                                         SLint              level = 0);
-    
+            //! Unbinds the framebuffer
+            void                unbind              ();
             
-        // Some statistics
-        static  SLuint      totalBufferCount;     //! static total no. of buffers in use
-        static  SLuint      totalBufferSize;      //! static total size of all buffers in bytes
+            //! Sets the size of the buffer sotrage
+            void                bufferStorage       (SLsizei width,
+                                                     SLsizei height);
+    
+            //! Attaches texture image to framebuffer
+            void                attachTexture2D     (SLenum         attachment,
+                                                     SLenum         target,
+                                                     SLGLTexture*   texture,
+                                                     SLint          level = 0);
+    
+            // Getters
+            SLuint              id                  () {return this->_id;}
+            SLuint              rbo                 () {return this->_rbo;}
+            SLsizei             rboWidth            () {return this->_rboWidth;}
+            SLsizei             rboHeight           () {return this->_rboHeight;}
+            
+            // Some statistics
+    static  SLuint              totalBufferCount;     //! static total no. of buffers in use
+    static  SLuint              totalBufferSize;      //! static total size of all buffers in bytes
+    
+    protected:
+            SLuint              _id;
+            SLuint              _rbo;
+            SLuint              _sizeBytes;
+            SLsizei             _rboWidth;
+            SLsizei             _rboHeight;
+            SLbool              _renderBuffer;
 };
 //-----------------------------------------------------------------------------
 

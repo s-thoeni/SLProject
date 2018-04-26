@@ -108,6 +108,77 @@ SLMaterial::SLMaterial(const SLchar* name,
     SLApplication::scene->materials().push_back(this);
 }
 //-----------------------------------------------------------------------------
+// Ctor for PBR shading with IBL
+SLMaterial::SLMaterial(const SLchar* name,
+                       SLCol4f diffuse,
+                       SLfloat roughness,
+                       SLfloat metalness,
+                       SLGLProgram* shaderProg,
+                       SLGLTexture* texture1,
+                       SLGLTexture* texture2,
+                       SLGLTexture* texture3)
+{
+    _ambient.set(0,0,0);                // not used in Cook-Torrance
+    _diffuse = diffuse;
+    _specular.set(1,1,1);               // not used in Cook-Torrance
+    _emissive.set(0,0,0,0);             // not used in Cook-Torrance
+    _shininess = (1.0f - roughness) * 500.0f; // not used in Cook-Torrance
+    _roughness = roughness;
+    _metalness = metalness;
+    
+    _kr = 0.0f;
+    _kt = 0.0f;
+    _kn = 1.0f;
+    
+    _program = shaderProg;
+    
+    if (texture1) _textures.push_back(texture1);
+    if (texture2) _textures.push_back(texture2);
+    if (texture3) _textures.push_back(texture3);
+    
+    // Add pointer to the global resource vectors for deallocation
+    SLApplication::scene->materials().push_back(this);
+    
+}
+SLMaterial::SLMaterial(const SLchar* name,
+                       SLGLProgram* shaderProg,
+                       SLGLTexture* texture1,
+                       SLGLTexture* texture2,
+                       SLGLTexture* texture3,
+                       SLGLTexture* texture4,
+                       SLGLTexture* texture5,
+                       SLGLTexture* texture6,
+                       SLGLTexture* texture7,
+                       SLGLTexture* texture8)
+{
+    _ambient.set(1,1,1);
+    _diffuse.set(1,1,1);
+    _specular.set(1,1,1);
+    _emissive.set(0,0,0,0);
+    _shininess = 125;
+    _roughness = 0.5f;
+    _metalness = 0.0f;
+   
+    if (texture1) _textures.push_back(texture1);
+    if (texture2) _textures.push_back(texture2);
+    if (texture3) _textures.push_back(texture3);
+    if (texture4) _textures.push_back(texture4);
+    if (texture5) _textures.push_back(texture5);
+    if (texture6) _textures.push_back(texture6);
+    if (texture7) _textures.push_back(texture7);
+    if (texture8) _textures.push_back(texture8);
+   
+    _program = shaderProg;
+   
+    _kr = 0.0f;
+    _kt = 0.0f;
+    _kn = 1.0f;
+    _diffuse.w = 1.0f - _kt;
+   
+    // Add pointer to the global resource vectors for deallocation
+    SLApplication::scene->materials().push_back(this);
+}
+//-----------------------------------------------------------------------------
 // Ctor for uniform color material without lighting
 SLMaterial::SLMaterial(SLCol4f uniformColor, const SLchar* name)
 {

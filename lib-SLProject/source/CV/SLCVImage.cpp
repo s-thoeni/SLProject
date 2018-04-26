@@ -369,7 +369,7 @@ void SLCVImage::load(const SLstring filename,
     _bytesPerPixel = bytesPerPixel(_format);
     
     // OpenCV always loads with BGR(A) but some OpenGL prefer RGB(A)
-    if (_format == PF_bgr) 
+    if (_format == PF_bgr || _format == PF_hdr) 
     {   cv::cvtColor(_cvMat, _cvMat, CV_BGR2RGB);
         _format = PF_rgb;
     } else
@@ -377,10 +377,6 @@ void SLCVImage::load(const SLstring filename,
     {   cv::cvtColor(_cvMat, _cvMat, CV_BGRA2RGBA);
         _format = PF_rgba;
     } else
-    if (_format == PF_hdr)
-    {
-        cv::cvtColor(_cvMat, _cvMat, CV_BGR2RGB);
-    }
     if (_format == PF_red && loadGrayscaleIntoAlpha)
     {
         SLCVMat rgbaImg;

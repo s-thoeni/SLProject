@@ -38,7 +38,8 @@ class SLSkybox: public SLNode
                                      SLstring name = "Default Skybox");
                     SLSkybox        (SLScene* s,
                                      SLstring hdrImage,
-                                     SLstring name = "Default Skybox");
+                                     SLVec2i  resolution,
+                                     SLstring name = "HDR Skybox");
                    ~SLSkybox        (){;}
     
         SLCol4f     colorAtDir      (SLVec3f dir);

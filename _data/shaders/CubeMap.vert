@@ -10,7 +10,6 @@
 
 attribute   vec3 a_position;     // Vertex position attribute
 
-//uniform     mat4 projection;
 uniform     mat4 u_mvpMatrix;    // = modelView
 
 varying vec3 P_VS;

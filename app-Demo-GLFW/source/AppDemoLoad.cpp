@@ -42,9 +42,6 @@
 #include <photo.hpp>
 #include <imgcodecs.hpp>
 
-#include <SLGLFrameBuffer.h>
-#include <SLGLRenderBuffer.h>
-
 //-----------------------------------------------------------------------------
 // Foreward declarations for helper functions used only in this file
 SLNode* SphereGroup(SLint, SLfloat, SLfloat, SLfloat, SLfloat, SLint, SLMaterial*, SLMaterial*);
@@ -1349,31 +1346,95 @@ void appDemoLoadScene(SLScene* s, SLSceneView* sv, SLSceneID sceneID)
     {
         s->name("HDR IBL Shader");
         s->info("Image-based Lighting from skybox using High Dynamic Range images");
+
+        SLSkybox* cubeMap = new SLSkybox(s, "env_barce_rooftop.hdr", SLVec2i(2048,2048));
+        SLGLTexture* irrandianceMap = cubeMap->meshes()[0]->mat()->textures()[1];
+        SLGLTexture* prefilterMap   = cubeMap->meshes()[0]->mat()->textures()[2];
+        SLGLTexture* brdfLUTTexture = cubeMap->meshes()[0]->mat()->textures()[3];
         
-        
-        // DEVELOPING IN COURSE! ///////////////////
-        SLSkybox* cubeMap = new SLSkybox(s, "/Users/arauzca/Downloads/Arches_E_PineTree/Arches_E_PineTree_3k.hdr", "cube");
-        
-        ////////////////////////////////////////////
-        
+        SLGLProgram* pbr    = new SLGLGenericProgram("PBR.vert", "PBR.frag");
+        SLGLProgram* pbrTex = new SLGLGenericProgram("PBR.vert", "PBRTex.frag");
+        SLGLUniform1f* exposure1 = new SLGLUniform1f(UT_const, "u_exposure", 1.0f, 0.02f, 0.01f, 10.0f, (SLKey)'H');
+        SLGLUniform1f* exposure2 = new SLGLUniform1f(UT_const, "u_exposure", 1.0f, 0.02f, 0.01f, 10.0f, (SLKey)'H');
+        s->eventHandlers().push_back(exposure1);
+        s->eventHandlers().push_back(exposure2);
+        pbr->addUniform1f(exposure1);
+        pbrTex->addUniform1f(exposure2);
         
         // Create a scene group noce
         SLNode* scene = new SLNode("scene node");
         
-        // Create camera in the center
         SLCamera* cam1 = new SLCamera("Camera 1");
-        cam1->translation(0,0,5);
+        cam1->translation(0,0,28);
+        cam1->lookAt(0,0,0);
+        cam1->background().colors(SLCol4f(0.2f,0.2f,0.2f));
+        cam1->focalDist(28);
         cam1->setInitialState();
         scene->addChild(cam1);
         
-        SLLightDirect* light = new SLLightDirect(0.5f);
-        light->ambient(SLCol4f(0.3f, 0.3f, 0.3f));
-        light->attenuation(1,0,0);
-        light->translate(1,1,-1);
-        light->lookAt(-1, -1, 1);
-        scene->addChild(light);
-    
-    
+
+        // Create spheres and materials with roughness & metallic values between 0 and 1
+        const SLint nrRows = 7;
+        const SLint nrCols = 7;
+        SLfloat spacing = 2.5f;
+        SLfloat maxX = (nrCols / 2) * spacing;
+        SLfloat maxY = (nrRows / 2) * spacing;
+        SLfloat deltaR = 1.0f / (float)(nrRows-1);
+        SLfloat deltaM = 1.0f / (float)(nrCols-1);
+
+        SLMaterial* mat[nrRows * nrCols];
+        SLint i=0;
+        SLfloat y = -maxY;
+        for (SLint m=0; m<nrRows; ++m)
+        {
+            SLfloat x = -maxX;
+            for (SLint r=0; r<nrCols; ++r)
+            {
+                if (m == nrRows/2 && r == nrCols/2)
+                {
+                    // The center sphere has roughness and metallic encoded in textures
+                    mat[i] = new SLMaterial("IBLMatTex",
+                                            pbrTex,
+                                            new SLGLTexture("gold-scuffed_2048C.png"),
+                                            new SLGLTexture("gold-scuffed_2048N.png"),
+                                            new SLGLTexture("gold-scuffed_2048M.png"),
+                                            new SLGLTexture("gold-scuffed_2048R.png"),
+                                            new SLGLTexture("gold-scuffed_2048A.png"),
+                                            irrandianceMap,
+                                            prefilterMap,
+                                            brdfLUTTexture);
+                } else
+                {
+                    // Cook-Torrance material without textures
+                    mat[i] = new SLMaterial("IBLMat",
+                                            SLCol4f::RED*0.5f,
+                                            SL_clamp((float)r*deltaR, 0.05f, 1.0f),
+                                            (float)m*deltaM,
+                                            pbr,
+                                            irrandianceMap,
+                                            prefilterMap,
+                                            brdfLUTTexture);
+                }
+
+                SLNode* node = new SLNode(new SLSpheric(1.0f, 0.0f, 180.0f, 32, 32, "Sphere", mat[i]));
+                node->translate(x,y,0);
+                scene->addChild(node);
+                x += spacing;
+                i++;
+            }
+            y += spacing;
+        }
+
+        // Add 4 point light
+        SLLightSpot* light1 = new SLLightSpot(-maxX, maxY, maxY, 0.1f, 180.0f, 0.0f, 300, 300); light1->attenuation(0,0,1);
+        SLLightSpot* light2 = new SLLightSpot( maxX, maxY, maxY, 0.1f, 180.0f, 0.0f, 300, 300); light2->attenuation(0,0,1);
+        SLLightSpot* light3 = new SLLightSpot(-maxX,-maxY, maxY, 0.1f, 180.0f, 0.0f, 300, 300); light3->attenuation(0,0,1);
+        SLLightSpot* light4 = new SLLightSpot( maxX,-maxY, maxY, 0.1f, 180.0f, 0.0f, 300, 300); light4->attenuation(0,0,1);
+        scene->addChild(light1);
+        scene->addChild(light2);
+        scene->addChild(light3);
+        scene->addChild(light4);
+        
         sv->camera(cam1);
         sv->skybox(cubeMap);
         s->root3D(scene);
