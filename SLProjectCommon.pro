@@ -38,7 +38,6 @@ unix:!macx:!android:QMAKE_CXXFLAGS += -std=c++11
 
 INCLUDEPATH += \
     include \
-    ../app-Demo-GLFW/source \
     ../include \
     ../lib-SLExternal \
     ../lib-SLExternal/assimp/include \

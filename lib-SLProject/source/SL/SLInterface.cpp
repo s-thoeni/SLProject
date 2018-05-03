@@ -60,8 +60,7 @@ void slCreateAppAndScene(SLVstring& cmdLineArgs,
                          SLstring fontPath,
                          SLstring calibrationPath,
                          SLstring configPath,
-                         SLstring applicationName,
-                         void*    onSceneLoadCallback)
+                         SLstring applicationName)
 {
     assert(SLApplication::scene==nullptr && "SLScene is already created!");
    
@@ -94,7 +93,7 @@ void slCreateAppAndScene(SLVstring& cmdLineArgs,
                                            stateGL->getSLVersionNO().c_str());
     SL_LOG("------------------------------------------------------------------\n");
 
-    SLApplication::createAppAndScene(applicationName, onSceneLoadCallback);
+    SLApplication::createAppAndScene(applicationName);
 }
 //-----------------------------------------------------------------------------
 /*! Global creation function for a SLSceneview instance returning the index of 
@@ -143,11 +142,14 @@ int slCreateSceneView(int screenWidth,
     sv->gui().loadFonts(SLGLImGui::fontPropDots, SLGLImGui::fontFixedDots);
 
     // Set active sceneview and load scene. This is done for the first sceneview
-    if (!SLApplication::scene->root3D())
-    {   if (SLApplication::sceneID == SID_Empty)
-             SLApplication::scene->onLoad(SLApplication::scene, sv, initScene);
-        else SLApplication::scene->onLoad(SLApplication::scene, sv, SLApplication::sceneID);
-    } else sv->onInitialize();
+    // if (!SLApplication::scene->root3D())
+    // {
+        // fsb1: SceneBuilder is responsible to build the first scene
+        // if (SLApplication::sceneID == SID_Empty)
+        //      SLApplication::scene->onLoad(SLApplication::scene, sv, initScene);
+        // else SLApplication::scene->onLoad(SLApplication::scene, sv, SLApplication::sceneID);
+
+    // } else sv->onInitialize();
    
     // return the identifier index
     return sv->index();

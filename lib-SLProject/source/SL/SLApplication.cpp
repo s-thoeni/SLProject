@@ -47,15 +47,14 @@ See examples usages in:
 /param applicationName The apps name
 /param onSceneLoadCallback C Callback function as void* pointer for the scene creation.
 */
-void SLApplication::createAppAndScene(SLstring appName,
-                                      void* onSceneLoadCallback)
+void SLApplication::createAppAndScene(SLstring appName)
 {
     assert(SLApplication::scene == nullptr &&
            "You can create only one SLApplication");
     
     name  = appName;
     
-    scene = new SLScene(name, (cbOnSceneLoad)onSceneLoadCallback);
+    scene = new SLScene(name);
     
     // load opencv camera calibration for main and secondary camera
     #if defined(SL_USES_CVCAPTURE)

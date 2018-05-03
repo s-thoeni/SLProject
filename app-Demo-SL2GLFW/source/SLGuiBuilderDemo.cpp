@@ -14,7 +14,8 @@
 #include <debug_new.h>        // memory leak detector
 #endif
 
-#include "AppDemoGui.h"
+#include "SLGuiBuilderDemo.h"
+
 #include <SLApplication.h>
 #include <SLScene.h>
 #include <SLSceneView.h>
@@ -36,9 +37,13 @@
 #include <SLTransferFunction.h>
 #include <SLCVTrackedFeatures.h>
 
+
+
 #include <imgui.h>
 
 #define IM_ARRAYSIZE(_ARR)  ((int)(sizeof(_ARR)/sizeof(*_ARR)))
+
+onSceneChange demo_fireSceneChange;
 
 //-----------------------------------------------------------------------------
 //! Vector getter callback for combo and listbox with std::vector<std::string>
@@ -616,9 +621,138 @@ void AppDemoGui::buildMenuBar(SLScene* s, SLSceneView* sv)
                                              SLFileSystem::fileExists(large2) ||
                                              SLFileSystem::fileExists(large3);
 
-                    // fsb1 removed here a lot
+                    if (ImGui::MenuItem("Minimal Scene", 0, sid==SID_Minimal))
+                        demo_fireSceneChange(SID_Minimal);
+                    if (ImGui::MenuItem("Figure Scene", 0, sid==SID_Figure))
+                        demo_fireSceneChange(SID_Figure);
+                    if (ImGui::MenuItem("Large Model", 0, sid==SID_LargeModel, largeFileExists))
+                        demo_fireSceneChange(SID_LargeModel);
+                    if (ImGui::MenuItem("Mesh Loader", 0, sid==SID_MeshLoad))
+                        demo_fireSceneChange(SID_MeshLoad);
+                    if (ImGui::MenuItem("Revolver Meshes", 0, sid==SID_Revolver))
+                        demo_fireSceneChange(SID_Revolver);
+                    if (ImGui::MenuItem("Texture Blending", 0, sid==SID_TextureBlend))
+                        demo_fireSceneChange(SID_TextureBlend);
+                    if (ImGui::MenuItem("Texture Filters", 0, sid==SID_TextureFilter))
+                        demo_fireSceneChange(SID_TextureFilter);
+                    if (ImGui::MenuItem("Frustum Culling", 0, sid==SID_FrustumCull))
+                        demo_fireSceneChange(SID_FrustumCull);
+                    if (ImGui::MenuItem("Massive Data Scene", 0, sid==SID_MassiveData))
+                        demo_fireSceneChange(SID_MassiveData);
+                    if (ImGui::MenuItem("2D and 3D Text", 0, sid==SID_2Dand3DText))
+                        demo_fireSceneChange(SID_2Dand3DText);
+                    if (ImGui::MenuItem("Point Clouds", 0, sid==SID_PointClouds))
+                        demo_fireSceneChange(SID_PointClouds);
 
+                    ImGui::EndMenu();
                 }
+
+                if (ImGui::BeginMenu("Shader"))
+                {
+                    if (ImGui::MenuItem("Per Vertex Blinn-Phong", 0, sid==SID_ShaderPerVertexBlinn))
+                        demo_fireSceneChange(SID_ShaderPerVertexBlinn);
+                    if (ImGui::MenuItem("Per Pixel Blinn-Phing", 0, sid==SID_ShaderPerPixelBlinn))
+                        demo_fireSceneChange(SID_ShaderPerPixelBlinn);
+                    if (ImGui::MenuItem("Per Pixel Cook-Torrance", 0, sid==SID_ShaderCookTorrance))
+                        demo_fireSceneChange(SID_ShaderCookTorrance);
+                    if (ImGui::MenuItem("Per Vertex Wave", 0, sid==SID_ShaderPerVertexWave))
+                        demo_fireSceneChange(SID_ShaderPerVertexWave);
+                    if (ImGui::MenuItem("Water", 0, sid==SID_ShaderWater))
+                        demo_fireSceneChange(SID_ShaderWater);
+                    if (ImGui::MenuItem("Bump Mapping", 0, sid==SID_ShaderBumpNormal))
+                        demo_fireSceneChange(SID_ShaderBumpNormal);
+                    if (ImGui::MenuItem("Parallax Mapping", 0, sid==SID_ShaderBumpParallax))
+                        demo_fireSceneChange(SID_ShaderBumpParallax);
+                    if (ImGui::MenuItem("Skybox Shader", 0, sid==SID_ShaderSkyBox))
+                        demo_fireSceneChange(SID_ShaderSkyBox);
+                    if (ImGui::MenuItem("Earth Shader", 0, sid==SID_ShaderEarth))
+                        demo_fireSceneChange(SID_ShaderEarth);
+
+                    ImGui::EndMenu();
+                }
+
+                if (ImGui::BeginMenu("Animation"))
+                {
+                    if (ImGui::MenuItem("Node Animation", 0, sid==SID_AnimationNode))
+                        demo_fireSceneChange(SID_AnimationNode);
+                    if (ImGui::MenuItem("Mass Animation", 0, sid==SID_AnimationMass))
+                        demo_fireSceneChange(SID_AnimationMass);
+                    if (ImGui::MenuItem("Astroboy Army", 0, sid==SID_AnimationArmy))
+                        demo_fireSceneChange(SID_AnimationArmy);
+                    if (ImGui::MenuItem("Skeletal Animation", 0, sid==SID_AnimationSkeletal))
+                        demo_fireSceneChange(SID_AnimationSkeletal);
+
+                    ImGui::EndMenu();
+                }
+
+                if (ImGui::BeginMenu("Using Video"))
+                {
+                    if (ImGui::MenuItem("Texture from Video Live", 0, sid==SID_VideoTextureLive))
+                        demo_fireSceneChange(SID_VideoTextureLive);
+                    if (ImGui::MenuItem("Texture from Video File", 0, sid==SID_VideoTextureFile))
+                        demo_fireSceneChange(SID_VideoTextureFile);
+                    if (ImGui::MenuItem("Track ArUco Marker (Main)", 0, sid==SID_VideoTrackArucoMain))
+                        demo_fireSceneChange(SID_VideoTrackArucoMain);
+                    if (ImGui::MenuItem("Track ArUco Marker (Scnd)", 0, sid==SID_VideoTrackArucoScnd, SLCVCapture::hasSecondaryCamera))
+                        demo_fireSceneChange(SID_VideoTrackArucoScnd);
+                    if (ImGui::MenuItem("Track Chessboard (Main)", 0, sid==SID_VideoTrackChessMain))
+                        demo_fireSceneChange(SID_VideoTrackChessMain);
+                    if (ImGui::MenuItem("Track Chessboard (Scnd)", 0, sid==SID_VideoTrackChessScnd, SLCVCapture::hasSecondaryCamera))
+                        demo_fireSceneChange(SID_VideoTrackChessScnd);
+                    if (ImGui::MenuItem("Track Features (Main)", 0, sid==SID_VideoTrackFeature2DMain))
+                        demo_fireSceneChange(SID_VideoTrackFeature2DMain);
+                    if (ImGui::MenuItem("Track Face (Main)", 0, sid==SID_VideoTrackFaceMain))
+                        demo_fireSceneChange(SID_VideoTrackFaceMain);
+                    if (ImGui::MenuItem("Track Face (Scnd)", 0, sid==SID_VideoTrackFaceScnd, SLCVCapture::hasSecondaryCamera))
+                        demo_fireSceneChange(SID_VideoTrackFaceScnd);
+                    if (ImGui::MenuItem("Sensor AR (Main)", 0, sid==SID_VideoSensorAR))
+                        demo_fireSceneChange(SID_VideoSensorAR);
+                    if (ImGui::MenuItem("Christoffel Tower AR (Main)", 0, sid==SID_VideoChristoffel))
+                        demo_fireSceneChange(SID_VideoChristoffel);
+
+                    ImGui::EndMenu();
+                }
+
+                if (ImGui::BeginMenu("Volume Rendering"))
+                {
+                    if (ImGui::MenuItem("Head MRI Ray Cast", 0, sid==SID_VolumeRayCast))
+                        demo_fireSceneChange(SID_VolumeRayCast);
+
+                    #ifndef SL_GLES
+                    if (ImGui::MenuItem("Head MRI Ray Cast Lighted", 0, sid==SID_VolumeRayCastLighted))
+                        demo_fireSceneChange(SID_VolumeRayCastLighted);
+                    #endif
+
+                    ImGui::EndMenu();
+                }
+
+                if (ImGui::BeginMenu("Ray tracing"))
+                {
+                    if (ImGui::MenuItem("Spheres", 0, sid==SID_RTSpheres))
+                        demo_fireSceneChange(SID_RTSpheres);
+                    if (ImGui::MenuItem("Muttenzer Box", 0, sid==SID_RTMuttenzerBox))
+                        demo_fireSceneChange(SID_RTMuttenzerBox);
+                    if (ImGui::MenuItem("Soft Shadows", 0, sid==SID_RTSoftShadows))
+                        demo_fireSceneChange(SID_RTSoftShadows);
+                    if (ImGui::MenuItem("Depth of Field", 0, sid==SID_RTDoF))
+                        demo_fireSceneChange(SID_RTDoF);
+                    if (ImGui::MenuItem("Lens Test", 0, sid==SID_RTLens))
+                        demo_fireSceneChange(SID_RTLens);
+                    if (ImGui::MenuItem("RT Test", 0, sid==SID_RTTest))
+                        demo_fireSceneChange(SID_RTTest);
+
+                    ImGui::EndMenu();
+                }
+
+                if (ImGui::BeginMenu("Path tracing"))
+                {
+                    if (ImGui::MenuItem("Muttenzer Box", 0, sid==SID_RTMuttenzerBox))
+                        demo_fireSceneChange(SID_RTMuttenzerBox);
+
+                    ImGui::EndMenu();
+                }
+
+                ImGui::EndMenu();
             }
 
             ImGui::Separator();
@@ -718,14 +852,14 @@ void AppDemoGui::buildMenuBar(SLScene* s, SLSceneView* sv)
                 {
                     if (ImGui::MenuItem("Start Calibration on Main Camera"))
                     {
-                       //  s->onLoad(s, sv, SID_VideoCalibrateMain);
+                        demo_fireSceneChange(SID_VideoCalibrateMain);
                         showHelpCalibration = true;
                         showInfosScene = true;
                     }
 
                     if (ImGui::MenuItem("Start Calibration on Scnd. Camera", 0, false, SLCVCapture::hasSecondaryCamera))
                     {
-                       //  s->onLoad(s, sv, SID_VideoCalibrateScnd);
+                        demo_fireSceneChange(SID_VideoCalibrateScnd);
                         showHelpCalibration = true;
                         showInfosScene = true;
                     }
@@ -1730,4 +1864,24 @@ void AppDemoGui::saveConfig()
     fs.release();
     SL_LOG("Config. saved   : %s\n", fullPathAndFilename.c_str());
 }
+//-----------------------------------------------------------------------------
+
+SLGuiBuilderDemo::SLGuiBuilderDemo(){
+    this->buildFunction = (void*) AppDemoGui::build;
+}
+
+void SLGuiBuilderDemo::registerSceneListener(onSceneChange listener)
+{
+    demo_fireSceneChange = listener;
+}
+
+void SLGuiBuilderDemo::onSceneCreated(SLint dpi){
+    AppDemoGui::loadConfig(dpi);
+    demo_fireSceneChange(SLApplication::sceneID);
+}
+
+void SLGuiBuilderDemo::onTerminate(){
+    AppDemoGui::saveConfig();
+}
+
 //-----------------------------------------------------------------------------

@@ -438,8 +438,7 @@ int main(int argc, char *argv[])
                         exeDir + "../_data/images/fonts/",
                         exeDir + "../_data/calibrations/",
                         configPath,
-                        "AppNode_GLFW",
-                        (void*)onLoad);
+                        "AppNode_GLFW");
     //////////////////////////////////////////////////////////
 
     //////////////////////////////////////////////////////////

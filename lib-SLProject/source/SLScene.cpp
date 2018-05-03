@@ -56,8 +56,7 @@ As examples you can see it in:
   - _old/app-Demo-Qt: qtGLWidget::initializeGL()
   - _old/app-Viewer-Qt: qtGLWidget::initializeGL()
 */
-SLScene::SLScene(SLstring name,
-                 cbOnSceneLoad onSceneLoadCallback) : SLObject(name),
+SLScene::SLScene(SLstring name) : SLObject(name),
                 _frameTimesMS(60, 0.0f),
                 _updateTimesMS(60, 0.0f),
                 _cullTimesMS(60, 0.0f),
@@ -74,9 +73,7 @@ SLScene::SLScene(SLstring name,
 
 {
     SLApplication::scene = this;
-    
-    onLoad          = onSceneLoadCallback;
-    
+
     _root3D         = nullptr;
     _root2D         = nullptr;
     _info           = "";
@@ -424,11 +421,18 @@ bool SLScene::onUpdate()
         } else //..............................................................
         if (ac->state() == CS_startCalculating)
         {
-            if (ac->calculate())
-            {   _sceneViews[0]->camera()->fov(ac->cameraFovDeg());
+            if (ac->calculate())                
+            {
+                // fsb1: why is something in a update-loop able to reload the scene manually??
+                // make at least a static callback!
+                // i have to break the library here:
+
+                /*
+                _sceneViews[0]->camera()->fov(ac->cameraFovDeg());
                 if (SLApplication::sceneID == SID_VideoCalibrateMain)
                      onLoad(this, _sceneViews[0], SID_VideoTrackChessMain);
                 else onLoad(this, _sceneViews[0], SID_VideoTrackChessScnd);
+                */
             }
         } else
         if (ac->state() == CS_calibrated || ac->state() == CS_guessed) //......

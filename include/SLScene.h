@@ -67,8 +67,7 @@ class SLScene: public SLObject
 {  
     friend class SLNode;
    
-    public:                 SLScene             (SLstring name,
-                                                 cbOnSceneLoad onSceneLoadCallback);
+    public:                 SLScene             (SLstring name);
                            ~SLScene             ();
             // Setters
             void            root3D              (SLNode* root3D){_root3D = root3D;}
@@ -126,11 +125,8 @@ class SLScene: public SLObject
             SLGLTexture*    videoTexture        () {return &_videoTexture;}
             SLVCVTracker&   trackers            () {return _trackers;}
             SLbool          showDetection       () {return _showDetection;}
-    
-            cbOnSceneLoad   onLoad;             //!< C-Callback for scene load
 
-            // Misc.
-   //virtual  void            onLoad              (SLSceneView* sv, SLCommand _currentID);
+            // Misc.   
    virtual  void            onLoadAsset         (SLstring assetFile, 
                                                  SLuint processFlags);
    virtual  void            onAfterLoad         ();

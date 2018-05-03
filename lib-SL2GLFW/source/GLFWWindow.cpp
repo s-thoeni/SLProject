@@ -17,17 +17,18 @@
 #endif
 
 #include <GLFW/glfw3.h>
-
 #include <SLInterface.h>
+#include <SLApplication.h>
+#include <SLScene.h>
 #include <SLSceneView.h>
 #include <SLEnums.h>
 #include <SLCVCapture.h>
 
-#include "AppDemoGui.h"
+#include "GLFWWindow.h"
 
 //-----------------------------------------------------------------------------
 //! Forward declaration of the scene definition function from AppDemoLoad.cpp
-extern void appDemoLoadScene(SLScene* s, SLSceneView* sv, SLSceneID sceneID);
+// extern void appDemoLoadScene(SLScene* s, SLSceneView* sv, SLSceneID sceneID);
 
 //-----------------------------------------------------------------------------
 // GLobal application variables
@@ -49,6 +50,7 @@ SLint       lastMouseWheelPos;      //!< Last mouse wheel position
 SLfloat     lastMouseDownTime=0.0f; //!< Last mouse press time
 SLKey       modifiers=K_none;       //!< last modifier keys
 SLbool      fullscreen = false;     //!< flag if window is in fullscreen mode     
+SLSceneBuilder* appSceneBuilder;             //!< ugly fits here..
 
 //-----------------------------------------------------------------------------
 /*! 
@@ -393,11 +395,36 @@ void onGLFWError(int error, const char* description)
     fputs(description, stderr);
 }
 //-----------------------------------------------------------------------------
-/*!
-The C main procedure running the GLFW GUI application.
-*/
-int main(int argc, char *argv[])
+// fsb1 found some bloat code and moves it here:
+/*
+void bloatAppLoadScene(SLScene* s, SLSceneView* sv, SLSceneID sceneID)
 {
+    SLApplication::sceneID = sceneID;
+
+    // Initialize all preloaded stuff from SLScene
+    s->init();
+
+    ////////////////////////////////////////////////////////////////////////////
+    appSceneBuilder->build(s, sv, sceneID);
+
+    ////////////////////////////////////////////////////////////////////////////
+    // call onInitialize on all scene views to init the scenegraph and stats
+    for (auto sv : s->sceneViews())
+    {   if (sv != nullptr)
+        {   sv->onInitialize();
+        }
+    }
+
+    s->onAfterLoad();
+}
+*/
+
+
+
+int GLFWWindow::abstractShow(int argc, char *argv[])
+{
+
+
     // set command line arguments
     SLVstring cmdLineArgs;
     for(int i = 0; i < argc; i++)
@@ -419,8 +446,8 @@ int main(int argc, char *argv[])
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    scrWidth = 640;
-    scrHeight = 480;
+    scrWidth = this->width;
+    scrHeight = this->height;
     touch2.set(-1,-1);
     touchDelta.set(-1,-1);
 
@@ -453,9 +480,9 @@ int main(int argc, char *argv[])
     // driver or not. OpenGL core and extension functionality is exposed via a 
     // single header file. Download GLEW at: http://glew.sourceforge.net/
     glewExperimental = GL_TRUE;  // avoids a crash
-    GLenum err = glewInit();
-    if (GLEW_OK != err)
-    {   fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
+    GLenum glewState = glewInit();
+    if (GLEW_OK != glewState)
+    {   fprintf(stderr, "Error: %s\n", glewGetErrorString(glewState));
         exit(EXIT_FAILURE);
     }
 
@@ -493,20 +520,19 @@ int main(int argc, char *argv[])
                         configDir,
                         "AppDemoGLFW");
     /////////////////////////////////////////////////////////
-    
-    // This load the GUI configs that are locally stored
-    AppDemoGui::loadConfig(dpi);
-    
+
     /////////////////////////////////////////////////////////
     svIndex = slCreateSceneView((int)(scrWidth  * scr2fbX),
                                 (int)(scrHeight * scr2fbY),
                                 dpi, 
-                                (SLSceneID)SL_STARTSCENE,
+                                this->startScene,
                                 (void*)&onPaint, 
                                 0,
                                 0,
-                                (void*)AppDemoGui::build);
+                                this->guiBuilder->buildFunction);
     /////////////////////////////////////////////////////////
+    // Static event to inform the SLWindow to load something
+    this->onSceneCreated(svIndex, dpi);
 
     // Set GLFW callback functions
     glfwSetKeyCallback(window, onKeyPress);
@@ -529,8 +555,9 @@ int main(int argc, char *argv[])
              glfwWaitEvents();
         else glfwPollEvents();
     }
-    
-    AppDemoGui::saveConfig();
+
+    // hard coded terminate event
+    this->guiBuilder->onTerminate();
 
     slTerminate();
     glfwDestroyWindow(window);
