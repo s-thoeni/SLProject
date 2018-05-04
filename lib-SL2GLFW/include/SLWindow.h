@@ -14,11 +14,10 @@ public:
 
     void* buildFunction;
 
-    virtual void onSceneCreated(SLuint dpi){}
-    virtual void scaleImGUI(SLuint dpi);
-    virtual void onTerminate(){}
-    virtual void registerSceneListener(onSceneChange listener) = 0;
+    virtual void registerSceneChangeListener(onSceneChange listener) = 0;
 
+    virtual void onSceneCreated(SLuint dpi){}
+    virtual void onTerminate(){}
 };
 
 class SLSceneBuilder
@@ -44,11 +43,7 @@ public:
         width(width),
         height(height)
     {}
-    virtual ~SLWindow()
-    {
-        delete this->guiBuilder;
-        delete this->sceneBuilder;
-    }
+    virtual ~SLWindow();
 
     SLGuiBuilder* guiBuilder;
     SLSceneBuilder* sceneBuilder;

@@ -66,7 +66,7 @@ class SLGuiBuilderDemo : public SLGuiBuilder
 public:
     SLGuiBuilderDemo();
 
-    virtual void registerSceneListener(onSceneChange listener);
+    virtual void registerSceneChangeListener(onSceneChange listener);
     virtual void onSceneCreated(SLuint dpi);
     virtual void onTerminate();
 };

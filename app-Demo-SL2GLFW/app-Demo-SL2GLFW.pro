@@ -38,7 +38,8 @@ HEADERS += \
     source/SLGuiBuilderMinimal.h \
     source/SLSceneBuilderMinimal.h \
     source/SLSceneBuilderDemo.h \
-    source/SLGuiBuilderDemo.h
+    source/SLGuiBuilderDemo.h \
+    source/SLSceneBuilderTriangle.h
 
 
 SOURCES += \
@@ -46,5 +47,6 @@ SOURCES += \
     source/SLSceneBuilderMinimal.cpp \
     source/SLSceneBuilderDemo.cpp \
     source/SLGuiBuilderDemo.cpp \
-    source/SLDemo.cpp
+    source/SLDemo.cpp \
+    source/SLSceneBuilderTriangle.cpp
 

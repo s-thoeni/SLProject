@@ -13,7 +13,7 @@
 #include <debug_new.h>        // memory leak detector
 #endif
 
-#include <GLFWWindow.h>
+#include <SLWindowGlfw.h>
 #include <SLApplication.h>
 #include <SLScene.h>
 #include <SLSceneView.h>
@@ -22,16 +22,18 @@
 #include "SLGuiBuilderMinimal.h"
 #include "SLSceneBuilderDemo.h"
 #include "SLSceneBuilderMinimal.h"
+#include "SLSceneBuilderTriangle.h"
 
 int main(int argc, char* argv[])
 {
-    GLFWWindow* window = new GLFWWindow((SLSceneID) SL_STARTSCENE, 800);
+    SLWindowGlfw* window = new SLWindowGlfw((SLSceneID) SL_STARTSCENE, 800);
 
-//    window->guiBuilder = new SLGuiBuilderMinimal();
+    window->guiBuilder = new SLGuiBuilderMinimal();
 //    window->sceneBuilder = new SLSceneBuilderMinimal();
+    window->sceneBuilder = new SLSceneBuilderTriangle();
 
-     window->guiBuilder = new SLGuiBuilderDemo();
-     window->sceneBuilder = new SLSceneBuilderDemo();
+//    window->guiBuilder = new SLGuiBuilderDemo();
+//    window->sceneBuilder = new SLSceneBuilderDemo();
 
     window->show();
 

@@ -5,8 +5,6 @@
 
 int SLWindowAndroid::abstractShow()
 {
-
-    ////////////////////////////////////////////////////
     slCreateAppAndScene(  this->devicePath + "/shaders/",
                           this->devicePath + "/models/",
                           this->devicePath + "/textures/",
@@ -16,9 +14,6 @@ int SLWindowAndroid::abstractShow()
                           this->devicePath + "/config/",
                           "AppDemoAndroid"
                           );
-    ////////////////////////////////////////////////////
-
-    ////////////////////////////////////////////////////////////////////
     this->svIndex = slCreateSceneView((int) this->width,
                                 (int) this->height,
                                 (int) this->dpi,
@@ -27,8 +22,7 @@ int SLWindowAndroid::abstractShow()
                                 0,
                                 0,
                                 this->guiBuilder->buildFunction);
-    ////////////////////////////////////////////////////////////////////
-    this->onSceneCreated();
 
+    this->onSceneCreated();
     return 0;
 }

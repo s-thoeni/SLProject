@@ -1,6 +1,7 @@
 #include "SLGuiBuilderMinimal.h"
 
 #include <SLApplication.h>
+#include <UtilImGUI.h>
 
 onSceneChange fireSceneChange;
 
@@ -48,12 +49,12 @@ SLGuiBuilderMinimal::SLGuiBuilderMinimal()
     this->buildFunction = (void*) build;    
 }
 
-void SLGuiBuilderMinimal::registerSceneListener(onSceneChange listener)
+void SLGuiBuilderMinimal::registerSceneChangeListener(onSceneChange listener)
 {
     fireSceneChange = listener;
 }
 
 void SLGuiBuilderMinimal::onSceneCreated(SLuint dpi)
 {
-    this->scaleImGUI(dpi);
+    UtilImGUI::scale(dpi);
 }

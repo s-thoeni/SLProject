@@ -19,6 +19,7 @@
 #include "SLSceneBuilderMinimal.h"
 #include "SLGuiBuilderDemo.h"
 #include "SLSceneBuilderDemo.h"
+#include "SLSceneBuilderTriangle.h"
 
 //-----------------------------------------------------------------------------
 // Some global variable for the JNI interface
@@ -100,11 +101,12 @@ JNIEXPORT void JNICALL Java_ch_fhnw_comgr_GLES3Lib_onInit(JNIEnv *env, jobject o
                                   width,
                                   height);
 
-//    window->guiBuilder = new SLGuiBuilderMinimal();
+    window->guiBuilder = new SLGuiBuilderMinimal();
 //    window->sceneBuilder = new SLSceneBuilderMinimal();
+    window->sceneBuilder = new SLSceneBuilderTriangle();
 
-    window->guiBuilder = new SLGuiBuilderDemo();
-    window->sceneBuilder = new SLSceneBuilderDemo();
+//    window->guiBuilder = new SLGuiBuilderDemo();
+//    window->sceneBuilder = new SLSceneBuilderDemo();
 
     window->show();
 }

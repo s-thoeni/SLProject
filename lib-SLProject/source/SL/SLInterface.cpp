@@ -139,17 +139,6 @@ int slCreateSceneView(int screenWidth,
     // Load GUI fonts depending on the resolution
     sv->gui().loadFonts(SLGLImGui::fontPropDots, SLGLImGui::fontFixedDots);
 
-    // Set active sceneview and load scene. This is done for the first sceneview
-    // if (!SLApplication::scene->root3D())
-    // {
-        // fsb1: SceneBuilder is responsible to build the first scene
-        // if (SLApplication::sceneID == SID_Empty)
-        //      SLApplication::scene->onLoad(SLApplication::scene, sv, initScene);
-        // else SLApplication::scene->onLoad(SLApplication::scene, sv, SLApplication::sceneID);
-
-    // } else sv->onInitialize();
-   
-    // return the identifier index
     return sv->index();
 }
 //-----------------------------------------------------------------------------

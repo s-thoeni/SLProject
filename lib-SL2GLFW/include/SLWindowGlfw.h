@@ -3,13 +3,13 @@
 
 #include "SLWindow.h"
 
-class GLFWWindow : public SLWindow
+class SLWindowGlfw : public SLWindow
 {
 public:
-    GLFWWindow(SLSceneID startScene,               
+    SLWindowGlfw(SLSceneID startScene,
                int width = 640,
                int height = 480):
-        SLWindow(startScene, 0, width, height) // dpi will be set at startup
+        SLWindow(startScene, 0, width, height) // dpi will be set during startup
     {}
 
     virtual int abstractShow();

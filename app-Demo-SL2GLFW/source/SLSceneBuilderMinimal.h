@@ -6,7 +6,7 @@
 class SLSceneBuilderMinimal : public SLSceneBuilder
 {
 public:
-    SLSceneBuilderMinimal();
+    SLSceneBuilderMinimal(){}
 
     virtual void build(SLScene* s, SLSceneView* sv, SLSceneID sceneID);
 };

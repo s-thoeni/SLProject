@@ -37,14 +37,13 @@
 #include <SLTransferFunction.h>
 #include <SLCVTrackedFeatures.h>
 
-
-
 #include <imgui.h>
+
+#include <UtilImGUI.h>
 
 #define IM_ARRAYSIZE(_ARR)  ((int)(sizeof(_ARR)/sizeof(*_ARR)))
 
 onSceneChange demo_fireSceneChange;
-SLGuiBuilder* demo_gui_builder;
 
 //-----------------------------------------------------------------------------
 //! Vector getter callback for combo and listbox with std::vector<std::string>
@@ -1761,7 +1760,7 @@ void AppDemoGui::loadConfig(SLint dotsPerInch)
 
     if (!SLFileSystem::fileExists(fullPathAndFilename))
     {
-        demo_gui_builder->scaleImGUI(dotsPerInch);
+        UtilImGUI::scale(dotsPerInch);
 
         // Store dialog show states
         AppDemoGui::showAbout = true;
@@ -1854,11 +1853,10 @@ void AppDemoGui::saveConfig()
 //-----------------------------------------------------------------------------
 
 SLGuiBuilderDemo::SLGuiBuilderDemo(){
-    this->buildFunction = (void*) AppDemoGui::build;
-    demo_gui_builder = this;
+    this->buildFunction = (void*) AppDemoGui::build;    
 }
 
-void SLGuiBuilderDemo::registerSceneListener(onSceneChange listener)
+void SLGuiBuilderDemo::registerSceneChangeListener(onSceneChange listener)
 {
     demo_fireSceneChange = listener;    
 }

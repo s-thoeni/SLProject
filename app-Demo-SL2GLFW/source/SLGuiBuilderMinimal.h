@@ -12,7 +12,7 @@ class SLGuiBuilderMinimal : public SLGuiBuilder
 public:
     SLGuiBuilderMinimal();
 
-    virtual void registerSceneListener(onSceneChange listener);
+    virtual void registerSceneChangeListener(onSceneChange listener);
     virtual void onSceneCreated(SLuint dpi);
 };
 

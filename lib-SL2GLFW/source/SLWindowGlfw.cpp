@@ -24,7 +24,7 @@
 #include <SLEnums.h>
 #include <SLCVCapture.h>
 
-#include "GLFWWindow.h"
+#include "SLWindowGlfw.h"
 
 //-----------------------------------------------------------------------------
 //! Forward declaration of the scene definition function from AppDemoLoad.cpp
@@ -394,34 +394,8 @@ void onGLFWError(int error, const char* description)
 {
     fputs(description, stderr);
 }
-//-----------------------------------------------------------------------------
-// fsb1 found some bloat code and moves it here:
-/*
-void bloatAppLoadScene(SLScene* s, SLSceneView* sv, SLSceneID sceneID)
-{
-    SLApplication::sceneID = sceneID;
 
-    // Initialize all preloaded stuff from SLScene
-    s->init();
-
-    ////////////////////////////////////////////////////////////////////////////
-    appSceneBuilder->build(s, sv, sceneID);
-
-    ////////////////////////////////////////////////////////////////////////////
-    // call onInitialize on all scene views to init the scenegraph and stats
-    for (auto sv : s->sceneViews())
-    {   if (sv != nullptr)
-        {   sv->onInitialize();
-        }
-    }
-
-    s->onAfterLoad();
-}
-*/
-
-
-
-int GLFWWindow::abstractShow()
+int SLWindowGlfw::abstractShow()
 {
     if (!glfwInit())
     {   fprintf(stderr, "Failed to initialize GLFW\n");
@@ -475,7 +449,8 @@ int GLFWWindow::abstractShow()
     glewExperimental = GL_TRUE;  // avoids a crash
     GLenum glewState = glewInit();
     if (GLEW_OK != glewState)
-    {   fprintf(stderr, "Error: %s\n", glewGetErrorString(glewState));
+    {
+        fprintf(stderr, "Error: %s\n", glewGetErrorString(glewState));
         exit(EXIT_FAILURE);
     }
 
@@ -484,6 +459,7 @@ int GLFWWindow::abstractShow()
    
     // Set number of monitor refreshes between 2 buffer swaps
     glfwSwapInterval(1);
+
 
     // Get GL errors that occurred before our framework is involved
     GET_GL_ERROR;

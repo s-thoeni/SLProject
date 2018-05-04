@@ -430,8 +430,7 @@ int main(int argc, char *argv[])
     SLstring configPath = SLFileSystem::getAppsWritableDir();
 
     //////////////////////////////////////////////////////////
-    slCreateAppAndScene(cmdLineArgs,
-                        exeDir + "../_data/shaders/",
+    slCreateAppAndScene(exeDir + "../_data/shaders/",
                         exeDir + "../_data/models/",
                         exeDir + "../_data/images/textures/",
                         exeDir + "../_data/videos/",

@@ -12,9 +12,6 @@
  * It only supports the SID_MINIMAL.
  *
  */
-SLSceneBuilderMinimal::SLSceneBuilderMinimal()
-{
-}
 
 void SLSceneBuilderMinimal::build(SLScene* s, SLSceneView* sv, SLSceneID sceneID)
 {

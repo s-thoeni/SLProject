@@ -147,6 +147,8 @@ file(GLOB_RECURSE APP_DEMO_SOURCES      ${CMAKE_CURRENT_SOURCE_DIR}/src/main/cpp
                                         ${CMAKE_CURRENT_SOURCE_DIR}/../../lib-SL2GLFW/source/SLWindow.cpp
                                         ${CMAKE_CURRENT_SOURCE_DIR}/../../lib-SL2GLFW/include/SLWindowAndroid.h
                                         ${CMAKE_CURRENT_SOURCE_DIR}/../../lib-SL2GLFW/source/SLWindowAndroid.cpp
+                                        ${CMAKE_CURRENT_SOURCE_DIR}/../../lib-SL2GLFW/include/UtilImGUI.h
+                                        ${CMAKE_CURRENT_SOURCE_DIR}/../../lib-SL2GLFW/source/UtilImGUI.cpp
                                         ${CMAKE_CURRENT_SOURCE_DIR}/../../app-Demo-SL2GLFW/source/SLGuiBuilderMinimal.h
                                         ${CMAKE_CURRENT_SOURCE_DIR}/../../app-Demo-SL2GLFW/source/SLGuiBuilderMinimal.cpp
                                         ${CMAKE_CURRENT_SOURCE_DIR}/../../app-Demo-SL2GLFW/source/SLSceneBuilderMinimal.h
@@ -155,6 +157,8 @@ file(GLOB_RECURSE APP_DEMO_SOURCES      ${CMAKE_CURRENT_SOURCE_DIR}/src/main/cpp
                                         ${CMAKE_CURRENT_SOURCE_DIR}/../../app-Demo-SL2GLFW/source/SLGuiBuilderDemo.cpp
                                         ${CMAKE_CURRENT_SOURCE_DIR}/../../app-Demo-SL2GLFW/source/SLSceneBuilderDemo.h
                                         ${CMAKE_CURRENT_SOURCE_DIR}/../../app-Demo-SL2GLFW/source/SLSceneBuilderDemo.cpp
+                                        ${CMAKE_CURRENT_SOURCE_DIR}/../../app-Demo-SL2GLFW/source/SLSceneBuilderTriangle.h
+                                        ${CMAKE_CURRENT_SOURCE_DIR}/../../app-Demo-SL2GLFW/source/SLSceneBuilderTriangle.cpp
                                         )
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../include)
