@@ -30,8 +30,7 @@ See the implementation for more information.<br>
  <br>
 */
 //-----------------------------------------------------------------------------
-void    slCreateAppAndScene     (SLVstring& cmdLineArgs,
-                                 SLstring shaderPath,
+void    slCreateAppAndScene     (SLstring shaderPath,
                                  SLstring modelPath,
                                  SLstring texturePath,
                                  SLstring videoPath,

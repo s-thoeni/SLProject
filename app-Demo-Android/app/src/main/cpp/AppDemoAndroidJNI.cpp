@@ -13,12 +13,18 @@
 #include <stdafx.h>
 #include <SLInterface.h>
 #include <SLScene.h>
-#include <AppDemoGui.h>
+
+#include "SLWindowAndroid.h"
+#include "SLGuiBuilderMinimal.h"
+#include "SLSceneBuilderMinimal.h"
+#include "SLGuiBuilderDemo.h"
+#include "SLSceneBuilderDemo.h"
 
 //-----------------------------------------------------------------------------
 // Some global variable for the JNI interface
 JNIEnv *environment;    //! Pointer to JAVA environment used in ray tracing callback
-int svIndex;            //!< SceneView index
+SLWindowAndroid *window;//!< The SLWindow context
+
 //-----------------------------------------------------------------------------
 /*! Java Native Interface (JNI) function declarations. These functions are
 called by the Java interface class GLES3Lib. The function name follows the pattern
@@ -56,7 +62,7 @@ JNIEXPORT void JNICALL Java_ch_fhnw_comgr_GLES3Lib_copyVideoYUVPlanes(JNIEnv *en
 };
 
 //-----------------------------------------------------------------------------
-extern void appDemoLoadScene(SLScene* s, SLSceneView* sv, SLSceneID sceneID);
+// extern void appDemoLoadScene(SLScene* s, SLSceneView* sv, SLSceneID sceneID);
 
 //-----------------------------------------------------------------------------
 //! Native ray tracing callback function that calls the Java class method GLES3Lib.RaytracingCallback
@@ -75,6 +81,7 @@ static void printGLString(const char *name, GLenum s)
     SL_LOG("GL %s = %s\n", name, v);
 }
 //-----------------------------------------------------------------------------
+
 JNIEXPORT void JNICALL Java_ch_fhnw_comgr_GLES3Lib_onInit(JNIEnv *env, jobject obj, jint width, jint height, jint dpi, jstring filePath)
 {
     environment = env;
@@ -82,94 +89,76 @@ JNIEXPORT void JNICALL Java_ch_fhnw_comgr_GLES3Lib_onInit(JNIEnv *env, jobject o
     string devicePath(nativeString);
     env->ReleaseStringUTFChars(filePath, nativeString);
 
-    SLVstring *cmdLineArgs = new SLVstring();
-
     SL_LOG("GUI            : Android");
-
     string device_path_msg = "Device path:" + devicePath;
     SL_LOG(device_path_msg.c_str(),0);
 
-    ////////////////////////////////////////////////////
-    slCreateAppAndScene(  *cmdLineArgs,
-                          devicePath + "/shaders/",
-                          devicePath + "/models/",
-                          devicePath + "/textures/",
-                          devicePath + "/videos/",
-                          devicePath + "/fonts/",
-                          devicePath + "/calibrations/",
-                          devicePath + "/config/",
-                          "AppDemoAndroid",
-                          (void*)appDemoLoadScene);
-    ////////////////////////////////////////////////////
+    window = new SLWindowAndroid( devicePath,
+                                  (void*)&Java_renderRaytracingCallback,
+                                  SID_Minimal,
+                                  dpi,
+                                  width,
+                                  height);
 
-    // This load the GUI configs that are locally stored
-    AppDemoGui::loadConfig(dpi);
+//    window->guiBuilder = new SLGuiBuilderMinimal();
+//    window->sceneBuilder = new SLSceneBuilderMinimal();
 
-    ////////////////////////////////////////////////////////////////////
-    svIndex = slCreateSceneView((int) width,
-                                (int) height,
-                                (int) dpi,
-                                SID_Revolver,
-                                (void *) &Java_renderRaytracingCallback,
-                                0,
-                                0,
-                                (void*)AppDemoGui::build);
-    ////////////////////////////////////////////////////////////////////
+    window->guiBuilder = new SLGuiBuilderDemo();
+    window->sceneBuilder = new SLSceneBuilderDemo();
 
-    delete cmdLineArgs;
+    window->show();
 }
 //-----------------------------------------------------------------------------
 JNIEXPORT void JNICALL Java_ch_fhnw_comgr_GLES3Lib_onTerminate(JNIEnv *env, jobject obj)
 {
-    AppDemoGui::saveConfig();
-
+    window->onTerminate();
     slTerminate();
 }
 //-----------------------------------------------------------------------------
 JNIEXPORT bool JNICALL Java_ch_fhnw_comgr_GLES3Lib_onUpdateAndPaint(JNIEnv *env, jobject obj)
 {
-    return slUpdateAndPaint(svIndex);
+    return slUpdateAndPaint(window->svIndex);
 }
 //-----------------------------------------------------------------------------
 JNIEXPORT void JNICALL Java_ch_fhnw_comgr_GLES3Lib_onResize(JNIEnv *env, jobject obj, jint width, jint height)
 {
-    slResize(svIndex, width, height);
+    slResize(window->svIndex, width, height);
 }
 //-----------------------------------------------------------------------------
 JNIEXPORT void JNICALL Java_ch_fhnw_comgr_GLES3Lib_onMouseDown(JNIEnv *env, jobject obj, jint button, jint x, jint y)
 {
     SL_LOG("mouse_down");
-    slMouseDown(svIndex, MB_left, x, y, K_none);
+    slMouseDown(window->svIndex, MB_left, x, y, K_none);
 }
 //-----------------------------------------------------------------------------
 JNIEXPORT void JNICALL Java_ch_fhnw_comgr_GLES3Lib_onMouseUp(JNIEnv *env, jobject obj, jint button, jint x, jint y)
 {
-    slMouseUp(svIndex, MB_left, x, y, K_none);
+    slMouseUp(window->svIndex, MB_left, x, y, K_none);
 }
 //-----------------------------------------------------------------------------
 JNIEXPORT void JNICALL Java_ch_fhnw_comgr_GLES3Lib_onMouseMove(JNIEnv *env, jobject obj, jint x, jint y)
 {
-    slMouseMove(svIndex, x, y);
+    slMouseMove(window->svIndex, x, y);
 }
 //-----------------------------------------------------------------------------
 JNIEXPORT void JNICALL Java_ch_fhnw_comgr_GLES3Lib_onTouch2Down(JNIEnv *env, jobject obj, jint x1, jint y1, jint x2, jint y2)
 {
-    slTouch2Down(svIndex, x1, y1, x2, y2);
+    slTouch2Down(window->svIndex, x1, y1, x2, y2);
 }
 //-----------------------------------------------------------------------------
 JNIEXPORT void JNICALL Java_ch_fhnw_comgr_GLES3Lib_onTouch2Up(JNIEnv *env, jobject obj, jint x1, jint y1, jint x2, jint y2)
 {
-    slTouch2Up(svIndex, x1, y1, x2, y2);
+    slTouch2Up(window->svIndex, x1, y1, x2, y2);
 }
 //-----------------------------------------------------------------------------
 JNIEXPORT void JNICALL Java_ch_fhnw_comgr_GLES3Lib_onTouch2Move(JNIEnv *env, jobject obj, jint x1, jint y1, jint x2, jint y2)
 {
-    slTouch2Move(svIndex, x1, y1, x2, y2);
+    slTouch2Move(window->svIndex, x1, y1, x2, y2);
 }
 //-----------------------------------------------------------------------------
 JNIEXPORT void JNICALL Java_ch_fhnw_comgr_GLES3Lib_onDoubleClick(JNIEnv *env, jobject obj, jint button, jint x, jint y)
 {
-    slDoubleClick(svIndex, MB_left, x, y, K_none);
+    slDoubleClick(window->svIndex, MB_left, x, y, K_none);
 }
 //-----------------------------------------------------------------------------
 JNIEXPORT void JNICALL Java_ch_fhnw_comgr_GLES3Lib_onRotationQUAT(JNIEnv *env, jobject obj, jfloat quatX, jfloat quatY, jfloat quatZ, jfloat quatW)
@@ -181,9 +170,7 @@ JNIEXPORT void JNICALL Java_ch_fhnw_comgr_GLES3Lib_onClose(JNIEnv *env, jobject 
 {
     SL_LOG("onClose\n ");
 
-    // This saves the GUI configs
-    AppDemoGui::saveConfig();
-
+    window->onTerminate();
     slTerminate();
     exit(0);
 }

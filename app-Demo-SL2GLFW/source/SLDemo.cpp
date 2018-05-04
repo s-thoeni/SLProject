@@ -27,13 +27,13 @@ int main(int argc, char* argv[])
 {
     GLFWWindow* window = new GLFWWindow((SLSceneID) SL_STARTSCENE, 800);
 
-    window->guiBuilder = new SLGuiBuilderMinimal();
-    window->sceneBuilder = new SLSceneBuilderMinimal();
+//    window->guiBuilder = new SLGuiBuilderMinimal();
+//    window->sceneBuilder = new SLSceneBuilderMinimal();
 
-    // window->guiBuilder = new SLGuiBuilderDemo();
-    // window->sceneBuilder = new SLSceneBuilderDemo();
+     window->guiBuilder = new SLGuiBuilderDemo();
+     window->sceneBuilder = new SLSceneBuilderDemo();
 
-    window->show(argc, argv);
+    window->show();
 
     delete window;
 }

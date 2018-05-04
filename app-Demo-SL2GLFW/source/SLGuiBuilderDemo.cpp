@@ -44,6 +44,7 @@
 #define IM_ARRAYSIZE(_ARR)  ((int)(sizeof(_ARR)/sizeof(*_ARR)))
 
 onSceneChange demo_fireSceneChange;
+SLGuiBuilder* demo_gui_builder;
 
 //-----------------------------------------------------------------------------
 //! Vector getter callback for combo and listbox with std::vector<std::string>
@@ -1760,13 +1761,7 @@ void AppDemoGui::loadConfig(SLint dotsPerInch)
 
     if (!SLFileSystem::fileExists(fullPathAndFilename))
     {
-        // Scale for proportioanl and fixed size fonts
-        SLfloat dpiScaleProp = dotsPerInch / 120.0f;
-        SLfloat dpiScaleFixed = dotsPerInch / 142.0f;
-
-        // Default settings for the first time
-        SLGLImGui::fontPropDots  = SL_max(16.0f * dpiScaleProp, 16.0f);
-        SLGLImGui::fontFixedDots = SL_max(13.0f * dpiScaleFixed, 13.0f);
+        demo_gui_builder->scaleImGUI(dotsPerInch);
 
         // Store dialog show states
         AppDemoGui::showAbout = true;
@@ -1778,14 +1773,6 @@ void AppDemoGui::loadConfig(SLint dotsPerInch)
         AppDemoGui::showInfosSensors = false;
         AppDemoGui::showSceneGraph = false;
         AppDemoGui::showProperties = false;
-
-        // Adjust UI paddings on DPI
-        style.FramePadding.x = SL_max(8.0f * dpiScaleFixed, 8.0f);
-        style.WindowPadding.x = style.FramePadding.x;
-        style.FramePadding.y = SL_max(3.0f * dpiScaleFixed, 3.0f);
-        style.ItemSpacing.x = SL_max(8.0f * dpiScaleFixed, 8.0f);
-        style.ItemSpacing.y = SL_max(3.0f * dpiScaleFixed, 3.0f);
-        style.ItemInnerSpacing.x = style.ItemSpacing.y;
 
         return;
     }
@@ -1868,15 +1855,17 @@ void AppDemoGui::saveConfig()
 
 SLGuiBuilderDemo::SLGuiBuilderDemo(){
     this->buildFunction = (void*) AppDemoGui::build;
+    demo_gui_builder = this;
 }
 
 void SLGuiBuilderDemo::registerSceneListener(onSceneChange listener)
 {
-    demo_fireSceneChange = listener;
+    demo_fireSceneChange = listener;    
 }
 
-void SLGuiBuilderDemo::onSceneCreated(SLint dpi){
-    AppDemoGui::loadConfig(dpi);
+void SLGuiBuilderDemo::onSceneCreated(SLuint dpi){
+
+    AppDemoGui::loadConfig(dpi);        
     demo_fireSceneChange(SLApplication::sceneID);
 }
 

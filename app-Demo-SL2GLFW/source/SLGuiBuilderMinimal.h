@@ -13,6 +13,7 @@ public:
     SLGuiBuilderMinimal();
 
     virtual void registerSceneListener(onSceneChange listener);
+    virtual void onSceneCreated(SLuint dpi);
 };
 
 #endif // MINIMALGUIBUILDER_H

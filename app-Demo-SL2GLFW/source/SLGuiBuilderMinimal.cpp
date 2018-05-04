@@ -52,3 +52,8 @@ void SLGuiBuilderMinimal::registerSceneListener(onSceneChange listener)
 {
     fireSceneChange = listener;
 }
+
+void SLGuiBuilderMinimal::onSceneCreated(SLuint dpi)
+{
+    this->scaleImGUI(dpi);
+}

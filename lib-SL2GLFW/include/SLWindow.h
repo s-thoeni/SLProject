@@ -14,7 +14,8 @@ public:
 
     void* buildFunction;
 
-    virtual void onSceneCreated(int dpi){}
+    virtual void onSceneCreated(SLuint dpi){}
+    virtual void scaleImGUI(SLuint dpi);
     virtual void onTerminate(){}
     virtual void registerSceneListener(onSceneChange listener) = 0;
 
@@ -31,10 +32,15 @@ public:
 class SLWindow
 {
 public:
+
+    SLuint svIndex;
+
     SLWindow(SLSceneID startScene,
+             SLuint dpi,
              int width,
              int height):
         startScene(startScene),
+        dpi(dpi),
         width(width),
         height(height)
     {}
@@ -47,14 +53,16 @@ public:
     SLGuiBuilder* guiBuilder;
     SLSceneBuilder* sceneBuilder;
 
-    virtual int show(int argc, char *argv[]);
-    virtual int abstractShow(int argc, char *argv[]) = 0;
-    virtual void onSceneCreated(SLuint svIndex, SLuint dpi);
+    virtual int show();
+    virtual int abstractShow() = 0;
+    virtual void onSceneCreated();
+    virtual void onTerminate();
 
 protected:
     SLSceneID startScene;
     int width;
     int height;
+    SLuint dpi;
 };
 
 #endif // SLWINDOW_H

@@ -41,10 +41,12 @@ INCLUDEPATH += source
 
 HEADERS += \
     include/SLWindow.h \
-    include/GLFWWindow.h
+    include/GLFWWindow.h \
+    include/SLWindowAndroid.h
 
 
 SOURCES += \
     source/GLFWWindow.cpp \
-    source/SLWindow.cpp
+    source/SLWindow.cpp \
+    source/SLWindowAndroid.cpp
 

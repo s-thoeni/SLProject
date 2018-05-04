@@ -6,13 +6,13 @@
 class GLFWWindow : public SLWindow
 {
 public:
-    GLFWWindow(SLSceneID startScene,
+    GLFWWindow(SLSceneID startScene,               
                int width = 640,
                int height = 480):
-        SLWindow(startScene, width, height)
+        SLWindow(startScene, 0, width, height) // dpi will be set at startup
     {}
 
-    virtual int abstractShow(int argc, char *argv[]);
+    virtual int abstractShow();
 };
 
 #endif // GLFWWINDOW_H

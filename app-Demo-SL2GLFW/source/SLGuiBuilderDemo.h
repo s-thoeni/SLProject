@@ -67,7 +67,7 @@ public:
     SLGuiBuilderDemo();
 
     virtual void registerSceneListener(onSceneChange listener);
-    virtual void onSceneCreated(SLint dpi);
+    virtual void onSceneCreated(SLuint dpi);
     virtual void onTerminate();
 };
 //-----------------------------------------------------------------------------

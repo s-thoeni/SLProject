@@ -421,15 +421,8 @@ void bloatAppLoadScene(SLScene* s, SLSceneView* sv, SLSceneID sceneID)
 
 
 
-int GLFWWindow::abstractShow(int argc, char *argv[])
+int GLFWWindow::abstractShow()
 {
-
-
-    // set command line arguments
-    SLVstring cmdLineArgs;
-    for(int i = 0; i < argc; i++)
-        cmdLineArgs.push_back(SLstring(argv[i]));
-
     if (!glfwInit())
     {   fprintf(stderr, "Failed to initialize GLFW\n");
         exit(EXIT_FAILURE);
@@ -496,7 +489,7 @@ int GLFWWindow::abstractShow(int argc, char *argv[])
     GET_GL_ERROR;
 
     // Set your own physical screen dpi
-    int dpi = (int)(142 * scr2fbX);
+    this->dpi = (SLuint)(142 * scr2fbX);
     cout << "------------------------------------------------------------------" << endl;
     cout << "GUI             : GLFW (Version: " << GLFW_VERSION_MAJOR << "." << 
                                                    GLFW_VERSION_MINOR << "." << 
@@ -504,14 +497,12 @@ int GLFWWindow::abstractShow(int argc, char *argv[])
     cout << "DPI             : " << dpi << endl;
 
 
-    // get executable path
-    //SLstring exeDir = SLUtils::getPath(cmdLineArgs[0]);
+    // get executable path    
     SLstring exeDir = SLFileSystem::getCurrentWorkingDir();
     SLstring configDir = SLFileSystem::getAppsWritableDir();
 
     /////////////////////////////////////////////////////////
-    slCreateAppAndScene(cmdLineArgs,
-                        exeDir + "../_data/shaders/",
+    slCreateAppAndScene(exeDir + "../_data/shaders/",
                         exeDir + "../_data/models/",
                         exeDir + "../_data/images/textures/",
                         exeDir + "../_data/videos/",
@@ -530,9 +521,11 @@ int GLFWWindow::abstractShow(int argc, char *argv[])
                                 0,
                                 0,
                                 this->guiBuilder->buildFunction);
+    this->svIndex = svIndex;
     /////////////////////////////////////////////////////////
+
     // Static event to inform the SLWindow to load something
-    this->onSceneCreated(svIndex, dpi);
+    this->onSceneCreated();
 
     // Set GLFW callback functions
     glfwSetKeyCallback(window, onKeyPress);
@@ -557,7 +550,7 @@ int GLFWWindow::abstractShow(int argc, char *argv[])
     }
 
     // hard coded terminate event
-    this->guiBuilder->onTerminate();
+    this->onTerminate();
 
     slTerminate();
     glfwDestroyWindow(window);

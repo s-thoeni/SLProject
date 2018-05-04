@@ -37,7 +37,6 @@ bool gShouldClose = false;
 called only once per application. The SLScene constructor call is delayed until
 the first SLSceneView is created to guarantee, that the OpenGL context is
 present.<br>
-/param cmdLineArgs Command line arguments (not used yet)
 /param shaderPath Path to the shader files (readonly)
 /param modelPath Path to the 3D model files (readonly)
 /param texturePath Path to the texture image files (readonly)
@@ -52,8 +51,7 @@ See examples usages in:
   - app-Demo-Android: native-lib.cpp      in Java_ch_fhnw_comgr_GLES3Lib_onInit()
   - app-Demo-iOS:     ViewController.m    in viewDidLoad()
 */
-void slCreateAppAndScene(SLVstring& cmdLineArgs,
-                         SLstring shaderPath,
+void slCreateAppAndScene(SLstring shaderPath,
                          SLstring modelPath,
                          SLstring texturePath,
                          SLstring videoPath,

@@ -143,13 +143,24 @@ list(REMOVE_ITEM SLEXTERNAL_SOURCES     ${CMAKE_CURRENT_SOURCE_DIR}/../../lib-SL
                                         )
 
 file(GLOB_RECURSE APP_DEMO_SOURCES      ${CMAKE_CURRENT_SOURCE_DIR}/src/main/cpp/AppDemoAndroidJNI.cpp
-                                        ${CMAKE_CURRENT_SOURCE_DIR}/../../app-Demo-GLFW/source/AppDemoLoad.cpp
-                                        ${CMAKE_CURRENT_SOURCE_DIR}/../../app-Demo-GLFW/source/AppDemoGui.h
-                                        ${CMAKE_CURRENT_SOURCE_DIR}/../../app-Demo-GLFW/source/AppDemoGui.cpp
+                                        ${CMAKE_CURRENT_SOURCE_DIR}/../../lib-SL2GLFW/include/SLWindow.h
+                                        ${CMAKE_CURRENT_SOURCE_DIR}/../../lib-SL2GLFW/source/SLWindow.cpp
+                                        ${CMAKE_CURRENT_SOURCE_DIR}/../../lib-SL2GLFW/include/SLWindowAndroid.h
+                                        ${CMAKE_CURRENT_SOURCE_DIR}/../../lib-SL2GLFW/source/SLWindowAndroid.cpp
+                                        ${CMAKE_CURRENT_SOURCE_DIR}/../../app-Demo-SL2GLFW/source/SLGuiBuilderMinimal.h
+                                        ${CMAKE_CURRENT_SOURCE_DIR}/../../app-Demo-SL2GLFW/source/SLGuiBuilderMinimal.cpp
+                                        ${CMAKE_CURRENT_SOURCE_DIR}/../../app-Demo-SL2GLFW/source/SLSceneBuilderMinimal.h
+                                        ${CMAKE_CURRENT_SOURCE_DIR}/../../app-Demo-SL2GLFW/source/SLSceneBuilderMinimal.cpp
+                                        ${CMAKE_CURRENT_SOURCE_DIR}/../../app-Demo-SL2GLFW/source/SLGuiBuilderDemo.h
+                                        ${CMAKE_CURRENT_SOURCE_DIR}/../../app-Demo-SL2GLFW/source/SLGuiBuilderDemo.cpp
+                                        ${CMAKE_CURRENT_SOURCE_DIR}/../../app-Demo-SL2GLFW/source/SLSceneBuilderDemo.h
+                                        ${CMAKE_CURRENT_SOURCE_DIR}/../../app-Demo-SL2GLFW/source/SLSceneBuilderDemo.cpp
                                         )
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../include)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../app-Demo-GLFW/source)
+# include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../app-Demo-GLFW/source)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../app-Demo-SL2GLFW/source)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../lib-SL2GLFW/include)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../lib-SLExternal)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../lib-SLExternal/imgui)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../lib-SLExternal/opencv/include)
