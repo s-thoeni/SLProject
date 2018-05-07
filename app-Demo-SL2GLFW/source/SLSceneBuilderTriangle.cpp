@@ -13,14 +13,14 @@ public:
         // set the material
         mat(material);
 
-        // set the position vertices
+        // set the vertices
         P.clear();
         P.resize(3);
         P[0] = SLVec3f(0,0,0);
         P[1] = SLVec3f(size,0,0);
         P[2] = SLVec3f(0,size,0);
 
-        // define the indices for the used positions
+        // define the indices for the vertices
         I16.clear();
         I16.resize(3);
         I16[0] = 0;
