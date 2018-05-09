@@ -8,7 +8,7 @@ class SLWindowAndroid : public SLWindow
 {
 public:
     SLWindowAndroid(string devicePath,                    
-                    void* onWndUpdateCallback,
+                    void* onWndUpdateCallback,                    
                     SLSceneID startScene,
                     SLuint dpi,
                     int width,

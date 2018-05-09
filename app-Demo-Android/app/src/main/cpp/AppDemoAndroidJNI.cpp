@@ -69,9 +69,17 @@ JNIEXPORT void JNICALL Java_ch_fhnw_comgr_GLES3Lib_copyVideoYUVPlanes(JNIEnv *en
 //! Native ray tracing callback function that calls the Java class method GLES3Lib.RaytracingCallback
 bool Java_renderRaytracingCallback()
 {
-    jclass klass = environment->FindClass("ch/fhnw/comgr/GLES3Lib");
-    jmethodID method = environment->GetStaticMethodID(klass, "RaytracingCallback", "()Z");
-    return environment->CallStaticBooleanMethod(klass,method);
+    jclass clazz = environment->FindClass("ch/fhnw/comgr/GLES3Lib");
+    jmethodID method = environment->GetStaticMethodID(clazz, "RaytracingCallback", "()Z");
+    return environment->CallStaticBooleanMethod(clazz,method);
+}
+
+SLbyte* Java_requestResource()
+{
+    jclass clazz = environment->FindClass("ch/fhnw/comgr/GLES3Lib");
+    jmethodID method = environment->GetStaticMethodID(clazz, "requestResource", "()[B");
+    jobject data = environment->CallStaticObjectMethod(clazz, method);
+    return environment->GetByteArrayElements(static_cast<jbyteArray> (data), JNI_FALSE);
 }
 
 //-----------------------------------------------------------------------------
@@ -82,6 +90,15 @@ static void printGLString(const char *name, GLenum s)
     SL_LOG("GL %s = %s\n", name, v);
 }
 //-----------------------------------------------------------------------------
+
+class SLResourceLoaderAndroid : public SLResourceLoader
+{
+public:
+    SLbyte* getResource()
+    {
+        return Java_requestResource();
+    }
+};
 
 JNIEXPORT void JNICALL Java_ch_fhnw_comgr_GLES3Lib_onInit(JNIEnv *env, jobject obj, jint width, jint height, jint dpi, jstring filePath)
 {
@@ -96,6 +113,7 @@ JNIEXPORT void JNICALL Java_ch_fhnw_comgr_GLES3Lib_onInit(JNIEnv *env, jobject o
 
     window = new SLWindowAndroid( devicePath,
                                   (void*)&Java_renderRaytracingCallback,
+                                  (void*)&Java_requestResource,
                                   SID_Minimal,
                                   dpi,
                                   width,
@@ -104,6 +122,7 @@ JNIEXPORT void JNICALL Java_ch_fhnw_comgr_GLES3Lib_onInit(JNIEnv *env, jobject o
     window->guiBuilder = new SLGuiBuilderMinimal();
 //    window->sceneBuilder = new SLSceneBuilderMinimal();
     window->sceneBuilder = new SLSceneBuilderTriangle();
+    window->sceneBuilder->resourceLoader = new SLResourceLoaderAndroid();
 
 //    window->guiBuilder = new SLGuiBuilderDemo();
 //    window->sceneBuilder = new SLSceneBuilderDemo();

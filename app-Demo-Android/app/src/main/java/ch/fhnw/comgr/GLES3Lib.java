@@ -20,6 +20,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.concurrent.ThreadLocalRandom;
 
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLContext;
@@ -68,6 +69,16 @@ public class GLES3Lib {
                                                      byte[] y, int ySize, int yPixStride, int yLineStride,
                                                      byte[] u, int uSize, int uPixStride, int uLineStride,
                                                      byte[] v, int vSize, int vPixStride, int vLineStride);
+
+    public static byte[] requestResource(){
+        try {
+            Thread.currentThread().sleep(5000);
+        } catch (InterruptedException e){
+            Thread.currentThread().interrupt();
+        }
+
+        return "hello".getBytes();
+    }
 
     /**
      * The RaytracingCallback function is used to repaint the ray tracing image during the

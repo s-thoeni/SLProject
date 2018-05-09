@@ -7,6 +7,20 @@
 
 typedef void (*onSceneChange) (SLSceneID);
 
+struct SceneDto{
+    const char* name;
+    const char* info;
+    SLNode* root;
+};
+
+class SLResourceLoader
+{
+public:
+    SLResourceLoader(){}
+
+    virtual SLbyte* getResource() = 0;
+};
+
 class SLGuiBuilder
 {
 public:
@@ -25,7 +39,10 @@ class SLSceneBuilder
 public:
     SLSceneBuilder(){}
 
+    SLResourceLoader* resourceLoader;
+
     virtual void build(SLScene* s, SLSceneView* sv, SLSceneID sceneID) = 0;
+    virtual void preLoadScene(SLSceneID) = 0;
 };
 
 class SLWindow
@@ -55,9 +72,9 @@ public:
 
 protected:
     SLSceneID startScene;
+    SLuint dpi;
     int width;
     int height;
-    SLuint dpi;
 };
 
 #endif // SLWINDOW_H

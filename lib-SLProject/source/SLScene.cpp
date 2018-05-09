@@ -74,6 +74,7 @@ SLScene::SLScene(SLstring name) : SLObject(name),
 {
     SLApplication::scene = this;
 
+    _onPreUpdate    = nullptr;
     _root3D         = nullptr;
     _root2D         = nullptr;
     _info           = "";
@@ -288,7 +289,7 @@ example. AR tracking is only handled on the first scene view.
 \return true if really something got updated
 */
 bool SLScene::onUpdate()
-{
+{    
     // Return if not all sceneview got repainted: This check if necessary if
     // this function is called for multiple SceneViews. In this way we only 
     // update the geometric representations if all SceneViews got painted once.
@@ -300,7 +301,11 @@ bool SLScene::onUpdate()
     for (auto sv : _sceneViews)
         if (sv != nullptr)
             sv->gotPainted(false);
-    
+
+    // run preUpdate:
+    if( _onPreUpdate )
+        _onPreUpdate();
+
 
     /////////////////////////////
     // 1) Calculate frame time //

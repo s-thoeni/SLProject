@@ -13,6 +13,8 @@
 #include <debug_new.h>        // memory leak detector
 #endif
 
+#include <thread>
+
 #include <SLWindowGlfw.h>
 #include <SLApplication.h>
 #include <SLScene.h>
@@ -24,6 +26,23 @@
 #include "SLSceneBuilderMinimal.h"
 #include "SLSceneBuilderTriangle.h"
 
+int counter (0);
+std::string myTemplate = "helloGLFW";
+std::string result;
+
+class SLResourceLoaderGlfw : public SLResourceLoader
+{
+public:
+
+    SLbyte* getResource()
+    {
+        result = myTemplate + std::to_string(++counter);
+        std::this_thread::sleep_for(chrono::seconds(2));
+        return (SLbyte*) result.c_str();
+    }
+
+};
+
 int main(int argc, char* argv[])
 {
     SLWindowGlfw* window = new SLWindowGlfw((SLSceneID) SL_STARTSCENE, 800);
@@ -31,6 +50,7 @@ int main(int argc, char* argv[])
     window->guiBuilder = new SLGuiBuilderMinimal();
 //    window->sceneBuilder = new SLSceneBuilderMinimal();
     window->sceneBuilder = new SLSceneBuilderTriangle();
+    window->sceneBuilder->resourceLoader = new SLResourceLoaderGlfw();
 
 //    window->guiBuilder = new SLGuiBuilderDemo();
 //    window->sceneBuilder = new SLSceneBuilderDemo();

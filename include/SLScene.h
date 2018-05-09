@@ -47,6 +47,7 @@ typedef std::vector<SLCVTracked*> SLVCVTracker; //!< Vector of CV tracker pointe
 //-----------------------------------------------------------------------------
 //! C-Callback function typedef for scene load function
 typedef void(SL_STDCALL *cbOnSceneLoad)(SLScene* s, SLSceneView* sv, SLint sceneID);
+typedef void(*cbOnPreUpdate)();
 //-----------------------------------------------------------------------------
 //! The SLScene class represents the top level instance holding the scene structure
 /*!      
@@ -70,6 +71,7 @@ class SLScene: public SLObject
     public:                 SLScene             (SLstring name);
                            ~SLScene             ();
             // Setters
+            void            preUpdate           (cbOnPreUpdate preUpdate){_onPreUpdate = preUpdate;}
             void            root3D              (SLNode* root3D){_root3D = root3D;}
             void            root2D              (SLNode* root2D){_root2D = root2D;}
             void            globalAmbiLight     (SLCol4f gloAmbi){_globalAmbiLight=gloAmbi;}
@@ -142,6 +144,8 @@ class SLScene: public SLObject
                                                  SLbool isContinuous,
                                                  SLbool isTopLeft);
    protected:
+            cbOnPreUpdate   _onPreUpdate;       //!< Callback to process on update
+
             SLVSceneView    _sceneViews;        //!< Vector of all sceneview pointers
             SLVMesh         _meshes;            //!< Vector of all meshes
             SLVMaterial     _materials;         //!< Vector of all materials pointers
