@@ -39,8 +39,8 @@
 #include <SLCVTrackedFeatures.h>
 #include <SLTransferFunction.h>
 #include <SLSkybox.h>
-#include <photo.hpp>
-#include <imgcodecs.hpp>
+//#include <photo.hpp>
+//#include <imgcodecs.hpp>
 
 //-----------------------------------------------------------------------------
 // Foreward declarations for helper functions used only in this file

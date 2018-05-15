@@ -351,6 +351,12 @@
     <ClInclude Include="..\include\SLApplication.h">
       <Filter>SL</Filter>
     </ClInclude>
+    <ClInclude Include="source\GL\SLGLGeneratedTexture.h">
+      <Filter>GL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\SLGLFrameBuffer.h">
+      <Filter>GL</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\SLAABBox.cpp">
@@ -580,6 +586,12 @@
     </ClCompile>
     <ClCompile Include="source\SL\SLApplication.cpp">
       <Filter>SL</Filter>
+    </ClCompile>
+    <ClCompile Include="source\GL\SLGLFrameBuffer.cpp">
+      <Filter>GL</Filter>
+    </ClCompile>
+    <ClCompile Include="source\GL\SLGLGeneratedTexture.cpp">
+      <Filter>GL</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
