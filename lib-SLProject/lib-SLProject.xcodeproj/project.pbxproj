@@ -184,10 +184,15 @@
 		4178D66420205E1700F4F699 /* SLApplication.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4178D66320205E1700F4F699 /* SLApplication.cpp */; };
 		41B5768A1FF53D1A00542824 /* SLSkybox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41B576881FF53D1A00542824 /* SLSkybox.cpp */; };
 		41B5768D1FF53D8B00542824 /* SLSkybox.h in Headers */ = {isa = PBXBuildFile; fileRef = 41B5768C1FF53D8B00542824 /* SLSkybox.h */; };
+<<<<<<< HEAD
 		BD075D9B2080B688003C9DA9 /* SLGLFrameBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BD075D992080B688003C9DA9 /* SLGLFrameBuffer.cpp */; };
 		BD2C7DAD2091AEFE0047E10F /* SLGLGeneratedTexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BD2C7DAB2091AEFE0047E10F /* SLGLGeneratedTexture.cpp */; };
 		BD2C7DAE2091AEFE0047E10F /* SLGLGeneratedTexture.h in Headers */ = {isa = PBXBuildFile; fileRef = BD2C7DAC2091AEFE0047E10F /* SLGLGeneratedTexture.h */; };
 		BD8B94BA2083F0EA00E124EE /* SLGLFrameBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = BD8B94B72083F0E700E124EE /* SLGLFrameBuffer.h */; };
+=======
+		41EAAE062067B80C00F7E9B9 /* SLCVTrackedFaces.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41EAAE052067B80B00F7E9B9 /* SLCVTrackedFaces.cpp */; };
+		41EAAE082067B82200F7E9B9 /* SLCVTrackedFaces.h in Headers */ = {isa = PBXBuildFile; fileRef = 41EAAE072067B82200F7E9B9 /* SLCVTrackedFaces.h */; };
+>>>>>>> origin/marcus
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -435,6 +440,7 @@
 		41B576871FF539A600542824 /* ADS.vert */ = {isa = PBXFileReference; explicitFileType = sourcecode.glsl; fileEncoding = 4; name = ADS.vert; path = ../_data/shaders/ADS.vert; sourceTree = "<group>"; };
 		41B576881FF53D1A00542824 /* SLSkybox.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = SLSkybox.cpp; path = source/SL/SLSkybox.cpp; sourceTree = "<group>"; };
 		41B5768C1FF53D8B00542824 /* SLSkybox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SLSkybox.h; path = ../include/SLSkybox.h; sourceTree = "<group>"; };
+<<<<<<< HEAD
 		BD075D992080B688003C9DA9 /* SLGLFrameBuffer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = SLGLFrameBuffer.cpp; path = source/GL/SLGLFrameBuffer.cpp; sourceTree = "<group>"; };
 		BD17D43A20891FB600FDF3D7 /* Background.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = Background.vert; path = ../_data/shaders/Background.vert; sourceTree = "<group>"; };
 		BD17D43B2089399800FDF3D7 /* Background.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = Background.frag; path = ../_data/shaders/Background.frag; sourceTree = "<group>"; };
@@ -451,6 +457,10 @@
 		BD99183D20872DE900B65614 /* CubeMap.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = CubeMap.vert; path = ../_data/shaders/CubeMap.vert; sourceTree = "<group>"; };
 		BD99183E208738FB00B65614 /* EquirectangularToCubeMap.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = EquirectangularToCubeMap.frag; path = ../_data/shaders/EquirectangularToCubeMap.frag; sourceTree = "<group>"; };
 		BD99183F2087443100B65614 /* CubeMap.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = CubeMap.frag; path = ../_data/shaders/CubeMap.frag; sourceTree = "<group>"; };
+=======
+		41EAAE052067B80B00F7E9B9 /* SLCVTrackedFaces.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SLCVTrackedFaces.cpp; path = source/CV/SLCVTrackedFaces.cpp; sourceTree = SOURCE_ROOT; };
+		41EAAE072067B82200F7E9B9 /* SLCVTrackedFaces.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SLCVTrackedFaces.h; path = ../include/SLCVTrackedFaces.h; sourceTree = SOURCE_ROOT; };
+>>>>>>> origin/marcus
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -569,6 +579,8 @@
 				41030C6E1FED497E005CFF1A /* SLCVTrackedAruco.h */,
 				41030C0B1FED48A3005CFF1A /* SLCVTrackedChessboard.cpp */,
 				41030C651FED497D005CFF1A /* SLCVTrackedChessboard.h */,
+				41EAAE052067B80B00F7E9B9 /* SLCVTrackedFaces.cpp */,
+				41EAAE072067B82200F7E9B9 /* SLCVTrackedFaces.h */,
 				41030C021FED48A3005CFF1A /* SLCVTrackedFeatures.cpp */,
 				41030C681FED497D005CFF1A /* SLCVTrackedFeatures.h */,
 			);
@@ -849,6 +861,7 @@
 				41030CDD1FED49E2005CFF1A /* SLAABBox.h in Headers */,
 				41030CD91FED49E2005CFF1A /* SLTexFont.h in Headers */,
 				41030CC21FED49E2005CFF1A /* SLMesh.h in Headers */,
+				41EAAE082067B82200F7E9B9 /* SLCVTrackedFaces.h in Headers */,
 				41030CCA1FED49E2005CFF1A /* SLMaterial.h in Headers */,
 				41030CF81FED49E2005CFF1A /* SLDeviceRotation.h in Headers */,
 				41030CC31FED49E2005CFF1A /* SLInputManager.h in Headers */,
@@ -1035,6 +1048,7 @@
 				BD075D9B2080B688003C9DA9 /* SLGLFrameBuffer.cpp in Sources */,
 				41030C0F1FED48A3005CFF1A /* SLCVCapture.cpp in Sources */,
 				41030BDC1FED4703005CFF1A /* SLCone.cpp in Sources */,
+				41EAAE062067B80C00F7E9B9 /* SLCVTrackedFaces.cpp in Sources */,
 				41030C221FED48B7005CFF1A /* SLGLOculusFB.cpp in Sources */,
 				41030C011FED4884005CFF1A /* SLTexFont.cpp in Sources */,
 				41030BD81FED4703005CFF1A /* SLScene.cpp in Sources */,

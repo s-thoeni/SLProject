@@ -351,11 +351,16 @@
     <ClInclude Include="..\include\SLApplication.h">
       <Filter>SL</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="source\GL\SLGLGeneratedTexture.h">
       <Filter>GL</Filter>
     </ClInclude>
     <ClInclude Include="..\include\SLGLFrameBuffer.h">
       <Filter>GL</Filter>
+=======
+    <ClInclude Include="..\include\SLCVTrackedFaces.h">
+      <Filter>CV</Filter>
+>>>>>>> origin/marcus
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -587,11 +592,16 @@
     <ClCompile Include="source\SL\SLApplication.cpp">
       <Filter>SL</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="source\GL\SLGLFrameBuffer.cpp">
       <Filter>GL</Filter>
     </ClCompile>
     <ClCompile Include="source\GL\SLGLGeneratedTexture.cpp">
       <Filter>GL</Filter>
+=======
+    <ClCompile Include="source\CV\SLCVTrackedFaces.cpp">
+      <Filter>CV</Filter>
+>>>>>>> origin/marcus
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
