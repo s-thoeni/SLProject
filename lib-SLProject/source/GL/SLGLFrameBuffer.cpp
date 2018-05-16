@@ -1,5 +1,5 @@
 //#############################################################################
-//  File:      SLGLFrameBuffer.h
+//  File:      SLGLFrameBuffer.cpp
 //  Purpose:   Wrapper class around OpenGL Frame Buffer Objects (FBO)
 //  Author:    Carlos Arauz
 //  Date:      April 2018
@@ -94,6 +94,7 @@ void SLGLFrameBuffer::unbind()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
+//-----------------------------------------------------------------------------
 void SLGLFrameBuffer::bufferStorage(SLsizei width,
                                     SLsizei height)
 {
@@ -112,3 +113,4 @@ void SLGLFrameBuffer::attachTexture2D(SLenum        attachment,
     assert(this->_id && this->_rbo);
     glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, target, texture->texName(), level);
 }
+//-----------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 //#############################################################################
-//  File:      SLGLGeneratedTexture.cpp
+//  File:      SLGLTextureGenerated.cpp
 //  Author:    Carlos Arauz
 //  Date:      April 2018
 //  Codestyle: https://github.com/cpvrlab/SLProject/wiki/Coding-Style-Guidelines
@@ -15,11 +15,11 @@
 
 #include <SLApplication.h>
 #include <SLScene.h>
-#include "SLGLGeneratedTexture.h"
+#include <SLGLTextureGenerated.h>
 
 //-----------------------------------------------------------------------------
 //! ctor for generated textures from hdr textures
-SLGLGeneratedTexture::SLGLGeneratedTexture(SLGLTexture*      texture,
+SLGLTextureGenerated::SLGLTextureGenerated(SLGLTexture*      texture,
                                            SLGLFrameBuffer*  fbo,
                                            SLTextureType     type,
                                            SLenum            target,
@@ -65,12 +65,12 @@ SLGLGeneratedTexture::SLGLGeneratedTexture(SLGLTexture*      texture,
     SLApplication::scene->textures().push_back(this);
 }
 //-----------------------------------------------------------------------------
-SLGLGeneratedTexture::~SLGLGeneratedTexture()
+SLGLTextureGenerated::~SLGLTextureGenerated()
 {
     clearData();
 }
 //-----------------------------------------------------------------------------
-void SLGLGeneratedTexture::clearData()
+void SLGLTextureGenerated::clearData()
 {
     glDeleteTextures(1, &_texName);
 
@@ -87,7 +87,7 @@ void SLGLGeneratedTexture::clearData()
     _vaoSprite.clearAttribs();
 }
 //-----------------------------------------------------------------------------
-void SLGLGeneratedTexture::build(SLint texID)
+void SLGLTextureGenerated::build(SLint texID)
 {
     if (this->_captureFBO->id() && this->_captureFBO->rbo())
     {
@@ -208,7 +208,7 @@ void SLGLGeneratedTexture::build(SLint texID)
 }
 //-----------------------------------------------------------------------------
 //! renders 1x1 cube
-void SLGLGeneratedTexture::renderCube()
+void SLGLTextureGenerated::renderCube()
 {
     // initialize (if necessary)
     if (_cubeVAO == 0)
@@ -280,7 +280,7 @@ void SLGLGeneratedTexture::renderCube()
 }
 //-----------------------------------------------------------------------------
 //! renders a 1x1 XY quad
-void SLGLGeneratedTexture::renderQuad()
+void SLGLTextureGenerated::renderQuad()
 {
     if (this->_quadVAO == 0)
     {
@@ -307,7 +307,7 @@ void SLGLGeneratedTexture::renderQuad()
     glBindVertexArray(0);
 }
 
-SLGLProgram* SLGLGeneratedTexture::getProgramFromType(SLTextureType type)
+SLGLProgram* SLGLTextureGenerated::getProgramFromType(SLTextureType type)
 {
     if (type==TT_environment) return new SLGLGenericProgram("CubeMap.vert", "EquirectangularToCubeMap.frag");
     if (type==TT_irradiance)  return new SLGLGenericProgram("CubeMap.vert", "IrradianceConvolution.frag");

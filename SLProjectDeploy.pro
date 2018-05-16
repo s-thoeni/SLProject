@@ -31,9 +31,15 @@ textures.files = \
   ../_data/images/textures/earthNight2048_C.jpg \
   ../_data/images/textures/earthCloud1024_A.jpg \
   ../_data/images/textures/earthCloud1024_C.jpg \
+  ../_data/images/textures/env_barce_rooftop.hdr \
   ../_data/images/textures/features_abstract.png \
   ../_data/images/textures/features_road.png \
   ../_data/images/textures/features_stones.png \
+  ../_data/images/textures/gold-scuffed_2048R.png \
+  ../_data/images/textures/gold-scuffed_2048N.png \
+  ../_data/images/textures/gold-scuffed_2048M.png \
+  ../_data/images/textures/gold-scuffed_2048C.png \
+  ../_data/images/textures/gold-scuffed_2048A.png \
   ../_data/images/textures/grass0512_C.jpg \
   ../_data/images/textures/gray_0256_C.jpg \
   ../_data/images/textures/MuttenzerBox+X0512_C.png \
@@ -298,6 +304,10 @@ fonts.files =  \
   ../_data/images/fonts/ProggyClean.ttf \
 
 shaders.files = \
+  ../_data/shaders/Background.frag \
+  ../_data/shaders/Background.vert \
+  ../_data/shaders/BRDF.frag \
+  ../_data/shaders/BRDF.vert \
   ../_data/shaders/BumpNormal.frag \
   ../_data/shaders/BumpNormal.vert \
   ../_data/shaders/BumpNormalEarth.frag \
@@ -306,13 +316,17 @@ shaders.files = \
   ../_data/shaders/ColorAttribute.vert \
   ../_data/shaders/ColorUniform.vert \
   ../_data/shaders/ColorUniformPoint.vert \
+  ../_data/shaders/CubeMap.frag \
+  ../_data/shaders/CubeMap.vert \
   ../_data/shaders/Diffuse.frag \
   ../_data/shaders/Diffuse.vert \
   ../_data/shaders/Earth.frag \
   ../_data/shaders/ErrorTex.frag \
   ../_data/shaders/ErrorTex.vert \
+  ../_data/shaders/EquirectangularToCubeMap.frag \
   ../_data/shaders/FontTex.frag \
   ../_data/shaders/FontTex.vert \
+  ../_data/shaders/IrradianceConvolution.frag \
   ../_data/shaders/PerPixBlinn.frag \
   ../_data/shaders/PerPixBlinn.vert \
   ../_data/shaders/PerPixBlinnSkinned.vert \
@@ -330,6 +344,10 @@ shaders.files = \
   ../_data/shaders/PerVrtBlinnTex.frag \
   ../_data/shaders/PerVrtBlinnTex.vert \
   ../_data/shaders/PerVrtBlinnTexSkinned.vert \
+  ../_data/shaders/Prefilter.frag \
+  ../_data/shaders/PBR.frag \
+  ../_data/shaders/PBRTex.frag \
+  ../_data/shaders/PBR.vert \
   ../_data/shaders/Reflect.frag \
   ../_data/shaders/Reflect.vert \
   ../_data/shaders/RefractReflect.frag \

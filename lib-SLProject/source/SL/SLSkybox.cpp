@@ -14,9 +14,9 @@
 #endif
 
 #include <SLSkybox.h>
-#include <SLGLTexture.h>
-#include <SLGLGeneratedTexture.h>
 #include <SLGLFrameBuffer.h>
+#include <SLGLTexture.h>
+#include <SLGLTextureGenerated.h>
 #include <SLMaterial.h>
 #include <SLBox.h>
 #include <SLCamera.h>
@@ -76,12 +76,12 @@ SLSkybox::SLSkybox(SLScene* s,
                                               GL_CLAMP_TO_EDGE,
                                               GL_CLAMP_TO_EDGE);
     
-    SLGLTexture* envCubemap = new SLGLGeneratedTexture(hdrTexture, captureBuffer, TT_environment, GL_TEXTURE_CUBE_MAP, GL_LINEAR_MIPMAP_LINEAR);
+    SLGLTexture* envCubemap = new SLGLTextureGenerated(hdrTexture, captureBuffer, TT_environment, GL_TEXTURE_CUBE_MAP, GL_LINEAR_MIPMAP_LINEAR);
     
     captureBuffer->bufferStorage(32, 32);
-    SLGLTexture* irradiancemap  = new SLGLGeneratedTexture(envCubemap, captureBuffer, TT_irradiance);
-    SLGLTexture* prefilter      = new SLGLGeneratedTexture(envCubemap, captureBuffer, TT_prefilter);
-    SLGLTexture* brdfLUTTexture = new SLGLGeneratedTexture(nullptr, captureBuffer, TT_lut, GL_TEXTURE_2D);
+    SLGLTexture* irradiancemap  = new SLGLTextureGenerated(envCubemap, captureBuffer, TT_irradiance);
+    SLGLTexture* prefilter      = new SLGLTextureGenerated(envCubemap, captureBuffer, TT_prefilter);
+    SLGLTexture* brdfLUTTexture = new SLGLTextureGenerated(nullptr, captureBuffer, TT_lut, GL_TEXTURE_2D);
 
     SLMaterial* hdrMaterial = new SLMaterial("matCubeMap");
     hdrMaterial->textures().push_back(envCubemap);
