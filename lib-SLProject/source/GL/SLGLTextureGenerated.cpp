@@ -309,10 +309,10 @@ void SLGLTextureGenerated::renderQuad()
 
 SLGLProgram* SLGLTextureGenerated::getProgramFromType(SLTextureType type)
 {
-    if (type==TT_environment) return new SLGLGenericProgram("CubeMap.vert", "EquirectangularToCubeMap.frag");
-    if (type==TT_irradiance)  return new SLGLGenericProgram("CubeMap.vert", "IrradianceConvolution.frag");
-    if (type==TT_prefilter)   return new SLGLGenericProgram("CubeMap.vert", "Prefilter.frag");
-    if (type==TT_lut)         return new SLGLGenericProgram("BRDF.vert", "BRDF.frag");
+    if (type==TT_environment) return new SLGLGenericProgram("PBR_CubeMap.vert", "PBR_CylinderToCubeMap.frag");
+    if (type==TT_irradiance)  return new SLGLGenericProgram("PBR_CubeMap.vert", "PBR_IrradianceConvolution.frag");
+    if (type==TT_prefilter)   return new SLGLGenericProgram("PBR_CubeMap.vert", "PBR_PrefilterRoughness.frag");
+    if (type==TT_lut)         return new SLGLGenericProgram("PBR_BRDFIntegration.vert", "PBR_BRDFIntegration.frag");
     return nullptr;
 }
 

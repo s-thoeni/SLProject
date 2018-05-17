@@ -1353,8 +1353,8 @@ void appDemoLoadScene(SLScene* s, SLSceneView* sv, SLSceneID sceneID)
         SLGLTexture* prefilterMap   = cubeMap->meshes()[0]->mat()->textures()[2];
         SLGLTexture* brdfLUTTexture = cubeMap->meshes()[0]->mat()->textures()[3];
         
-        SLGLProgram* pbr    = new SLGLGenericProgram("PBR.vert", "PBR.frag");
-        SLGLProgram* pbrTex = new SLGLGenericProgram("PBR.vert", "PBRTex.frag");
+        SLGLProgram* pbr    = new SLGLGenericProgram("PBR_Lighting.vert", "PBR_Lighting.frag");
+        SLGLProgram* pbrTex = new SLGLGenericProgram("PBR_Lighting.vert", "PBR_LightingTex.frag");
         SLGLUniform1f* exposure1 = new SLGLUniform1f(UT_const, "u_exposure", 1.0f, 0.02f, 0.01f, 10.0f, (SLKey)'H');
         SLGLUniform1f* exposure2 = new SLGLUniform1f(UT_const, "u_exposure", 1.0f, 0.02f, 0.01f, 10.0f, (SLKey)'H');
         s->eventHandlers().push_back(exposure1);
@@ -1408,7 +1408,7 @@ void appDemoLoadScene(SLScene* s, SLSceneView* sv, SLSceneID sceneID)
                 {
                     // Cook-Torrance material without textures
                     mat[i] = new SLMaterial("IBLMat",
-                                            SLCol4f::RED*0.5f,
+                                            SLCol4f::WHITE*0.5f,
                                             SL_clamp((float)r*deltaR, 0.05f, 1.0f),
                                             (float)m*deltaM,
                                             pbr,

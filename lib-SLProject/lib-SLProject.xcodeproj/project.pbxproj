@@ -440,19 +440,19 @@
 		41EAAE052067B80B00F7E9B9 /* SLCVTrackedFaces.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SLCVTrackedFaces.cpp; path = source/CV/SLCVTrackedFaces.cpp; sourceTree = SOURCE_ROOT; };
 		41EAAE072067B82200F7E9B9 /* SLCVTrackedFaces.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SLCVTrackedFaces.h; path = ../include/SLCVTrackedFaces.h; sourceTree = SOURCE_ROOT; };
 		BD075D992080B688003C9DA9 /* SLGLFrameBuffer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = SLGLFrameBuffer.cpp; path = source/GL/SLGLFrameBuffer.cpp; sourceTree = "<group>"; };
-		BD17D43A20891FB600FDF3D7 /* Background.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = Background.vert; path = ../_data/shaders/Background.vert; sourceTree = "<group>"; };
-		BD17D43B2089399800FDF3D7 /* Background.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = Background.frag; path = ../_data/shaders/Background.frag; sourceTree = "<group>"; };
-		BD2C7DAF209207290047E10F /* IrradianceConvolution.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = IrradianceConvolution.frag; path = ../_data/shaders/IrradianceConvolution.frag; sourceTree = "<group>"; };
-		BD2C7DB0209210F20047E10F /* Prefilter.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = Prefilter.frag; path = ../_data/shaders/Prefilter.frag; sourceTree = "<group>"; };
-		BD2C7DB120921CFF0047E10F /* BRDF.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = BRDF.vert; path = ../_data/shaders/BRDF.vert; sourceTree = "<group>"; };
-		BD2C7DB220921EAB0047E10F /* BRDF.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = BRDF.frag; path = ../_data/shaders/BRDF.frag; sourceTree = "<group>"; };
-		BD2C7DB3209224FD0047E10F /* PBR.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = PBR.vert; path = ../_data/shaders/PBR.vert; sourceTree = "<group>"; };
-		BD2C7DB4209226CC0047E10F /* PBR.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = PBR.frag; path = ../_data/shaders/PBR.frag; sourceTree = "<group>"; };
-		BD2C7DB52092502A0047E10F /* PBRTex.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = PBRTex.frag; path = ../_data/shaders/PBRTex.frag; sourceTree = "<group>"; };
+		BD17D43A20891FB600FDF3D7 /* PBR_SkyboxHDR.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = PBR_SkyboxHDR.vert; path = ../_data/shaders/PBR_SkyboxHDR.vert; sourceTree = "<group>"; };
+		BD17D43B2089399800FDF3D7 /* PBR_SkyboxHDR.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = PBR_SkyboxHDR.frag; path = ../_data/shaders/PBR_SkyboxHDR.frag; sourceTree = "<group>"; };
+		BD2C7DAF209207290047E10F /* PBR_IrradianceConvolution.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = PBR_IrradianceConvolution.frag; path = ../_data/shaders/PBR_IrradianceConvolution.frag; sourceTree = "<group>"; };
+		BD2C7DB0209210F20047E10F /* PBR_PrefilterRoughness.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = PBR_PrefilterRoughness.frag; path = ../_data/shaders/PBR_PrefilterRoughness.frag; sourceTree = "<group>"; };
+		BD2C7DB120921CFF0047E10F /* PBR_BRDFIntegration.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = PBR_BRDFIntegration.vert; path = ../_data/shaders/PBR_BRDFIntegration.vert; sourceTree = "<group>"; };
+		BD2C7DB220921EAB0047E10F /* PBR_BRDFIntegration.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = PBR_BRDFIntegration.frag; path = ../_data/shaders/PBR_BRDFIntegration.frag; sourceTree = "<group>"; };
+		BD2C7DB3209224FD0047E10F /* PBR_Lighting.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = PBR_Lighting.vert; path = ../_data/shaders/PBR_Lighting.vert; sourceTree = "<group>"; };
+		BD2C7DB4209226CC0047E10F /* PBR_Lighting.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = PBR_Lighting.frag; path = ../_data/shaders/PBR_Lighting.frag; sourceTree = "<group>"; };
+		BD2C7DB52092502A0047E10F /* PBR_LightingTex.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = PBR_LightingTex.frag; path = ../_data/shaders/PBR_LightingTex.frag; sourceTree = "<group>"; };
 		BD8B94B72083F0E700E124EE /* SLGLFrameBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SLGLFrameBuffer.h; path = ../include/SLGLFrameBuffer.h; sourceTree = "<group>"; };
-		BD99183D20872DE900B65614 /* CubeMap.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = CubeMap.vert; path = ../_data/shaders/CubeMap.vert; sourceTree = "<group>"; };
-		BD99183E208738FB00B65614 /* EquirectangularToCubeMap.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = EquirectangularToCubeMap.frag; path = ../_data/shaders/EquirectangularToCubeMap.frag; sourceTree = "<group>"; };
-		BD99183F2087443100B65614 /* CubeMap.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = CubeMap.frag; path = ../_data/shaders/CubeMap.frag; sourceTree = "<group>"; };
+		BD99183D20872DE900B65614 /* PBR_CubeMap.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = PBR_CubeMap.vert; path = ../_data/shaders/PBR_CubeMap.vert; sourceTree = "<group>"; };
+		BD99183E208738FB00B65614 /* PBR_CylinderToCubeMap.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = PBR_CylinderToCubeMap.frag; path = ../_data/shaders/PBR_CylinderToCubeMap.frag; sourceTree = "<group>"; };
+		BD99183F2087443100B65614 /* PBR_CubeMap.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = PBR_CubeMap.frag; path = ../_data/shaders/PBR_CubeMap.frag; sourceTree = "<group>"; };
 		BDB7733420AD7A7F0084DD28 /* SLGLTextureGenerated.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SLGLTextureGenerated.cpp; path = source/GL/SLGLTextureGenerated.cpp; sourceTree = "<group>"; };
 		BDB7733620AD7A9B0084DD28 /* SLGLTextureGenerated.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SLGLTextureGenerated.h; path = ../include/SLGLTextureGenerated.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -824,18 +824,18 @@
 				41B5767A1FF539A400542824 /* Wave.frag */,
 				41B5764D1FF5399E00542824 /* Wave.vert */,
 				41B576811FF539A500542824 /* WaveRefractReflect.vert */,
-				BD99183D20872DE900B65614 /* CubeMap.vert */,
-				BD99183E208738FB00B65614 /* EquirectangularToCubeMap.frag */,
-				BD99183F2087443100B65614 /* CubeMap.frag */,
-				BD17D43A20891FB600FDF3D7 /* Background.vert */,
-				BD17D43B2089399800FDF3D7 /* Background.frag */,
-				BD2C7DAF209207290047E10F /* IrradianceConvolution.frag */,
-				BD2C7DB0209210F20047E10F /* Prefilter.frag */,
-				BD2C7DB120921CFF0047E10F /* BRDF.vert */,
-				BD2C7DB220921EAB0047E10F /* BRDF.frag */,
-				BD2C7DB3209224FD0047E10F /* PBR.vert */,
-				BD2C7DB4209226CC0047E10F /* PBR.frag */,
-				BD2C7DB52092502A0047E10F /* PBRTex.frag */,
+				BD99183D20872DE900B65614 /* PBR_CubeMap.vert */,
+				BD99183E208738FB00B65614 /* PBR_CylinderToCubeMap.frag */,
+				BD99183F2087443100B65614 /* PBR_CubeMap.frag */,
+				BD17D43A20891FB600FDF3D7 /* PBR_SkyboxHDR.vert */,
+				BD17D43B2089399800FDF3D7 /* PBR_SkyboxHDR.frag */,
+				BD2C7DAF209207290047E10F /* PBR_IrradianceConvolution.frag */,
+				BD2C7DB0209210F20047E10F /* PBR_PrefilterRoughness.frag */,
+				BD2C7DB120921CFF0047E10F /* PBR_BRDFIntegration.vert */,
+				BD2C7DB220921EAB0047E10F /* PBR_BRDFIntegration.frag */,
+				BD2C7DB3209224FD0047E10F /* PBR_Lighting.vert */,
+				BD2C7DB4209226CC0047E10F /* PBR_Lighting.frag */,
+				BD2C7DB52092502A0047E10F /* PBR_LightingTex.frag */,
 			);
 			name = Shaders;
 			sourceTree = "<group>";

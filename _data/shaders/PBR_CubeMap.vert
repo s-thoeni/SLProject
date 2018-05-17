@@ -1,6 +1,6 @@
 //#############################################################################
-//  File:      CubeMap.vert
-//  Purpose:   GLSL vertex program for unlit skybox with a cube map
+//  File:      PBR_CubeMap.vert
+//  Purpose:   GLSL vertex program for rendering cube maps
 //  Author:    Carlos Arauz
 //  Date:      April 2018
 //  Copyright: Marcus Hudritsch
@@ -8,11 +8,11 @@
 //             Please visit: http://opensource.org/licenses/GPL-3.0
 //#############################################################################
 
-attribute   vec3 a_position;     // Vertex position attribute
+attribute vec3  a_position;     // Vertex position attribute
 
-uniform     mat4 u_mvpMatrix;    // = modelView
+uniform   mat4  u_mvpMatrix;    // = modelView
 
-varying vec3 P_VS;
+varying   vec3  P_VS;           // sample direction
 
 //-----------------------------------------------------------------------------
 void main ()

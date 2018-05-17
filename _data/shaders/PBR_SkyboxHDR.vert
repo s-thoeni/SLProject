@@ -1,8 +1,8 @@
 //#############################################################################
-//  File:      SkyBox.vert
-//  Purpose:   GLSL vertex program for unlit skybox with a cube map
-//  Author:    Marcus Hudritsch
-//  Date:      October 2017
+//  File:      PBR_SkyboxHDR.vert
+//  Purpose:   GLSL vertex program for HDR skybox with a cube map
+//  Author:    Carlos Arauz
+//  Date:      April 2018
 //  Copyright: Marcus Hudritsch
 //             This software is provide under the GNU General Public License
 //             Please visit: http://opensource.org/licenses/GPL-3.0
@@ -14,6 +14,7 @@ uniform     mat4    u_mvpMatrix;    // = projection * modelView
 
 varying     vec3    v_texCoord;     // texture coordinate at vertex
 
+//-----------------------------------------------------------------------------
 void main()
 {
     v_texCoord = normalize(vec3(a_position));
@@ -21,4 +22,4 @@ void main()
     // Set the transformes vertex position   
     gl_Position = u_mvpMatrix * a_position;
 }
-
+//-----------------------------------------------------------------------------

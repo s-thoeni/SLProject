@@ -61,7 +61,7 @@ SLSkybox::SLSkybox(SLScene* s,
                    SLVec2i  resolution,
                    SLstring name) : SLNode(name)
 {
-    SLGLProgram* backgroundShader = new SLGLGenericProgram("Background.vert", "Background.frag");
+    SLGLProgram* backgroundShader = new SLGLGenericProgram("PBR_SkyboxHDR.vert", "PBR_SkyboxHDR.frag");
     SLGLUniform1f* exposure = new SLGLUniform1f(UT_const, "u_exposure", 1.0f, 0.02f, 0.01f, 10.0f, (SLKey)'H');
     s->eventHandlers().push_back(exposure);
     backgroundShader->addUniform1f(exposure);

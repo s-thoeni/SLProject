@@ -1,6 +1,6 @@
 //#############################################################################
-//  File:      CubeMap.vert
-//  Purpose:   GLSL vertex program for unlit skybox with a cube map
+//  File:      PBR_CubeMap.frag
+//  Purpose:   GLSL fragment program for rendering cube maps
 //  Author:    Carlos Arauz
 //  Date:      April 2018
 //  Copyright: Marcus Hudritsch
@@ -8,9 +8,9 @@
 //             Please visit: http://opensource.org/licenses/GPL-3.0
 //#############################################################################
 
-uniform samplerCube u_texture0;
+uniform samplerCube u_texture0;       // cube map texture
 
-varying vec4 P_VS;
+varying vec4        P_VS;             // sample direction
 
 void main()
 {

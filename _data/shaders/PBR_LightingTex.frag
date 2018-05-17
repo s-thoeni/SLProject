@@ -1,10 +1,12 @@
 //#############################################################################
-//  File:      PerPixCookTorrance.frag
-//  Purpose:   GLSL fragment shader for Cook-Torrance physical based rendering.
-//             Based on the physically based rendering (PBR) tutorial with GLSL
-//             from Joey de Vries on https://learnopengl.com/#!PBR/Theory
-//  Author:    Marcus Hudritsch
-//  Date:      July 2017
+//  File:      PBR_LightingTex.frag
+//  Purpose:   GLSL fragment shader for Cook-Torrance physical based rendering
+//             including diffuse irradiance and specular IBL. Based on the
+//             physically based rendering (PBR) tutorial with GLSL by Joey de
+//             Vries on https://learnopengl.com/#!PBR/Theory
+//  Author:    Carlos Arauz, 
+//             adapted from PerPixCookTorrancetex.frag by Marcus Hudritsch
+//  Date:      April 2018
 //  Copyright: Marcus Hudritsch
 //             This software is provide under the GNU General Public License
 //             Please visit: http://opensource.org/licenses/GPL-3.0
@@ -14,27 +16,27 @@
 precision highp float;
 #endif
 
-varying     vec3  v_P_VS;        // Point of illumination in view space (VS)
-varying     vec3  v_N_VS;        // Normal at P_VS in view space
-varying     vec2  v_texCoord;    // Texture coordiante varying
-varying     mat4  v_invMvMatrix;
+varying     vec3  v_P_VS;             // Point of illumination in view space (VS)
+varying     vec3  v_N_VS;             // Normal at P_VS in view space
+varying     vec2  v_texCoord;         // Texture coordiante varying
+varying     mat4  v_invMvMatrix;      // needs inverse MV matrix for the rotation of the reflections
 
-uniform int    u_numLightsUsed;     //!< NO. of lights used light arrays
-uniform bool   u_lightIsOn[8];      //!< flag if light is on
-uniform vec4   u_lightPosVS[8];     //!< position of light in view space
-uniform vec4   u_lightDiffuse[8];   //!< diffuse light intensity (Id)
+uniform int       u_numLightsUsed;    //!< NO. of lights used light arrays
+uniform bool      u_lightIsOn[8];     //!< flag if light is on
+uniform vec4      u_lightPosVS[8];    //!< position of light in view space
+uniform vec4      u_lightDiffuse[8];  //!< diffuse light intensity (Id)
+uniform float     u_exposure;
 
-uniform sampler2D u_texture0;       //! Diffuse Color map (albedo)
-uniform sampler2D u_texture1;       //! Normal map
-uniform sampler2D u_texture2;       //! Metallic map
-uniform sampler2D u_texture3;       //! Roughness map
-uniform sampler2D u_texture4;       //! Ambient Occlusion map
-uniform float     u_exposure;       
+uniform sampler2D u_texture0;         //! Diffuse Color map (albedo)
+uniform sampler2D u_texture1;         //! Normal map
+uniform sampler2D u_texture2;         //! Metallic map
+uniform sampler2D u_texture3;         //! Roughness map
+uniform sampler2D u_texture4;         //! Ambient Occlusion map
 
-// IBL
-uniform samplerCube u_texture5;     //!< IBL irradiance map
-uniform samplerCube u_texture6;     //!< IBL prefilter map
-uniform sampler2D   u_texture7;     //!> IBL brdf lut
+// IBL pre-generated textures
+uniform samplerCube u_texture5;       //!< IBL irradiance convolution map
+uniform samplerCube u_texture6;       //!< IBL prefilter roughness map
+uniform sampler2D   u_texture7;       //!< IBL brdf integration map
 
 const float PI = 3.14159265359;
 //-----------------------------------------------------------------------------
@@ -189,4 +191,4 @@ void main()
     
     gl_FragColor = vec4(mapped, 1.0);
 }
-
+//-----------------------------------------------------------------------------
