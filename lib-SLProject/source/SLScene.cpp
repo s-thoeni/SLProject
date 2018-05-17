@@ -106,6 +106,12 @@ SLScene::SLScene(SLstring name,
     p = new SLGLGenericProgram("FontTex.vert","FontTex.frag");
     p = new SLGLGenericProgram("StereoOculus.vert","StereoOculus.frag");
     p = new SLGLGenericProgram("StereoOculusDistortionMesh.vert","StereoOculusDistortionMesh.frag");
+    p = new SLGLGenericProgram("PBR_Lighting.vert", "PBR_Lighting.frag");
+    p = new SLGLGenericProgram("PBR_Lighting.vert", "PBR_LightingTex.frag");
+    p = new SLGLGenericProgram("PBR_CubeMap.vert", "PBR_CylinderToCubeMap.frag");
+    p = new SLGLGenericProgram("PBR_CubeMap.vert", "PBR_IrradianceConvolution.frag");
+    p = new SLGLGenericProgram("PBR_CubeMap.vert", "PBR_PrefilterRoughness.frag");
+    p = new SLGLGenericProgram("PBR_BRDFIntegration.vert", "PBR_BRDFIntegration.frag");
     _numProgsPreload = (SLint)_programs.size();
    
     // font and video texture are not added to the _textures vector

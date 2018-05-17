@@ -1347,14 +1347,14 @@ void appDemoLoadScene(SLScene* s, SLSceneView* sv, SLSceneID sceneID)
     {
         s->name("HDR IBL Shader");
         s->info("Image-based Lighting from skybox using High Dynamic Range images");
-
-        SLSkybox* cubeMap = new SLSkybox(s, "env_barce_rooftop.hdr", SLVec2i(2048,2048));
-        SLGLTexture* irrandianceMap = cubeMap->meshes()[0]->mat()->textures()[1];
-        SLGLTexture* prefilterMap   = cubeMap->meshes()[0]->mat()->textures()[2];
-        SLGLTexture* brdfLUTTexture = cubeMap->meshes()[0]->mat()->textures()[3];
+  
+        SLSkybox* hdrCubeMap = new SLSkybox("env_barce_rooftop.hdr", SLVec2i(2048,2048));
+        SLGLTexture* irrandianceMap = hdrCubeMap->meshes()[0]->mat()->textures()[1];
+        SLGLTexture* prefilterMap   = hdrCubeMap->meshes()[0]->mat()->textures()[2];
+        SLGLTexture* brdfLUTTexture = hdrCubeMap->meshes()[0]->mat()->textures()[3];
         
-        SLGLProgram* pbr    = new SLGLGenericProgram("PBR_Lighting.vert", "PBR_Lighting.frag");
-        SLGLProgram* pbrTex = new SLGLGenericProgram("PBR_Lighting.vert", "PBR_LightingTex.frag");
+        SLGLProgram* pbr    = s->programs()[SP_pbrLighting];
+        SLGLProgram* pbrTex = s->programs()[SP_pbrLightingTex];
         SLGLUniform1f* exposure1 = new SLGLUniform1f(UT_const, "u_exposure", 1.0f, 0.02f, 0.01f, 10.0f, (SLKey)'H');
         SLGLUniform1f* exposure2 = new SLGLUniform1f(UT_const, "u_exposure", 1.0f, 0.02f, 0.01f, 10.0f, (SLKey)'H');
         s->eventHandlers().push_back(exposure1);
@@ -1364,7 +1364,7 @@ void appDemoLoadScene(SLScene* s, SLSceneView* sv, SLSceneID sceneID)
         
         // Create a scene group noce
         SLNode* scene = new SLNode("scene node");
-        
+  
         SLCamera* cam1 = new SLCamera("Camera 1");
         cam1->translation(0,0,28);
         cam1->lookAt(0,0,0);
@@ -1437,7 +1437,7 @@ void appDemoLoadScene(SLScene* s, SLSceneView* sv, SLSceneID sceneID)
         scene->addChild(light4);
         
         sv->camera(cam1);
-        sv->skybox(cubeMap);
+        sv->skybox(hdrCubeMap);
         s->root3D(scene);
         
         // Save energy

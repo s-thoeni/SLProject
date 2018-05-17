@@ -14,6 +14,7 @@
 #endif
 
 #include <SLSkybox.h>
+#include <SLApplication.h>
 #include <SLGLFrameBuffer.h>
 #include <SLGLTexture.h>
 #include <SLGLTextureGenerated.h>
@@ -56,14 +57,13 @@ SLSkybox::SLSkybox(SLstring cubeMapXPos,
 }
 //-----------------------------------------------------------------------------
 //! Draw the skybox with a cube map with the camera in its center.
-SLSkybox::SLSkybox(SLScene* s,
-                   SLstring hdrImage,
+SLSkybox::SLSkybox(SLstring hdrImage,
                    SLVec2i  resolution,
                    SLstring name) : SLNode(name)
 {
     SLGLProgram* backgroundShader = new SLGLGenericProgram("PBR_SkyboxHDR.vert", "PBR_SkyboxHDR.frag");
     SLGLUniform1f* exposure = new SLGLUniform1f(UT_const, "u_exposure", 1.0f, 0.02f, 0.01f, 10.0f, (SLKey)'H');
-    s->eventHandlers().push_back(exposure);
+    SLApplication::scene->eventHandlers().push_back(exposure);
     backgroundShader->addUniform1f(exposure);
     
     SLGLFrameBuffer* captureBuffer = new SLGLFrameBuffer(true, resolution.x, resolution.y);
@@ -81,7 +81,7 @@ SLSkybox::SLSkybox(SLScene* s,
     captureBuffer->bufferStorage(32, 32);
     SLGLTexture* irradiancemap  = new SLGLTextureGenerated(envCubemap, captureBuffer, TT_irradiance);
     SLGLTexture* prefilter      = new SLGLTextureGenerated(envCubemap, captureBuffer, TT_prefilter);
-    SLGLTexture* brdfLUTTexture = new SLGLTextureGenerated(nullptr, captureBuffer, TT_lut, GL_TEXTURE_2D);
+    SLGLTexture* brdfLUTTexture = new SLGLTextureGenerated(nullptr,    captureBuffer, TT_lut, GL_TEXTURE_2D);
 
     SLMaterial* hdrMaterial = new SLMaterial("matCubeMap");
     hdrMaterial->textures().push_back(envCubemap);
@@ -91,6 +91,8 @@ SLSkybox::SLSkybox(SLScene* s,
     hdrMaterial->program(backgroundShader);
 
     this->addMesh(new SLBox(10,10,10,-10,-10,-10, "box", hdrMaterial));
+    captureBuffer->unbind();
+    delete captureBuffer;
 }
 
 //-----------------------------------------------------------------------------

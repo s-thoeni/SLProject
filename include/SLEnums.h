@@ -265,7 +265,13 @@ enum SLShaderProg
     SP_bumpNormalParallax,
     SP_fontTex,
     SP_stereoOculus,
-    SP_stereoOculusDistortion
+    SP_stereoOculusDistortion,
+    SP_pbrLighting,
+    SP_pbrLightingTex,
+    SP_cylinderToCubeMap,
+    SP_irradianceConvolution,
+    SP_prefilterRoughness,
+    SP_brdfIntegration
 };
 //-----------------------------------------------------------------------------
 //! Type definition for GLSL uniform1f variables that change per frame.

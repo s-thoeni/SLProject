@@ -36,8 +36,7 @@ class SLSkybox: public SLNode
                                      SLstring cubeMapZPos,
                                      SLstring cubeMapZNeg,
                                      SLstring name = "Default Skybox");
-                    SLSkybox        (SLScene* s,
-                                     SLstring hdrImage,
+                    SLSkybox        (SLstring hdrImage,
                                      SLVec2i  resolution,
                                      SLstring name = "HDR Skybox");
                    ~SLSkybox        (){;}

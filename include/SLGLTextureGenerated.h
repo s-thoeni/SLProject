@@ -38,8 +38,8 @@ class SLGLTextureGenerated : public SLGLTexture
 
     virtual                    ~SLGLTextureGenerated();
     
-            void                clearData           ();
-            void                build               (SLint texID=0);
+    virtual void                clearData           ();
+    virtual void                build               (SLint texID=0);
     protected:            
             // converting the hdr image file to cubemap
             void                renderCube          ();

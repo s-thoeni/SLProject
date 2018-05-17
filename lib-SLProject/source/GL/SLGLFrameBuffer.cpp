@@ -73,7 +73,7 @@ void SLGLFrameBuffer::generate()
             
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         GET_GL_ERROR;
-        
+
         totalBufferCount++;
     }
 }
