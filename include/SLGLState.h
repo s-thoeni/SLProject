@@ -108,6 +108,7 @@ class SLGLState
         void     calcLightDirVS         (SLint nLights);
       
         // state setters
+        void     depthFunc              (SLenum func = GL_LESS);
         void     depthTest              (SLbool state);
         void     depthMask              (SLbool state);
         void     cullFace               (SLbool state);
@@ -175,6 +176,7 @@ class SLGLState
         SLbool      _glIsES3;               //!< Flag if OpenGL ES3
 
         // read/write states
+        SLenum      _depthFunc;             //!< depth buffer comparison function
         SLbool      _blend;                 //!< blending default false;
         SLbool      _depthTest;             //!< GL_DEPTH_TEST state
         SLbool      _depthMask;             //!< glDepthMask state

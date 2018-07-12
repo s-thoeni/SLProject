@@ -44,6 +44,8 @@ class SLSkybox: public SLNode
         SLCol4f     colorAtDir      (SLVec3f dir);
     
         void        drawAroundCamera (SLSceneView* sv);
+    private:
+        SLbool      _isHDR;                 //!< flag for HDR Skyboxes
 };
 //-----------------------------------------------------------------------------
 #endif // #define SLSKYBOX_H

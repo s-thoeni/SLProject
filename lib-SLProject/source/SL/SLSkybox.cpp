@@ -42,6 +42,9 @@ SLSkybox::SLSkybox(SLstring cubeMapXPos,
                    SLstring cubeMapZNeg,
                    SLstring name) : SLNode(name)
 {
+    // Set HDR flag to false, this is a normal SkyBox
+    this->_isHDR = false;
+    
     // Create texture, material and program
     SLGLTexture* cubeMap = new SLGLTexture(cubeMapXPos,cubeMapXNeg
                                           ,cubeMapYPos,cubeMapYNeg
@@ -61,6 +64,9 @@ SLSkybox::SLSkybox(SLstring hdrImage,
                    SLVec2i  resolution,
                    SLstring name) : SLNode(name)
 {
+    // Set HDR flag to true, this is a HDR SkyBox
+    this->_isHDR = true;
+    
     SLGLProgram* backgroundShader = new SLGLGenericProgram("PBR_SkyboxHDR.vert", "PBR_SkyboxHDR.frag");
     SLGLUniform1f* exposure = new SLGLUniform1f(UT_const, "u_exposure", 1.0f, 0.02f, 0.01f, 10.0f, (SLKey)'H');
     SLApplication::scene->eventHandlers().push_back(exposure);
@@ -112,9 +118,15 @@ void SLSkybox::drawAroundCamera(SLSceneView* sv)
 
     // Freeze depth buffer
     _stateGL->depthMask(false);
+    
+    // Change depth buffer comparisons for HDR SkyBoxes
+    if (this->_isHDR) _stateGL->depthFunc(GL_LEQUAL);
 
     // Draw the box
     this->drawMeshes(sv);
+    
+    // Change back the depth buffer comparisons
+    _stateGL->depthFunc();
 
     // Unlock depth buffer
     _stateGL->depthMask(true);

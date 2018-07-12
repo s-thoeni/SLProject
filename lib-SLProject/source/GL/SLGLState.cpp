@@ -114,6 +114,7 @@ void SLGLState::initAll()
     }
    
     //initialize states a unset
+    _depthFunc = GL_LESS;
     _blend = false;
     _cullFace = false;
     _depthTest = false;
@@ -269,6 +270,18 @@ void SLGLState::clearColor(SLCol4f newColor)
     
         #ifdef _GLDEBUG
         GET_GL_ERROR;
+        #endif
+    }
+}
+//-----------------------------------------------------------------------------
+void SLGLState::depthFunc(SLenum func)
+{
+    if (_depthFunc != func)
+    {   glDepthFunc(func);
+        _depthFunc = func;
+        
+        #ifdef _GLDEBUG
+        GET_GL_ERROR
         #endif
     }
 }

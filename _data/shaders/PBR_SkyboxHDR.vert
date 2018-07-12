@@ -20,6 +20,7 @@ void main()
     v_texCoord = normalize(vec3(a_position));
    
     // Set the transformes vertex position   
-    gl_Position = u_mvpMatrix * a_position;
+    vec4 pos = u_mvpMatrix * vec4(a_position.xyz, 1.0);
+    gl_Position = pos.xyww;
 }
 //-----------------------------------------------------------------------------

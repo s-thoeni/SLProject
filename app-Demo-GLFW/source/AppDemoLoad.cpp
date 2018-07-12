@@ -1517,7 +1517,7 @@ void appDemoLoadScene(SLScene* s, SLSceneView* sv, SLSceneID sceneID)
     }
     else
     if (SLApplication::sceneID == SID_VolumeRayCast) //.............................................
-    {
+    { 
         s->name("Volume Ray Cast Test");
         s->info("Volume Rendering of an angiographic MRI scan");
 
