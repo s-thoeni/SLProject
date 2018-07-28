@@ -38,10 +38,10 @@ static void drawDelaunay(Mat& img, Subdiv2D& subdiv, Scalar delaunay_color)
 }
 //-----------------------------------------------------------------------------
 static void createDelaunay(Mat& img,
-                            Subdiv2D& subdiv,
-                            vector<Point2f>& points,
-                            bool drawAnimated,
-                            vector<vector<int>>& triangleIndexes)
+                           Subdiv2D& subdiv,
+                           vector<Point2f>& points,
+                           bool drawAnimated,
+                           vector<vector<int>>& triangleIndexes)
 {
     // Insert points into subdiv
     for (Point2f p : points)
@@ -168,10 +168,10 @@ void warpTriangle(Mat &img1,
 }
 //-----------------------------------------------------------------------------
 static void warpImage(Mat& img1,
-                       Mat& img2,
-                       vector<Point2f>& points1,
-                       vector<Point2f>& points2,
-                       vector<vector<int>>& triangles)
+                      Mat& img2,
+                      vector<Point2f>& points1,
+                      vector<Point2f>& points2,
+                      vector<vector<int>>& triangles)
 {
     for(size_t i = 0; i < triangles.size(); i++)
     {
@@ -226,8 +226,8 @@ int main()
     // Keep bounding rectangle around face points
     Size size = img_orig.size();
     Rect rectFace = boundingRect(points);
-    Point2f center(rectFace.x + rectFace.width/2,
-                   rectFace.y + rectFace.height/2);
+    Point2f center(rectFace.x + rectFace.width*0.5f,
+                   rectFace.y + rectFace.height*0.5f);
 
     // Add image border points
     points.push_back(Point2d(0,0));
@@ -246,11 +246,11 @@ int main()
     // Create and draw the Delaunay triangulation
     vector<vector<int>> triIndexes1;
     createDelaunay(img1, subdiv, points, true, triIndexes1);
-    drawDelaunay(img1, subdiv, Scalar(255, 255, 255));
+    //drawDelaunay(img1, subdiv, Scalar(255, 255, 255));
 
     // Draw all points red
     for (Point2f p : points)
-        circle(img1, p, 2, Scalar(0, 0, 255), CV_FILLED, CV_AA, 0);
+        circle(img1, p, 3, Scalar(0, 0, 255), CV_FILLED, CV_AA, 0);
     
     // Allocate space for voronoi Diagram
     Mat img_voronoi = Mat::zeros(img1.rows, img1.cols, CV_8UC3);
@@ -262,7 +262,7 @@ int main()
     imshow("Delaunay Triangulation", img1);
     imshow("Voronoi Diagram", img_voronoi);
     
-    // Do head warping with Obama
+    // Do head warping with Donald Trumps face
     // Copy the mesh points for warping
     vector<Point2f> wPoints = points;
     float scale = 1.0f;

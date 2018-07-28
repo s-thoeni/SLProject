@@ -134,8 +134,8 @@ For more information please visit: https://github.com/cpvrlab/SLProject\n\
 ";
 
 SLstring AppDemoGui::infoCredits =
-"Contributors since 2005 in alphabetic order: Martin Christen, Manuel Frischknecht, Michael \
-Goettlicher, Timo Tschanz, Marc Wacker, Pascal Zingg \n\n\
+"Contributors since 2005 in alphabetic order: Martin Christen, Jan Dellsperger, \
+Manuel Frischknecht, Michael Goettlicher, Timo Tschanz, Marc Wacker, Pascal Zingg \n\n\
 Credits for external libraries:\n\
 - assimp: assimp.sourceforge.net\n\
 - imgui: github.com/ocornut/imgui\n\
@@ -303,6 +303,7 @@ void AppDemoGui::build(SLScene* s, SLSceneView* sv)
             sprintf(m+strlen(m), "Frames per s. : %0.2f\n", 1.0f/rt->renderSec());
             sprintf(m+strlen(m), "Frame Time    : %0.2f sec.\n", rt->renderSec());
             sprintf(m+strlen(m), "Rays per ms   : %0.0f\n", rpms);
+            sprintf(m+strlen(m), "AA Pixels     : %d (%d%%)\n", SLRay::subsampledPixels,(int)((float)SLRay::subsampledPixels/(float)rayPrimaries*100.0f));
             sprintf(m+strlen(m), "Threads       : %d\n", rt->numThreads());
             sprintf(m+strlen(m), "-------------------------------\n");
             sprintf(m+strlen(m), "Primary rays  : %8d (%3d%%)\n", rayPrimaries,          (int)((float)rayPrimaries/(float)rayTotal*100.0f));
@@ -453,13 +454,22 @@ void AppDemoGui::build(SLScene* s, SLSceneView* sv)
         SLGLState* stateGL = SLGLState::getInstance();
         SLchar m[2550];   // message character array
         m[0]=0;           // set zero length
-        sprintf(m+strlen(m), "OpenGL Verion  : %s\n", stateGL->glVersionNO().c_str());
-        sprintf(m+strlen(m), "OpenGL Vendor  : %s\n", stateGL->glVendor().c_str());
-        sprintf(m+strlen(m), "OpenGL Renderer: %s\n", stateGL->glRenderer().c_str());
-        sprintf(m+strlen(m), "OpenGL GLSL    : %s\n", stateGL->glSLVersionNO().c_str());
-        sprintf(m+strlen(m), "OpenCV Version : %d.%d.%d\n", CV_MAJOR_VERSION, CV_MINOR_VERSION, CV_VERSION_REVISION);
-        //sprintf(m+strlen(m), "CV has OpenCL  : %s\n", cv::ocl::haveOpenCL() ? "yes":"no");
-        sprintf(m+strlen(m), "ImGui Version  : %s\n", ImGui::GetVersion());
+
+        sprintf(m+strlen(m), "SLProject Version: %s\n", SLApplication::version.c_str());
+        #ifdef _DEBUG
+        sprintf(m+strlen(m), "Build Config.    : Debug\n");
+        #else
+        sprintf(m+strlen(m), "Build Config.    : Release\n");
+        #endif
+        sprintf(m+strlen(m), "OpenGL Version   : %s\n", stateGL->glVersionNO().c_str());
+        sprintf(m+strlen(m), "OpenGL Vendor    : %s\n", stateGL->glVendor().c_str());
+        sprintf(m+strlen(m), "OpenGL Renderer  : %s\n", stateGL->glRenderer().c_str());
+        sprintf(m+strlen(m), "GLSL Version     : %s\n", stateGL->glSLVersionNO().c_str());
+        sprintf(m+strlen(m), "OpenCV Version   : %d.%d.%d\n", CV_MAJOR_VERSION, CV_MINOR_VERSION, CV_VERSION_REVISION);
+        sprintf(m+strlen(m), "OpenCV has OpenCL: %s\n", cv::ocl::haveOpenCL() ? "yes":"no");
+        sprintf(m+strlen(m), "OpenCV has AVX   : %s\n", cv::checkHardwareSupport(CV_AVX) ? "yes":"no");
+        sprintf(m+strlen(m), "OpenCV has NEON  : %s\n", cv::checkHardwareSupport(CV_NEON) ? "yes":"no");
+        sprintf(m+strlen(m), "ImGui Version    : %s\n", ImGui::GetVersion());
 
         // Switch to fixed font
         ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[1]);
@@ -512,7 +522,9 @@ void AppDemoGui::build(SLScene* s, SLSceneView* sv)
 
     if (showChristoffel && SLApplication::sceneID==SID_VideoChristoffel)
     {
-        ImGui::Begin("Christoffel", &showChristoffel, ImVec2(300,0));
+        ImGui::Begin("Christoffel",
+                     &showChristoffel,
+                     ImGuiWindowFlags_NoResize|ImGuiWindowFlags_AlwaysAutoResize);
 
         // Get scene nodes once
         if (!bern)
@@ -700,6 +712,8 @@ void AppDemoGui::buildMenuBar(SLScene* s, SLSceneView* sv)
                         s->onLoad(s, sv, SID_VideoTrackFeature2DMain);
                     if (ImGui::MenuItem("Track Face (Main)", 0, sid==SID_VideoTrackFaceMain))
                         s->onLoad(s, sv, SID_VideoTrackFaceMain);
+                    if (ImGui::MenuItem("Track Face (Scnd)", 0, sid==SID_VideoTrackFaceScnd, SLCVCapture::hasSecondaryCamera))
+                        s->onLoad(s, sv, SID_VideoTrackFaceScnd);
                     if (ImGui::MenuItem("Sensor AR (Main)", 0, sid==SID_VideoSensorAR))
                         s->onLoad(s, sv, SID_VideoSensorAR);
                     if (ImGui::MenuItem("Christoffel Tower AR (Main)", 0, sid==SID_VideoChristoffel))
@@ -750,10 +764,12 @@ void AppDemoGui::buildMenuBar(SLScene* s, SLSceneView* sv)
                 ImGui::EndMenu();
             }
 
+            #ifndef SL_OS_ANDROID
             ImGui::Separator();
 
             if (ImGui::MenuItem("Quit & Save", "ESC"))
                 slShouldClose(true);
+            #endif
 
             ImGui::EndMenu();
         }
@@ -922,7 +938,10 @@ void AppDemoGui::buildMenuBar(SLScene* s, SLSceneView* sv)
 
                 ImGui::Separator();
 
-                if (ImGui::MenuItem("Reset User Interface"))
+                SLchar reset[255];
+                sprintf(reset, "Reset User Interface (DPI: %d)", SLApplication::dpi);
+
+                if (ImGui::MenuItem(reset))
                 {
                     SLstring fullPathFilename = SLApplication::configPath + "DemoGui.yml";
                     SLFileSystem::deleteFile(fullPathFilename);
@@ -963,10 +982,10 @@ void AppDemoGui::buildMenuBar(SLScene* s, SLSceneView* sv)
                     sv->drawBits()->toggle(SL_DB_BBOX);
 
                 if (ImGui::MenuItem("Voxels", "V", sv->drawBits()->get(SL_DB_VOXELS)))
-                    sv->drawBits()->toggle(SL_DB_NORMALS);
+                    sv->drawBits()->toggle(SL_DB_VOXELS);
 
                 if (ImGui::MenuItem("Axis", "X", sv->drawBits()->get(SL_DB_AXIS)))
-                    sv->drawBits()->toggle(SL_DB_VOXELS);
+                    sv->drawBits()->toggle(SL_DB_AXIS);
 
                 if (ImGui::MenuItem("Back Faces", "C", sv->drawBits()->get(SL_DB_CULLOFF)))
                     sv->drawBits()->toggle(SL_DB_CULLOFF);
@@ -1069,6 +1088,21 @@ void AppDemoGui::buildMenuBar(SLScene* s, SLSceneView* sv)
                         sv->startPathtracing(5, 10000);
 
                     ImGui::EndMenu();
+                }
+
+                if (ImGui::MenuItem("Direct illumination", 0, pt->calcDirect()))
+                {   pt->calcDirect(!pt->calcDirect());
+                    sv->startPathtracing(5, 10);
+                }
+
+                if (ImGui::MenuItem("Indirect illumination", 0, pt->calcIndirect()))
+                {   pt->calcIndirect(!pt->calcIndirect());
+                    sv->startPathtracing(5, 10);
+                }
+
+                if (ImGui::MenuItem("Apply Gamma Corr.", 0, pt->applyGamma()))
+                {   pt->applyGamma(!pt->applyGamma());
+                    sv->startPathtracing(5, 10);
                 }
 
                 if (ImGui::MenuItem("Save Rendered Image"))

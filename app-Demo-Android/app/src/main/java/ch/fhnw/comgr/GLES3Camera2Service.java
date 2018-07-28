@@ -196,6 +196,9 @@ public class GLES3Camera2Service extends Service {
         @Override
         public void onImageAvailable(ImageReader reader) {
 
+            // Don't copy the available image if the last wasn't consumed
+            if (!GLES3Lib.lastVideoImageIsConsumed) return;
+
             // The opengl renderer runs in its own thread. We have to copy the image in the renderers thread!
             GLES3Lib.view.queueEvent(new Runnable() {
                 @Override
@@ -230,7 +233,6 @@ public class GLES3Camera2Service extends Service {
                     int uRowStride = Y.getRowStride();
                     int vRowStride = Y.getRowStride();
 
-
                     byte[] data = new byte[ySize + uSize + vSize];
                     Y.getBuffer().get(data, 0, ySize);
                     U.getBuffer().get(data, ySize, uSize);
@@ -241,6 +243,7 @@ public class GLES3Camera2Service extends Service {
                     ///////////////////////////////////////////////////////////////
 
                     /*
+                    This version of the separate copying of the planes is astonishingly not faster!
                     byte[] bufY = new byte[ySize];
                     byte[] bufU = new byte[uSize];
                     byte[] bufV = new byte[vSize];
@@ -255,12 +258,18 @@ public class GLES3Camera2Service extends Service {
                                                 bufU, uSize, uPixStride, uRowStride,
                                                 bufV, vSize, vPixStride, vRowStride);
                     */
+
                     img.close();
+
+                    // This avoids the next call into this before the image got displayed
+                    GLES3Lib.lastVideoImageIsConsumed = false;
+
+                    // Request a new rendering
+                    GLES3Lib.view.requestRender();
                 }
             });
         }
     };
-
 
     public void actOnReadyCameraDevice() {
         try {

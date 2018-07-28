@@ -23,7 +23,7 @@
     <RootNamespace>lib-SLProject</RootNamespace>
     <Keyword>Win32Proj</Keyword>
     <ProjectName>lib-SLProject</ProjectName>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -241,7 +241,7 @@
       <ProgramDataBaseFileName>$(TargetName).pdb</ProgramDataBaseFileName>
       <WarningLevel>Level2</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <MultiProcessorCompilation>false</MultiProcessorCompilation>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ExceptionHandling>Sync</ExceptionHandling>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <WholeProgramOptimization>false</WholeProgramOptimization>
@@ -267,6 +267,7 @@
     </PostBuildEvent>
     <Lib>
       <OutputFile>$(OutDir)$(ProjectName)$(TargetExt)</OutputFile>
+      <LinkTimeCodeGeneration>false</LinkTimeCodeGeneration>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -299,7 +300,6 @@
     <ClInclude Include="..\include\SLDeviceRotation.h" />
     <ClInclude Include="..\include\SLDisk.h" />
     <ClInclude Include="..\include\SLGLEnums.h" />
-    <ClInclude Include="..\include\SLGLFrameBuffer.h" />
     <ClInclude Include="..\include\SLGLImGui.h" />
     <ClInclude Include="..\include\SLGLVertexArray.h" />
     <ClInclude Include="..\include\SLGLVertexArrayExt.h" />
@@ -373,7 +373,6 @@
     <ClInclude Include="..\include\SLLight.h" />
     <ClInclude Include="..\include\SLMaterial.h" />
     <ClInclude Include="..\include\SLMesh.h" />
-    <ClInclude Include="source\GL\SLGLGeneratedTexture.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\lib-SLExternal\nvwa\debug_new.cpp" />
@@ -388,8 +387,6 @@
     <ClCompile Include="source\CV\SLCVTrackedChessboard.cpp" />
     <ClCompile Include="source\CV\SLCVTrackedFaces.cpp" />
     <ClCompile Include="source\CV\SLCVTrackedFeatures.cpp" />
-    <ClCompile Include="source\GL\SLGLFrameBuffer.cpp" />
-    <ClCompile Include="source\GL\SLGLGeneratedTexture.cpp" />
     <ClCompile Include="source\GL\SLGLImGui.cpp" />
     <ClCompile Include="source\GL\SLGLOculus.cpp" />
     <ClCompile Include="source\GL\SLGLOculusFB.cpp" />
@@ -460,6 +457,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="test.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\_data\shaders\ADS.frag" />
@@ -491,6 +492,10 @@
     <None Include="..\_data\shaders\PerPixBlinnTex.frag" />
     <None Include="..\_data\shaders\PerPixBlinnTex.vert" />
     <None Include="..\_data\shaders\PerPixBlinnTexSkinned.vert" />
+    <None Include="..\_data\shaders\PerPixCookTorrance.frag" />
+    <None Include="..\_data\shaders\PerPixCookTorrance.vert" />
+    <None Include="..\_data\shaders\PerPixCookTorranceTex.frag" />
+    <None Include="..\_data\shaders\PerPixCookTorranceTex.vert" />
     <None Include="..\_data\shaders\PerVrtBlinn.frag" />
     <None Include="..\_data\shaders\PerVrtBlinn.vert" />
     <None Include="..\_data\shaders\PerVrtBlinnColorAttrib.vert" />

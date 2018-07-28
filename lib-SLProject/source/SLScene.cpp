@@ -23,6 +23,7 @@
 #include <SLLightDirect.h>
 #include <SLCVTracked.h>
 #include <SLCVTrackedAruco.h>
+#include <SLDeviceLocation.h>
 
 //-----------------------------------------------------------------------------
 /*! The constructor of the scene does all one time initialization such as 
@@ -86,7 +87,7 @@ SLScene::SLScene(SLstring name,
     _fps            = 0;
     _elapsedTimeMS  = 0;
     _lastUpdateTimeMS = 0;
-     
+
     // Load std. shader programs in order as defined in SLShaderProgs enum in SLenum
     // In the constructor they are added the _shaderProgs vector
     // If you add a new shader here you have to update the SLShaderProgs enum accordingly.
@@ -119,6 +120,7 @@ SLScene::SLScene(SLstring name,
 
     // load default video image that is displayed when no live video is available
     _videoTexture.setVideoImage("LiveVideoError.png");
+    _videoTextureErr.setVideoImage("LiveVideoError.png");
 
     // Set video type to none (this also sets the active calibration to the main calibration)
     videoType(VT_NONE);
@@ -171,9 +173,6 @@ SLScene::~SLScene()
     // release the capture device
     SLCVCapture::release();
 
-    // reset video texture
-    _videoTexture.setVideoImage("LiveVideoError.png");
-
     SL_LOG("Destructor      : ~SLScene\n");
     SL_LOG("------------------------------------------------------------------\n");
 }
@@ -183,6 +182,9 @@ SLScene::~SLScene()
 void SLScene::init()
 {     
     unInit();
+
+    // reset all states
+    SLGLState::getInstance()->initAll();
    
     _globalAmbiLight.set(0.2f,0.2f,0.2f,0.0f);
     _selectedNode = 0;
@@ -211,6 +213,9 @@ void SLScene::init()
     // Deactivate in general the device sensors
     SLApplication::devRot.isUsed(false);
     SLApplication::devLoc.isUsed(false);
+
+    // Reset the video texture
+    _videoTexture.setVideoImage("LiveVideoError.png");
 }
 //-----------------------------------------------------------------------------
 /*! The scene uninitializing clears the scenegraph (_root3D) and all global
@@ -240,7 +245,8 @@ void SLScene::unInit()
     // clear light pointers
     _lights.clear();
 
-    // delete textures
+    // delete textures that where allocated during scene construction.
+    // The video & raytracing textures are not in this vector and are not dealocated
     for (auto t : _textures) delete t;
     _textures.clear();
    
@@ -278,9 +284,6 @@ void SLScene::unInit()
     _eventHandlers.clear();
 
     _animManager.clear();
-
-    // reset all states
-    SLGLState::getInstance()->initAll();
 }
 //-----------------------------------------------------------------------------
 //! Processes all queued events and updates animations, AR trackers and AABBs
@@ -358,7 +361,6 @@ bool SLScene::onUpdate()
 
 
     //////////////////////////////
-#include <SLDeviceLocation.h>
     // 3) Update all animations //
     //////////////////////////////
 
@@ -502,9 +504,9 @@ bool SLScene::onUpdate()
     if (_root2D)
         _root2D->updateAABBRec();
 
-
     _updateTimesMS.set(timeMilliSec()-startUpdateMS);
-    
+
+    //SL_LOG("SLScene::onUpdate\n");
     return sceneHasChanged;
 }
 //-----------------------------------------------------------------------------
@@ -597,22 +599,6 @@ void SLScene::selectNodeMesh(SLNode* nodeToSelect, SLMesh* meshToSelect)
     {   _selectedNode = 0;
         _selectedMesh = 0;
     }
-}
-//-----------------------------------------------------------------------------
-//! Copies the image data from a video camera into image[0] of the video texture
-void SLScene::copyVideoImage(SLint width,
-                             SLint height,
-                             SLPixelFormat srcPixelFormat,
-                             SLuchar* data,
-                             SLbool isContinuous,
-                             SLbool isTopLeft)
-{
-    _videoTexture.copyVideoImage(width, 
-                                 height, 
-                                 srcPixelFormat, 
-                                 data, 
-                                 isContinuous,
-                                 isTopLeft);
 }
 //-----------------------------------------------------------------------------
 void SLScene::onLoadAsset(SLstring assetFile, 

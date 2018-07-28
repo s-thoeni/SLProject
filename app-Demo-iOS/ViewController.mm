@@ -18,6 +18,8 @@
 #import <CoreMotion/CoreMotion.h>
 
 // C++ includes for the SceneLibrary
+#include <SLMath.h>
+#include <SLFileSystem.h>
 #include <SLInterface.h>
 #include <SLCVCapture.h>
 #include <AppDemoGui.h>
@@ -198,7 +200,9 @@ float GetSeconds()
     m_lastVideoImageIsConsumed = true;
     
     if (slShouldClose())
-    {   slTerminate();
+    {
+        AppDemoGui::saveConfig();
+        slTerminate();
         exit(0);
     }
 }
@@ -331,6 +335,7 @@ float GetSeconds()
         didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         fromConnection:(AVCaptureConnection *)connection
 {
+    // Don't copy the available image if the last wasn't consumed
     if (!m_lastVideoImageIsConsumed) return;
         
     CVReturn err;

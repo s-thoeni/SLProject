@@ -24,6 +24,7 @@ for a good top down information.
 #include <SLScene.h>
 #include <SLSceneView.h>
 #include <SLCVCapture.h>
+#include <SLCVCalibration.h>
 
 //-----------------------------------------------------------------------------
 // Global static variables
@@ -221,14 +222,14 @@ void SLCVCapture::adjustForSL()
     if (SLApplication::activeCalib->isMirroredH())
     {   SLCVMat mirrored;
         if (SLApplication::activeCalib->isMirroredV())
-            cv::flip(SLCVCapture::lastFrame, mirrored,-1);
+             cv::flip(SLCVCapture::lastFrame, mirrored,-1);
         else cv::flip(SLCVCapture::lastFrame, mirrored, 1);
         SLCVCapture::lastFrame = mirrored;
     } else
     if (SLApplication::activeCalib->isMirroredV())
     {   SLCVMat mirrored;
         if (SLApplication::activeCalib->isMirroredH())
-            cv::flip(SLCVCapture::lastFrame, mirrored,-1);
+             cv::flip(SLCVCapture::lastFrame, mirrored,-1);
         else cv::flip(SLCVCapture::lastFrame, mirrored, 0);
         SLCVCapture::lastFrame = mirrored;
     }
@@ -246,6 +247,7 @@ void SLCVCapture::adjustForSL()
     // Do not copy into the video texture here. It is done in SLScene:onUpdate
 
     s->captureTimesMS().set(s->timeMilliSec() - SLCVCapture::startCaptureTimeMS);
+    //SL_LOG("SLCVCapture::adjustForSL\n");
 }
 //-----------------------------------------------------------------------------
 /*! This method is called by iOS and Android projects that capture their video
