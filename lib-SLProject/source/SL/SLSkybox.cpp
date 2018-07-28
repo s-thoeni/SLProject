@@ -62,13 +62,14 @@ SLSkybox::SLSkybox(SLstring cubeMapXPos,
 //! Draw the skybox with a cube map with the camera in its center.
 SLSkybox::SLSkybox(SLstring hdrImage,
                    SLVec2i  resolution,
-                   SLstring name) : SLNode(name)
+                   SLstring name,
+                   SLGLUniform1f* exposureUniform) : SLNode(name)
 {
     // Set HDR flag to true, this is a HDR SkyBox
     this->_isHDR = true;
     
     SLGLProgram* backgroundShader = new SLGLGenericProgram("PBR_SkyboxHDR.vert", "PBR_SkyboxHDR.frag");
-    SLGLUniform1f* exposure = new SLGLUniform1f(UT_const, "u_exposure", 1.0f, 0.02f, 0.01f, 10.0f, (SLKey)'H');
+    SLGLUniform1f* exposure = exposureUniform ? exposureUniform : new SLGLUniform1f(UT_const, "u_exposure", 1.0f);
     SLApplication::scene->eventHandlers().push_back(exposure);
     backgroundShader->addUniform1f(exposure);
     

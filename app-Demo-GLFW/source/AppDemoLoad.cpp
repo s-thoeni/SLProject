@@ -1345,26 +1345,42 @@ void appDemoLoadScene(SLScene* s, SLSceneView* sv, SLSceneID sceneID)
     else
     if (SLApplication::sceneID == SID_ShaderIBL)
     {
+        // Set scene name and info string
         s->name("HDR IBL Shader");
-        s->info("Image-based Lighting from skybox using High Dynamic Range images");
-  
-        SLSkybox* hdrCubeMap = new SLSkybox("env_barce_rooftop.hdr", SLVec2i(2048,2048));
+        s->info("Image-based Lighting from skybox using high dynamic range images");
+        SL_LOG("Demo application for Physically Based Rendering and Image Based Lighting.\n");
+        SL_LOG("Use H-Key to increment (decrement w. shift) exposure of the scene.\n");
+        
+        // Create uniform to control exposure
+        // this is done this way so that the exposure of the whole scene remains consistent
+        // just modify this uniform to affect the others.
+        SLGLUniform1f exposure = SLGLUniform1f(UT_const, "u_exposure", 1.0f, 0.25f, 0.01f, 5.0f, (SLKey)'H');
+        
+        // Clone uniform for various shaders
+        // do not modify these uniforms otherwise the exposure of the scene will not be changed correctly
+        SLGLUniform1f* exposure_pbr    = new SLGLUniform1f(exposure);
+        SLGLUniform1f* exposure_pbrtex = new SLGLUniform1f(exposure);
+        s->eventHandlers().push_back(exposure_pbr);
+        s->eventHandlers().push_back(exposure_pbrtex);
+        
+        // Create HDR CubeMap and get precalculated textures from it
+        SLSkybox* hdrCubeMap = new SLSkybox("env_barce_rooftop.hdr", SLVec2i(2048,2048), "HDR Skybox", new SLGLUniform1f(exposure));
         SLGLTexture* irrandianceMap = hdrCubeMap->meshes()[0]->mat()->textures()[1];
         SLGLTexture* prefilterMap   = hdrCubeMap->meshes()[0]->mat()->textures()[2];
         SLGLTexture* brdfLUTTexture = hdrCubeMap->meshes()[0]->mat()->textures()[3];
         
+        // Get preloaded shader programs
         SLGLProgram* pbr    = s->programs()[SP_pbrLighting];
         SLGLProgram* pbrTex = s->programs()[SP_pbrLightingTex];
-        SLGLUniform1f* exposure1 = new SLGLUniform1f(UT_const, "u_exposure", 1.0f, 0.02f, 0.01f, 10.0f, (SLKey)'H');
-        SLGLUniform1f* exposure2 = new SLGLUniform1f(UT_const, "u_exposure", 1.0f, 0.02f, 0.01f, 10.0f, (SLKey)'H');
-        s->eventHandlers().push_back(exposure1);
-        s->eventHandlers().push_back(exposure2);
-        pbr->addUniform1f(exposure1);
-        pbrTex->addUniform1f(exposure2);
+        
+        // Set the uniforms for controlling the exposure
+        pbr->addUniform1f(exposure_pbr);
+        pbrTex->addUniform1f(exposure_pbrtex);
         
         // Create a scene group noce
         SLNode* scene = new SLNode("scene node");
   
+        // Create camera and initialize its parameters
         SLCamera* cam1 = new SLCamera("Camera 1");
         cam1->translation(0,0,28);
         cam1->lookAt(0,0,0);
@@ -1394,6 +1410,7 @@ void appDemoLoadScene(SLScene* s, SLSceneView* sv, SLSceneID sceneID)
                 if (m == nrRows/2 && r == nrCols/2)
                 {
                     // The center sphere has roughness and metallic encoded in textures
+                    // and the prefiltered textures for IBL
                     mat[i] = new SLMaterial("IBLMatTex",
                                             pbrTex,
                                             new SLGLTexture("gold-scuffed_2048C.png"),
@@ -1406,7 +1423,7 @@ void appDemoLoadScene(SLScene* s, SLSceneView* sv, SLSceneID sceneID)
                                             brdfLUTTexture);
                 } else
                 {
-                    // Cook-Torrance material without textures
+                    // Cook-Torrance material with IBL but without textures
                     mat[i] = new SLMaterial("IBLMat",
                                             SLCol4f::WHITE*0.5f,
                                             SL_clamp((float)r*deltaR, 0.05f, 1.0f),

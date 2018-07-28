@@ -13,6 +13,7 @@
 
 #include <SLEnums.h>
 #include <SLNode.h>
+#include <SLGLUniform.h>
 
 class SLSceneView;
 
@@ -27,17 +28,18 @@ pointer of SLSceneView. See the Skybox shader example.
 class SLSkybox: public SLNode
 {
     public:
-                    SLSkybox        (SLstring name = "Default Skybox");
-                    SLSkybox        (SLstring cubeMapXPos,
-                                     SLstring cubeMapXNeg,
-                                     SLstring cubeMapYPos,
-                                     SLstring cubeMapYNeg,
-                                     SLstring cubeMapZPos,
-                                     SLstring cubeMapZNeg,
-                                     SLstring name = "Default Skybox");
-                    SLSkybox        (SLstring hdrImage,
-                                     SLVec2i  resolution,
-                                     SLstring name = "HDR Skybox");
+                    SLSkybox        (SLstring       name = "Default Skybox");
+                    SLSkybox        (SLstring       cubeMapXPos,
+                                     SLstring       cubeMapXNeg,
+                                     SLstring       cubeMapYPos,
+                                     SLstring       cubeMapYNeg,
+                                     SLstring       cubeMapZPos,
+                                     SLstring       cubeMapZNeg,
+                                     SLstring       name = "Default Skybox");
+                    SLSkybox        (SLstring       hdrImage,
+                                     SLVec2i        resolution,
+                                     SLstring       name = "HDR Skybox",
+                                     SLGLUniform1f* exposureUniform = nullptr);
                    ~SLSkybox        (){;}
     
         SLCol4f     colorAtDir      (SLVec3f dir);
