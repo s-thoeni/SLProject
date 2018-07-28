@@ -19,8 +19,6 @@
 		412F129C1FF2815A0003687F /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 412F129B1FF2815A0003687F /* Cocoa.framework */; };
 		4168A03B2020B87C00560A5B /* AppDemoGui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4168A03A2020B87C00560A5B /* AppDemoGui.cpp */; };
 		4168A03D2020C92300560A5B /* AppDemoLoad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4168A03C2020C92300560A5B /* AppDemoLoad.cpp */; };
-		4178D6852020B09C00F4F699 /* liblib-SLExternal-macxcode.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4178D6842020B09C00F4F699 /* liblib-SLExternal-macxcode.a */; };
-		41C841CD1FF26BB000E1A99F /* liblib-SLProject.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 41C841CB1FF26BB000E1A99F /* liblib-SLProject.a */; };
 		41CAE1372011CEF600B2830F /* libopencv_calib3d.3.4.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 41CAE1362011CEF600B2830F /* libopencv_calib3d.3.4.0.dylib */; };
 		41CAE1392011CF3A00B2830F /* libopencv_ccalib.3.4.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 41CAE1382011CF3A00B2830F /* libopencv_ccalib.3.4.0.dylib */; };
 		41CAE13B2011CF6700B2830F /* libopencv_core.3.4.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 41CAE13A2011CF6700B2830F /* libopencv_core.3.4.0.dylib */; };
@@ -35,6 +33,8 @@
 		41CAE14D2011D02200B2830F /* libopencv_xfeatures2d.3.4.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 41CAE1492011D02200B2830F /* libopencv_xfeatures2d.3.4.0.dylib */; };
 		41CAE14F2011D08900B2830F /* libopencv_aruco.3.4.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 41CAE14E2011D08900B2830F /* libopencv_aruco.3.4.0.dylib */; };
 		41EAAE042067A0FB00F7E9B9 /* libopencv_face.3.4.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 41EAAE032067A0FB00F7E9B9 /* libopencv_face.3.4.0.dylib */; };
+		BD95EAAB210CD49F00459905 /* liblib-SLProject.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 41C841CB1FF26BB000E1A99F /* liblib-SLProject.a */; };
+		BD95EAAC210CD4B100459905 /* liblib-SLExternal-macxcode.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4178D6842020B09C00F4F699 /* liblib-SLExternal-macxcode.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -87,6 +87,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BD95EAAC210CD4B100459905 /* liblib-SLExternal-macxcode.a in Frameworks */,
+				BD95EAAB210CD49F00459905 /* liblib-SLProject.a in Frameworks */,
 				41EAAE042067A0FB00F7E9B9 /* libopencv_face.3.4.0.dylib in Frameworks */,
 				411838A7201CDD9E0026A4C6 /* libwebp.a in Frameworks */,
 				411838A8201CDD9E0026A4C6 /* libwebpdemux.a in Frameworks */,
@@ -97,7 +99,6 @@
 				412F12981FF281240003687F /* QuartzCore.framework in Frameworks */,
 				412F12961FF280D40003687F /* CoreFoundation.framework in Frameworks */,
 				41CAE1412011CFB700B2830F /* libopencv_imgproc.3.4.0.dylib in Frameworks */,
-				4178D6852020B09C00F4F699 /* liblib-SLExternal-macxcode.a in Frameworks */,
 				41CAE1422011CFB700B2830F /* libopencv_video.3.4.0.dylib in Frameworks */,
 				412F12941FF280B30003687F /* IOKit.framework in Frameworks */,
 				41CAE1392011CF3A00B2830F /* libopencv_ccalib.3.4.0.dylib in Frameworks */,
@@ -111,7 +112,6 @@
 				41CAE14A2011D02200B2830F /* libopencv_flann.3.4.0.dylib in Frameworks */,
 				41CAE14B2011D02200B2830F /* libopencv_highgui.3.4.0.dylib in Frameworks */,
 				41CAE14D2011D02200B2830F /* libopencv_xfeatures2d.3.4.0.dylib in Frameworks */,
-				41C841CD1FF26BB000E1A99F /* liblib-SLProject.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -235,7 +235,8 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp ../_lib/prebuilt/OpenCV/macx/libopencv_* ../_bin-Debug-macxcode/\ncp ../_lib/prebuilt/OpenCV/macx/libwebp* ../_bin-Debug-macxcode/\ncp ../_lib/prebuilt/OpenCV/macx/libopencv_* ../_bin-Release-macxcode/\ncp ../_lib/prebuilt/OpenCV/macx/libwebp* ../_bin-Release-macxcode/";
+			shellScript = "
+";
 		};
 /* End PBXShellScriptBuildPhase section */
 

@@ -187,7 +187,11 @@
 		41A0628B1FED08E3000AC2C1 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+<<<<<<< Updated upstream
 				LastUpgradeCheck = 0930;
+=======
+				LastUpgradeCheck = 1000;
+>>>>>>> Stashed changes
 				ORGANIZATIONNAME = "Marcus Hudritsch";
 				TargetAttributes = {
 					41A062921FED08E3000AC2C1 = {

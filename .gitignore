@@ -47,3 +47,5 @@ GenerateHTMLDoc.log
 .vs
 
 .DS_Store
+lib-SLExternal/build/
+lib-SLProject/build/
