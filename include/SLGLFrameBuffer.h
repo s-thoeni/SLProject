@@ -17,7 +17,9 @@
 
 //-----------------------------------------------------------------------------
 /*!
- */
+The frame buffer class generates a frame buffer and a render buffer, with the
+default size of 512x512, this can also in run time be changed.
+*/
 class SLGLFrameBuffer
 {
     public:             SLGLFrameBuffer     (SLbool  renderBuffer = false,
@@ -64,13 +66,12 @@ class SLGLFrameBuffer
     static  SLuint      totalBufferSize;      //! static total size of all buffers in bytes
 
     protected:
-            SLuint      _id;
-            SLuint      _rbo;
-            SLuint      _sizeBytes;
-            SLsizei     _rboWidth;
-            SLsizei     _rboHeight;
-            SLbool      _renderBuffer;
+            SLuint      _id;                  //!< frame buffer identifier
+            SLuint      _rbo;                 //!< render buffer idenrifier
+            SLuint      _sizeBytes;           //!< size in bytes of this buffer
+            SLsizei     _rboWidth;            //!< width of the render buffer, default: 512
+            SLsizei     _rboHeight;           //!< height of the render buffer, default: 512
+            SLbool      _renderBuffer;        //!< should a renderbuffer be created?
 };
 //-----------------------------------------------------------------------------
-
 #endif

@@ -32,6 +32,7 @@ SLGLFrameBuffer::SLGLFrameBuffer(SLbool  renderBuffer,
     this->_rboHeight = rboHeight;
 }
 //-----------------------------------------------------------------------------
+//! clear delete buffers and respectively adjust the stats variables
 void SLGLFrameBuffer::clear()
 {
     deleteGL();
@@ -39,6 +40,7 @@ void SLGLFrameBuffer::clear()
     totalBufferSize -= _sizeBytes;
 }
 //-----------------------------------------------------------------------------
+//! calls the delete functions only if the buffers exist
 void SLGLFrameBuffer::deleteGL()
 {
     if (_id)
@@ -52,6 +54,7 @@ void SLGLFrameBuffer::deleteGL()
     }
 }
 //-----------------------------------------------------------------------------
+//! generate the frame buffer and the render buffer if wanted
 void SLGLFrameBuffer::generate()
 {
     if (this->_id==0)
@@ -95,6 +98,7 @@ void SLGLFrameBuffer::unbind()
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 //-----------------------------------------------------------------------------
+//! change the render buffer size at will
 void SLGLFrameBuffer::bufferStorage(SLsizei width,
                                     SLsizei height)
 {
@@ -105,6 +109,7 @@ void SLGLFrameBuffer::bufferStorage(SLsizei width,
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, width, height);
 }
 //-----------------------------------------------------------------------------
+//! attach one 2D texture to the frame buffer
 void SLGLFrameBuffer::attachTexture2D(SLenum        attachment,
                                       SLenum        target,
                                       SLGLTexture*  texture,

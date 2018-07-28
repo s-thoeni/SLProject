@@ -140,6 +140,8 @@ SLMaterial::SLMaterial(const SLchar* name,
     SLApplication::scene->materials().push_back(this);
     
 }
+//-----------------------------------------------------------------------------
+// Ctor for textures with IBL
 SLMaterial::SLMaterial(const SLchar* name,
                        SLGLProgram* shaderProg,
                        SLGLTexture* texture1,

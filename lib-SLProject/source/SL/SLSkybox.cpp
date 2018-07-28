@@ -60,6 +60,10 @@ SLSkybox::SLSkybox(SLstring cubeMapXPos,
 }
 //-----------------------------------------------------------------------------
 //! Draw the skybox with a cube map with the camera in its center.
+/*! This constructor generates a cube map skybox from a HDR Image and also
+all the textures needed for image based lighting and store them in the textures
+of the material of this sky box.
+*/
 SLSkybox::SLSkybox(SLstring hdrImage,
                    SLVec2i  resolution,
                    SLstring name,
@@ -68,14 +72,19 @@ SLSkybox::SLSkybox(SLstring hdrImage,
     // Set HDR flag to true, this is a HDR SkyBox
     this->_isHDR = true;
     
+    // Create shader program for the brackground
     SLGLProgram* backgroundShader = new SLGLGenericProgram("PBR_SkyboxHDR.vert", "PBR_SkyboxHDR.frag");
+    
+    // if an exposure uniform is passed the initilize this exposure with it otherwise it has a constant exposure of 1.0
     SLGLUniform1f* exposure = exposureUniform ? exposureUniform : new SLGLUniform1f(UT_const, "u_exposure", 1.0f);
     SLApplication::scene->eventHandlers().push_back(exposure);
     backgroundShader->addUniform1f(exposure);
     
+    // Create frame buffer for capturing the scene into a cube map
     SLGLFrameBuffer* captureBuffer = new SLGLFrameBuffer(true, resolution.x, resolution.y);
     captureBuffer->generate();
     
+    // Create texture from the HDR Image
     SLGLTexture* hdrTexture = new SLGLTexture(hdrImage,
                                               GL_LINEAR,
                                               GL_LINEAR,
@@ -83,13 +92,16 @@ SLSkybox::SLSkybox(SLstring hdrImage,
                                               GL_CLAMP_TO_EDGE,
                                               GL_CLAMP_TO_EDGE);
     
+    // Generate cube map using the HDR texture
     SLGLTexture* envCubemap = new SLGLTextureGenerated(hdrTexture, captureBuffer, TT_environment, GL_TEXTURE_CUBE_MAP, GL_LINEAR_MIPMAP_LINEAR);
     
+    // The buffer storage must be reduced, because we need to low the resolution of the image for the irradiance and prefilter map
     captureBuffer->bufferStorage(32, 32);
     SLGLTexture* irradiancemap  = new SLGLTextureGenerated(envCubemap, captureBuffer, TT_irradiance);
     SLGLTexture* prefilter      = new SLGLTextureGenerated(envCubemap, captureBuffer, TT_prefilter);
     SLGLTexture* brdfLUTTexture = new SLGLTextureGenerated(nullptr,    captureBuffer, TT_lut, GL_TEXTURE_2D);
 
+    // Create the material of the sky box and store there the other texture to be used for other materials
     SLMaterial* hdrMaterial = new SLMaterial("matCubeMap");
     hdrMaterial->textures().push_back(envCubemap);
     hdrMaterial->textures().push_back(irradiancemap);
@@ -97,11 +109,13 @@ SLSkybox::SLSkybox(SLstring hdrImage,
     hdrMaterial->textures().push_back(brdfLUTTexture);
     hdrMaterial->program(backgroundShader);
 
+    // Create the box for the sky box
     this->addMesh(new SLBox(10,10,10,-10,-10,-10, "box", hdrMaterial));
+    
+    // We don't need the frame buffer any longer
     captureBuffer->unbind();
     delete captureBuffer;
 }
-
 //-----------------------------------------------------------------------------
 //! Draw the skybox with a cube map with the camera in its center.
 void SLSkybox::drawAroundCamera(SLSceneView* sv)

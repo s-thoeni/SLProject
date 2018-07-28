@@ -19,6 +19,14 @@
 #include <SLGLFrameBuffer.h>
 
 //-----------------------------------------------------------------------------
+//! Texture object generated in run time from another texture
+/*!
+This class is mainly used to generate the textures used for reflections in the
+IBL techniques. It takes a source texture and projects it into a cube map with different
+rendering techniques to produces the textures needed in IBL like the irradiance or the
+prefilter map. This textures can be given to the SLMaterial with IBL. It uses the
+SLGLFrameBuffer class to render the scene into a cube map.
+*/
 class SLGLTextureGenerated : public SLGLTexture
 {
     public:        
@@ -54,11 +62,11 @@ class SLGLTextureGenerated : public SLGLTexture
             SLuint              _quadVAO = 0;
             SLuint              _quadVBO = 0;
     
-            SLGLTexture*        _sourceTexture;     //!< ???
-            SLGLProgram*        _shaderProgram;     //!< ???
-            SLGLFrameBuffer*    _captureFBO;        //!< ???
-            SLMat4f             _captureProjection; //!< ???
-            SLVMat4f            _captureViews;      //!< ???
+            SLGLTexture*        _sourceTexture;     //!< 2D Texture from the HDR Image
+            SLGLProgram*        _shaderProgram;     //!< shader program to render the texture
+            SLGLFrameBuffer*    _captureFBO;        //!< Frame Buffer Object for capturing the textures
+            SLMat4f             _captureProjection; //!< Projection matrix for capturing the textures
+            SLVMat4f            _captureViews;      //!< all 6 positions of the views that represent the 6 sides of the cube map
 };
 //-----------------------------------------------------------------------------
 #endif

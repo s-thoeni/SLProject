@@ -361,7 +361,7 @@ void SLCVImage::load(const SLstring filename,
         SL_EXIT_MSG(msg.c_str());
     }
 
-    // Convert greater component depth than 8 bit to 8 bit
+    // Convert greater component depth than 8 bit to 8 bit, only if the image is not HDR
     if (_cvMat.depth() > CV_8U && _ext!="hdr")
         _cvMat.convertTo(_cvMat, CV_8U, 1.0/256.0);
 
@@ -471,6 +471,7 @@ SLstring SLCVImage::formatString()
         case PF_bgr_integer: return SLstring("SL_BGR_INTEGER");
         case PF_rgba_integer: return SLstring("SL_RGBA_INTEGER");
         case PF_bgra_integer: return SLstring("SL_BGRA_INTEGER");
+        case PF_hdr: return SLstring("SL_HDR");
         default: return SLstring("Unknow pixel format");
     }
 }

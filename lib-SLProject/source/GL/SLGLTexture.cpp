@@ -405,6 +405,8 @@ void SLGLTexture::build(SLint texID)
     SLint internalFormat = _images[0]->format();
     if (internalFormat==PF_red)
         internalFormat = GL_R8;
+    
+    // Handle special case for HDR textures
     if (_texType == TT_hdr)
         internalFormat = GL_RGB16F;
       
