@@ -4,6 +4,8 @@
 
 cmake_minimum_required(VERSION 3.4.1)
 
+set(ANDROID_STL gnustl_shared)
+
 add_definitions(-DSL_GUI_JAVA)
 add_definitions(-DSL_GLES2)
 

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<results version="2">
+    <cppcheck version="1.83"/>
+    <errors>
+        <error id="mismatchAllocDealloc" severity="error" msg="Mismatching allocation and deallocation: binMin" verbose="Mismatching allocation and deallocation: binMin" cwe="762">
+            <location file="lib-SLProject/source/SLKDTree.cpp" line="562"/>
+        </error>
+        <error id="mismatchAllocDealloc" severity="error" msg="Mismatching allocation and deallocation: binMax" verbose="Mismatching allocation and deallocation: binMax" cwe="762">
+            <location file="lib-SLProject/source/SLKDTree.cpp" line="563"/>
+        </error>
+        <error id="mismatchAllocDealloc" severity="error" msg="Mismatching allocation and deallocation: cost" verbose="Mismatching allocation and deallocation: cost" cwe="762">
+            <location file="lib-SLProject/source/SLKDTree.cpp" line="559"/>
+        </error>
+        <error id="mismatchAllocDealloc" severity="error" msg="Mismatching allocation and deallocation: SALeft" verbose="Mismatching allocation and deallocation: SALeft" cwe="762">
+            <location file="lib-SLProject/source/SLKDTree.cpp" line="560"/>
+        </error>
+        <error id="mismatchAllocDealloc" severity="error" msg="Mismatching allocation and deallocation: SARight" verbose="Mismatching allocation and deallocation: SARight" cwe="762">
+            <location file="lib-SLProject/source/SLKDTree.cpp" line="561"/>
+        </error>
+    </errors>
+</results>

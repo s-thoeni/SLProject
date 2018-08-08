@@ -113,7 +113,6 @@ JNIEXPORT void JNICALL Java_ch_fhnw_comgr_GLES3Lib_onInit(JNIEnv *env, jobject o
 
     window = new SLWindowAndroid( devicePath,
                                   (void*)&Java_renderRaytracingCallback,
-                                  (void*)&Java_requestResource,
                                   SID_Minimal,
                                   dpi,
                                   width,

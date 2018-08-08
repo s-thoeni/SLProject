@@ -1,0 +1,341 @@
+<?xml version="1.0"?><rats_output>
+<stats>
+<dbcount lang="perl">33</dbcount>
+<dbcount lang="ruby">46</dbcount>
+<dbcount lang="python">62</dbcount>
+<dbcount lang="c">334</dbcount>
+<dbcount lang="php">55</dbcount>
+</stats>
+<analyzed>lib-SLProject/source/SLAnimManager.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLBox.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLInputDevice.cpp</analyzed>
+<analyzed>lib-SLProject/source/CV/SLCVTrackedChessboard.cpp</analyzed>
+<analyzed>lib-SLProject/source/CV/SLCVImage.cpp</analyzed>
+<analyzed>lib-SLProject/source/CV/SLCVTracked.cpp</analyzed>
+<analyzed>lib-SLProject/source/CV/SLCVRaulMurExtractorNode.cpp</analyzed>
+<analyzed>lib-SLProject/source/CV/SLCVTrackedFaces.cpp</analyzed>
+<analyzed>lib-SLProject/source/CV/SLCVRaulMurOrb.cpp</analyzed>
+<analyzed>lib-SLProject/source/CV/SLCVFeatureManager.cpp</analyzed>
+<analyzed>lib-SLProject/source/CV/SLCVCapture.cpp</analyzed>
+<analyzed>lib-SLProject/source/CV/SLCVTrackedFeatures.cpp</analyzed>
+<analyzed>lib-SLProject/source/CV/SLCVTrackedAruco.cpp</analyzed>
+<analyzed>lib-SLProject/source/CV/SLCVCalibration.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLCompactGrid.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLCylinder.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLUniformGrid.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLPoints.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLBackground.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLDeviceRotation.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLGrid.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLTransferFunction.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLLightSpot.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLSkeleton.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLSpheric.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLRaytracer.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLInputManager.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLMaterial.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLSamples2D.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLMesh.cpp</analyzed>
+<analyzed>lib-SLProject/source/glUtils.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLAnimation.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLButton.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLText.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLCamera.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLLightRect.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLPolygon.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLDeviceLocation.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLRevolver.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLLens.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLScene.cpp</analyzed>
+<analyzed>lib-SLProject/source/SL/SLSkybox.cpp</analyzed>
+<analyzed>lib-SLProject/source/SL/stdafx.cpp</analyzed>
+<analyzed>lib-SLProject/source/SL/SLTimer.cpp</analyzed>
+<analyzed>lib-SLProject/source/SL/SLInterface.cpp</analyzed>
+<analyzed>lib-SLProject/source/SL/SLTexFont.cpp</analyzed>
+<analyzed>lib-SLProject/source/SL/SLFileSystem.cpp</analyzed>
+<analyzed>lib-SLProject/source/SL/SLApplication.cpp</analyzed>
+<analyzed>lib-SLProject/source/SL/SLAssimpImporter.cpp</analyzed>
+<analyzed>lib-SLProject/source/SL/SL.cpp</analyzed>
+<analyzed>lib-SLProject/source/SL/SLImporter.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLLight.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLRectangle.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLKeyframe.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLLightDirect.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLKDTree.cpp</analyzed>
+<analyzed>lib-SLProject/source/GL/SLGLOculusFB.cpp</analyzed>
+<analyzed>lib-SLProject/source/GL/SLGLProgram.cpp</analyzed>
+<analyzed>lib-SLProject/source/GL/SLGLImGui.cpp</analyzed>
+<analyzed>lib-SLProject/source/GL/SLGLVertexArrayExt.cpp</analyzed>
+<analyzed>lib-SLProject/source/GL/SLGLState.cpp</analyzed>
+<analyzed>lib-SLProject/source/GL/SLGLVertexBuffer.cpp</analyzed>
+<analyzed>lib-SLProject/source/GL/SLGLShader.cpp</analyzed>
+<analyzed>lib-SLProject/source/GL/SLGLTexture.cpp</analyzed>
+<analyzed>lib-SLProject/source/GL/SLGLOculus.cpp</analyzed>
+<analyzed>lib-SLProject/source/GL/SLGLVertexArray.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLRay.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLAnimPlayback.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLAnimTrack.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLCone.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLTriangle.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLPhotonMap.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLRayMC.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLPathtracer.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLJoint.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLPhotonMapper.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLAABBox.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLCoordAxis.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLSceneView.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLNode.cpp</analyzed>
+<analyzed>lib-SLProject/source/math/SLPlane.cpp</analyzed>
+<analyzed>lib-SLProject/source/math/SLCurveBezier.cpp</analyzed>
+<analyzed>lib-SLProject/source/math/QuaternionTest.cpp</analyzed>
+<analyzed>lib-SLProject/source/SLDisk.cpp</analyzed>
+<vulnerability>
+  <severity>High</severity>
+  <type>sprintf</type>
+  <message>
+    Check to be sure that the format string passed as argument 2 to this
+    function call does not come from an untrusted source that could have added
+    formatting characters that the code is not prepared to handle.
+    Additionally, the format string could contain `%s' without precision that
+    could result in a buffer overflow.
+  </message>
+  <file>
+    <name>lib-SLProject/source/CV/SLCVCalibration.cpp</name>
+    <line>158</line>
+  </file>
+  <file>
+    <name>lib-SLProject/source/SLSceneView.cpp</name>
+    <line>1297</line>
+    <line>1302</line>
+    <line>1309</line>
+    <line>1317</line>
+    <line>1320</line>
+  </file>
+</vulnerability>
+<vulnerability>
+  <severity>High</severity>
+  <type>fixed size global buffer</type>
+  <message>
+    Extra care should be taken to ensure that character arrays that are
+    allocated on the stack are used safely.  They are prime targets for
+    buffer overflow attacks.
+  </message>
+  <file>
+    <name>lib-SLProject/source/glUtils.cpp</name>
+    <line>448</line>
+    <line>512</line>
+  </file>
+  <file>
+    <name>lib-SLProject/source/SL/SL.cpp</name>
+    <line>20</line>
+  </file>
+  <file>
+    <name>lib-SLProject/source/SL/SLImporter.cpp</name>
+    <line>81</line>
+  </file>
+  <file>
+    <name>lib-SLProject/source/GL/SLGLState.cpp</name>
+    <line>544</line>
+  </file>
+</vulnerability>
+<vulnerability>
+  <severity>High</severity>
+  <type>getenv</type>
+  <message>
+    Environment variables are highly untrustable input. They may be of any length, and contain any data. Do not make any assumptions regarding content or length. If at all possible avoid using them, and if it is necessary, sanitize them and truncate them to a reasonable length.
+  </message>
+  <file>
+    <name>lib-SLProject/source/SL/SLFileSystem.cpp</name>
+    <line>62</line>
+    <line>69</line>
+    <line>79</line>
+  </file>
+</vulnerability>
+<vulnerability>
+  <severity>High</severity>
+  <type>vsprintf</type>
+  <message>
+    Check to be sure that the non-constant format string passed as argument 2 
+    to this function call does not come from an untrusted source that could
+    have added formatting characters that the code is not prepared to handle.
+  </message>
+  <file>
+    <name>lib-SLProject/source/SL/SL.cpp</name>
+    <line>23</line>
+  </file>
+</vulnerability>
+<vulnerability>
+  <severity>High</severity>
+  <type>vsprintf</type>
+  <message>
+    Check to be sure that the format string passed as argument 2 to this
+    function call does not come from an untrusted source that could have added
+    formatting characters that the code is not prepared to handle.
+    Additionally, the format string could contain `%s' without precision that
+    could result in a buffer overflow.
+  </message>
+  <file>
+    <name>lib-SLProject/source/SL/SL.cpp</name>
+    <line>23</line>
+  </file>
+</vulnerability>
+<vulnerability>
+  <severity>Medium</severity>
+  <type>read</type>
+  <message>
+    Check buffer boundaries if calling this function in a loop 
+and make sure you are not in danger of writing past the allocated space.
+  </message>
+  <file>
+    <name>lib-SLProject/source/CV/SLCVCapture.cpp</name>
+    <line>135</line>
+    <line>140</line>
+  </file>
+</vulnerability>
+<vulnerability>
+  <severity>Low</severity>
+  <type>fixed size local buffer</type>
+  <message>
+    A potential race condition vulnerability exists here.  Normally a call
+    to this function is vulnerable only when a match check precedes it.  No
+    check was detected, however one could still exist that could not be
+    detected.
+  </message>
+  <file>
+    <name>lib-SLProject/source/SLInputDevice.cpp</name>
+    <line>51</line>
+  </file>
+  <file>
+    <name>lib-SLProject/source/SLMaterial.cpp</name>
+    <line>213</line>
+    <line>244</line>
+  </file>
+  <file>
+    <name>lib-SLProject/source/SL/SLFileSystem.cpp</name>
+    <line>117</line>
+  </file>
+</vulnerability>
+<vulnerability>
+  <severity>Low</severity>
+  <type>memcpy</type>
+  <message>
+    Double check that your buffer is as big as you specify.
+When using functions that accept a number n of bytes to copy, such as 
+strncpy, be aware that if the dest buffer size = n it may not NULL-terminate 
+the string.
+  </message>
+  <file>
+    <name>lib-SLProject/source/CV/SLCVImage.cpp</name>
+    <line>228</line>
+    <line>287</line>
+  </file>
+  <file>
+    <name>lib-SLProject/source/glUtils.cpp</name>
+    <line>378</line>
+  </file>
+  <file>
+    <name>lib-SLProject/source/SLDeviceLocation.cpp</name>
+    <line>174</line>
+    <line>175</line>
+  </file>
+  <file>
+    <name>lib-SLProject/source/SL/SLAssimpImporter.cpp</name>
+    <line>480</line>
+  </file>
+  <file>
+    <name>lib-SLProject/source/GL/SLGLTexture.cpp</name>
+    <line>442</line>
+  </file>
+</vulnerability>
+<vulnerability>
+  <severity>Low</severity>
+  <type>fixed size local buffer</type>
+  <message>
+    A potential race condition vulnerability exists here.  Normally a call
+    to this function is vulnerable only when a match check precedes it.  No
+    check was detected, however one could still exist that could not be
+    detected.
+  </message>
+  <file>
+    <name>lib-SLProject/source/CV/SLCVCapture.cpp</name>
+    <line>47</line>
+    <line>50</line>
+    <line>89</line>
+  </file>
+  <file>
+    <name>lib-SLProject/source/CV/SLCVCalibration.cpp</name>
+    <line>195</line>
+  </file>
+  <file>
+    <name>lib-SLProject/source/SLScene.cpp</name>
+    <line>524</line>
+  </file>
+  <file>
+    <name>lib-SLProject/source/SL/SLImporter.cpp</name>
+    <line>53</line>
+  </file>
+</vulnerability>
+<vulnerability>
+  <severity>Low</severity>
+  <type>fixed size local buffer</type>
+  <message>
+    A potential race condition vulnerability exists here.  Normally a call
+    to this function is vulnerable only when a match check precedes it.  No
+    check was detected, however one could still exist that could not be
+    detected.
+  </message>
+  <file>
+    <name>lib-SLProject/source/CV/SLCVTrackedFeatures.cpp</name>
+    <line>68</line>
+  </file>
+  <file>
+    <name>lib-SLProject/source/SL/SLFileSystem.cpp</name>
+    <line>73</line>
+    <line>82</line>
+  </file>
+</vulnerability>
+<vulnerability>
+  <severity>Low</severity>
+  <type>fixed size local buffer</type>
+  <message>
+    A potential race condition vulnerability exists here.  Normally a call
+    to this function is vulnerable only when a match check precedes it.  No
+    check was detected, however one could still exist that could not be
+    detected.
+  </message>
+  <file>
+    <name>lib-SLProject/source/glUtils.cpp</name>
+    <line>487</line>
+  </file>
+</vulnerability>
+<vulnerability>
+  <severity>Low</severity>
+  <type>stat</type>
+  <message>
+    A potential TOCTOU (Time Of Check, Time Of Use) vulnerability exists.
+    This is the first line where a check has occured.    No matching uses were detected.
+  </message>
+  <file>
+    <name>lib-SLProject/source/SL/SLFileSystem.cpp</name>
+    <line>38</line>
+  </file>
+</vulnerability>
+<vulnerability>
+  <severity>Low</severity>
+  <type>stat</type>
+  <message>
+    A potential TOCTOU (Time Of Check, Time Of Use) vulnerability exists.
+    This is the first line where a check has occured.    No matching uses were detected.
+  </message>
+  <file>
+    <name>lib-SLProject/source/SL/SLFileSystem.cpp</name>
+    <line>52</line>
+  </file>
+</vulnerability>
+<timing>
+<total_lines>28966</total_lines>
+<total_time>0.019898</total_time>
+<lines_per_second>1455724</lines_per_second>
+</timing>
+</rats_output>
