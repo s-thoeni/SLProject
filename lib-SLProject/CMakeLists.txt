@@ -68,6 +68,7 @@ file(GLOB headers
     ${CMAKE_CURRENT_SOURCE_DIR}/include/SLBox.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/SLCamera.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/SLCone.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/SLConetracer.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/SLCompactGrid.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/SLCoordAxis.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/SLCylinder.h
@@ -78,6 +79,8 @@ file(GLOB headers
     ${CMAKE_CURRENT_SOURCE_DIR}/include/SLEnums.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/SLEventHandler.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/SLGrid.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/SLGLFbo.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/SLGLTexture3D.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/SLInputDevice.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/SLInputEvent.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/SLInputManager.h
@@ -136,6 +139,8 @@ file(GLOB sources
     ${CMAKE_CURRENT_SOURCE_DIR}/source/GL/SLGLVertexArray.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/source/GL/SLGLVertexArrayExt.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/source/GL/SLGLVertexBuffer.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/source/GL/SLGLFbo.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/source/GL/SLGLTexture3D.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/source/math/SLCurveBezier.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/source/math/SLPlane.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/source/SL/SL.cpp
@@ -155,6 +160,7 @@ file(GLOB sources
     ${CMAKE_CURRENT_SOURCE_DIR}/source/SLBox.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/source/SLCamera.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/source/SLCone.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/source/SLConetracer.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/source/SLCompactGrid.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/source/SLCoordAxis.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/source/SLCylinder.cpp

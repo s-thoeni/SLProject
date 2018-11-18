@@ -655,6 +655,14 @@ SLstring SLGLState::getSLVersionNO()
     NO[3] = 0;
     return SLstring(NO);
 }
+void SLGLState::glHint(GLenum target, GLenum mode)
+{
+    glHint(target, mode);
+#ifdef _GLDEBUG
+    GET_GL_ERROR;
+#endif
+}
+
 //-----------------------------------------------------------------------------
 //! Returns true if the according GL pixelformat is valid in the GL context
 SLbool SLGLState::pixelFormatIsSupported(SLint pixelFormat)

@@ -123,7 +123,7 @@ class SLGLState
     void clearColorBuffer() { glClear(GL_COLOR_BUFFER_BIT); }
     void clearDepthBuffer() { glClear(GL_DEPTH_BUFFER_BIT); }
     void clearColorDepthBuffer() { glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); }
-
+    void glHint(GLenum target, GLenum mode);
     // state getters
     SLbool   blend() { return _blend; }
     SLstring glVersion() { return _glVersion; }

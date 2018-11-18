@@ -30,6 +30,11 @@ class SLGLGenericProgram : public SLGLProgram
                        const char* fragShaderFile)
       : SLGLProgram(vertShaderFile, fragShaderFile) { ; }
 
+    SLGLGenericProgram(const char* vertShaderFile,
+                       const char* fragShaderFile,
+                       const char* geomShaderFile)
+      : SLGLProgram(vertShaderFile, fragShaderFile, geomShaderFile) { ; }
+
     void beginShader(SLMaterial* mat) { beginUse(mat); }
     void endShader() { endUse(); }
 };

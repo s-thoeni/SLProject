@@ -33,7 +33,8 @@ SLMaterial::SLMaterial(const SLchar* name,
                        SLfloat       shininess,
                        SLfloat       kr,
                        SLfloat       kt,
-                       SLfloat       kn) : SLObject(name)
+                       SLfloat       kn,
+                       SLGLProgram*  program) : SLObject(name)
 {
     _ambient = _diffuse = amdi;
     _specular           = spec;
@@ -41,7 +42,7 @@ SLMaterial::SLMaterial(const SLchar* name,
     _shininess = shininess;
     _roughness = 0.5f;
     _metalness = 0.0f;
-    _program   = nullptr;
+    _program   = program;
 
     _kr = kr;
     _kt = kt;
@@ -82,6 +83,16 @@ SLMaterial::SLMaterial(const SLchar* name,
     _kt        = 0.0f;
     _kn        = 1.0f;
     _diffuse.w = 1.0f - _kt;
+
+    // Add pointer to the global resource vectors for deallocation
+    SLApplication::scene->materials().push_back(this);
+}
+// Ctor for textures
+SLMaterial::SLMaterial(const SLchar* name,
+                       SLGLProgram*  shaderProg) : SLObject(name)
+{
+
+    _program = shaderProg;
 
     // Add pointer to the global resource vectors for deallocation
     SLApplication::scene->materials().push_back(this);
@@ -138,6 +149,26 @@ SLMaterial::~SLMaterial()
 {
 }
 //-----------------------------------------------------------------------------
+/*!
+ * Upload material settings to the GPU for a given Shader Program
+ * This is useful if one wants to handle shader and material separatly from one another
+ */
+void SLMaterial::upload(SLuint program){
+    glUniform4fv(glGetUniformLocation(program, "u_matAmbient"), 1, (SLfloat*) &this->_ambient);
+    glUniform4fv(glGetUniformLocation(program, "u_matDiffuse"), 1, (SLfloat*) &this->_diffuse);
+    glUniform4fv(glGetUniformLocation(program, "u_matSpecular"), 1, (SLfloat*) &this->_specular);
+    glUniform4fv(glGetUniformLocation(program, "u_matEmissive"), 1, (SLfloat*) &this->_emissive);
+
+    glUniform1f(glGetUniformLocation(program, "u_matShininess"), this->_shininess);
+    glUniform1f(glGetUniformLocation(program, "u_matRoughness"), this->_roughness);
+    glUniform1f(glGetUniformLocation(program, "u_matMetallic"), this->_metalness);
+
+    glUniform1f(glGetUniformLocation(program, "u_matKr"), this->_kr);
+    glUniform1f(glGetUniformLocation(program, "u_matKt"), this->_kt);
+    glUniform1f(glGetUniformLocation(program, "u_matKn"), this->_kn);
+}
+
+
 /*!
 SLMaterial::activate applies the material parameter to the global render state
 and activates the attached shader

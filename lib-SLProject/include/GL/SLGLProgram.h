@@ -50,12 +50,14 @@ Android applications they are copied to the appropriate file system locations.
 class SLGLProgram : public SLObject
 {
     public:
-    SLGLProgram(SLstring vertShaderFile = nullptr,
-                SLstring fragShaderFile = nullptr);
+    SLGLProgram(SLstring vertShaderFile,
+                SLstring fragShaderFile,
+                SLstring geomShaderFile = "");
     virtual ~SLGLProgram();
 
     void  addShader(SLGLShader* shader);
     void  init();         //!< create, attach & link shaders
+    void  initRaw();         //!< create, attach & link shaders without fancy logic
     char* getLinkerLog(); //!< get linker messages
 
     virtual void beginShader(SLMaterial* mat) = 0; //!< starter for derived classes
@@ -121,6 +123,7 @@ class SLGLProgram : public SLObject
                            SLsizei        count,
                            const SLfloat* value,
                            GLboolean      transpose = false);
+    SLuint progid() {return _objectGL;};
     // statics
     static SLstring defaultPath; //!< default path for GLSL programs
 

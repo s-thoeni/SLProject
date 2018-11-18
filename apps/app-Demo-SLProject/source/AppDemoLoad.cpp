@@ -927,7 +927,7 @@ void appDemoLoadScene(SLScene* s, SLSceneView* sv, SLSceneID sceneID)
         {
             s->name("Blinn-Phong per vertex lighting");
             s->info("Per-vertex lighting with Blinn-Phong lightmodel. The reflection of 5 light sources is calculated per vertex.");
-            m1 = new SLMaterial("m1", nullptr);
+            m1 = new SLMaterial("m1", nullptr, nullptr);
         }
 
         m1->shininess(500);
@@ -1439,6 +1439,152 @@ void appDemoLoadScene(SLScene* s, SLSceneView* sv, SLSceneID sceneID)
         scene->addChild(sun);
         scene->addChild(earth);
         scene->addChild(cam1);
+
+        sv->camera(cam1);
+        s->root3D(scene);
+    } else if (SLApplication::sceneID == SID_ShaderVoxelConeDemo) //........................................
+    {
+        s->name("Voxelization Test");
+        s->info("Voxelizing a Scnene and Display result");
+
+        // Base root group node for the scene
+        SLNode *scene = new SLNode;
+
+        SLCamera *cam1 = new SLCamera("Camera 1");
+        cam1->translation(0, 0, 1.8);
+        cam1->lookAt(0, 0, 0);
+        cam1->background().colors(SLCol4f(0.2f, 0.2f, 0.2f));
+        cam1->fov(75.0f);
+        cam1->focalDist(1.8);
+
+        scene->addChild(cam1);
+
+        SLAssimpImporter importer;
+        SLNode *teapot = importer.load("FBX/Teapot/Teapot.fbx", true);
+
+        teapot->scale(0.5);
+        teapot->translate(0, -0.90, 0.3, TS_world);
+        teapot->rotate(30, 0, -1, 0);
+        scene->addChild(teapot);
+
+        // Material for mirror sphere
+        SLMaterial *refl = new SLMaterial("refl", SLCol4f::BLACK, SLCol4f::WHITE, 1000, 1.0f);
+
+        SLNode *sphere = new SLNode(new SLSphere(0.3f, 32, 32, "Sphere1", refl));
+        sphere->translate(SLVec3f(0.3, 0.2, -0.3));
+
+        //SLNode *polo = importer.load("FBX/polo.fbx", true, refl);
+        //polo->scale(0.05);
+        //polo->translate(0, -0.6, 0, TS_world);
+        scene->addChild(sphere);
+
+        // animate teapot
+        /*
+        SLAnimation *light2Anim = SLAnimation::create("teapot_anim", 2.0f, true, EC_linear);
+        SLNodeAnimTrack *track = light2Anim->createNodeAnimationTrack();
+        track->animatedNode(teapot);
+        SLTransformKeyframe* k1 = track->createNodeKeyframe(0.0f);
+        k1->translation(SLVec3f(0, -0.98, 0));
+        k1->scale(SLVec3f(0.5, 0.5, 0.5));
+        SLTransformKeyframe* k2 = track->createNodeKeyframe(1.0f);
+        k2->translation(SLVec3f(0, 0.5, 0));
+        k2->scale(SLVec3f(0.5, 0.5, 0.5));
+        SLTransformKeyframe* k3 = track->createNodeKeyframe(2.0f);
+        k3->translation(SLVec3f(0, -0.98, 0));
+        k3->scale(SLVec3f(0.5, 0.5, 0.5));
+*/
+        //track->translationInterpolation(AI_bezier);
+        /*
+        SLAnimation *light2Anim = SLAnimation::create("teapot_anim", 2.0f, true, EC_linear);
+        SLNodeAnimTrack *track = light2Anim->createNodeAnimationTrack();
+        track->animatedNode(teapot);
+        SLTransformKeyframe* k1 = track->createNodeKeyframe(0.0f);
+        k1->translation(SLVec3f(0, -0.9, 0));
+        SLTransformKeyframe* k2 = track->createNodeKeyframe(1.0f);
+        k2->translation(SLVec3f(0, -0.9, 0));
+        k2->rotation(SLQuat4f(180.0f, SLVec3f(0,1,0)));
+        SLTransformKeyframe* k3 = track->createNodeKeyframe(2.0f);
+        k3->translation(SLVec3f(0, -0.9, 0));
+        k3->rotation(SLQuat4f(360.0f, SLVec3f(0,1,0)));
+        //track->translationInterpolation(AI_bezier);
+        teapot->translate(0,-0.99f,0);
+        */
+        SLMaterial *pink = new SLMaterial("cream", SLCol4f(1, 0.35, 0.65), SLCol4f::BLACK, 100.f, 0.f, 0.f, 1.f, s->programs()[SP_perPixBlinn]);
+        // SLNode *bunny = importer.load("FBX/bunny/bunny.fbx", true, pink);
+        // bunny->scale(0.007);
+        // bunny->translate(0, -0.70f, 0, TS_world);
+        //scene->addChild(bunny);
+        //SLNode *node = new SLNode(new SLBox(-0.2, -0.2, -0.2, 0.2, 0.2, 0.2));
+        //SLNode *node = new SLNode(new SLSphere(0.2));
+        //node->translate(0, 0, 0);
+        //scene->addChild(node);
+
+
+        // create wall polygons
+        SLfloat pL = -0.99f, pR = 0.99f; // left/right
+        SLfloat pB = -0.99f, pT = 0.99f; // bottom/top
+        SLfloat pN = 0.99f, pF = -0.99f; // near/far
+
+        SLCol4f grayRGB(0.75f, 0.75f, 0.75f);
+        SLCol4f redRGB(0.75f, 0.25f, 0.25f);
+        SLCol4f blueRGB(0.25f, 0.25f, 0.75f);
+        SLCol4f blackRGB(0.00f, 0.00f, 0.00f);
+
+        SLMaterial *cream = new SLMaterial("cream", grayRGB,  SLCol4f::BLACK, 100.f, 0.f, 0.f, 1.f, s->programs()[SP_perPixBlinn]);
+        SLMaterial *red = new SLMaterial("red", redRGB,  SLCol4f::BLACK, 100.f, 0.f, 0.f, 1.f, s->programs()[SP_perPixBlinn]);
+        SLMaterial *blue = new SLMaterial("blue", blueRGB,  SLCol4f::BLACK, 100.f, 0.f, 0.f, 1.f, s->programs()[SP_perPixBlinn]);
+
+        // bottom plane
+        SLNode *b = new SLNode(new SLRectangle(SLVec2f(pL, -pN), SLVec2f(pR, -pF), 6, 6, "bottom", cream));
+        b->rotate(90, -1, 0, 0);
+        b->translate(0, 0, pB, TS_object);
+        scene->addChild(b);
+
+        // top plane
+        SLNode *t = new SLNode(new SLRectangle(SLVec2f(pL, pF), SLVec2f(pR, pN), 6, 6, "top", cream));
+        t->rotate(90, 1, 0, 0);
+        t->translate(0, 0, -pT, TS_object);
+        scene->addChild(t);
+
+        // far plane
+        SLNode *f = new SLNode(new SLRectangle(SLVec2f(pL, pB), SLVec2f(pR, pT), 6, 6, "far", cream));
+        f->translate(0, 0, pF, TS_object);
+        scene->addChild(f);
+
+        // left plane
+        SLNode *l = new SLNode(new SLRectangle(SLVec2f(-pN, pB), SLVec2f(-pF, pT), 6, 6, "left", red));
+        l->rotate(90, 0, 1, 0);
+        l->translate(0, 0, pL, TS_object);
+        scene->addChild(l);
+
+        // right plane
+        SLNode *r = new SLNode(new SLRectangle(SLVec2f(pF, pB), SLVec2f(pN, pT), 6, 6, "right", blue));
+        r->rotate(90, 0, -1, 0);
+        r->translate(0, 0, -pR, TS_object);
+        scene->addChild(r);
+
+
+        // Rectangular light
+        SLLightRect *light0 = new SLLightRect(0.9, 0.6f, true, SLVec3f(0.0f, 0.0f, 0.28f));
+        light0->rotate(90, -1.0f, 0.0f, 0.0f);
+        light0->translate(0.0f, 0.f, 0.7f, TS_object);
+        //light0->init();
+        light0->spotCutOffDEG(360);
+        light0->spotExponent(1.0);
+        light0->ambient(SLCol4f(0.0f, 0.0f, 0.0f));
+        light0->diffuse(SLCol4f(1.0f, 1.0f, 1.0f));
+        light0->specular(SLCol4f::WHITE);
+        light0->attenuation(1, 0, 1);
+
+        light0->samplesXY(51, 51);
+        /*
+        SLLightSpot *light0 = new SLLightSpot(0.1, 180.0f, false);
+        light0->ambient(SLCol4f(0, 0, 0));
+        light0->diffuse(SLCol4f(1, 1, 1));
+        light0->translate(0, 0.95, 0, TS_object);
+        light0->attenuation(1, 0, 0);*/
+
+        scene->addChild(light0);
 
         sv->camera(cam1);
         s->root3D(scene);

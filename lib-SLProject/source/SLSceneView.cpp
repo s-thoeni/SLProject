@@ -344,6 +344,9 @@ void SLSceneView::onInitialize()
 
     initSceneViewCamera();
 
+    // init conetracer
+    _conetracer.init(_scrW, _scrH);
+
     _gui.onResize(_scrW, _scrH);
 }
 //-----------------------------------------------------------------------------
@@ -377,7 +380,7 @@ void SLSceneView::onResize(SLint width, SLint height)
         }
 
         // Stop raytracing & pathtracing on resize
-        if (_renderType != RT_gl)
+        if (_renderType == RT_rt || _renderType == RT_pt)
         {
             _renderType = RT_gl;
             _raytracer.doContinuous(false);
@@ -405,10 +408,11 @@ SLbool SLSceneView::onPaint()
     SLGLVertexArray::totalDrawCalls = 0;
 
     if (_camera)
-    { // Render the 3D scenegraph by raytracing, pathtracing or OpenGL
+    { // // Render the 3D scenegraph by raytracing, pathtracing, OpenGL rasterization or OpenGL voxel cone tracing
         switch (_renderType)
         {
             case RT_gl: camUpdated = draw3DGL(s->elapsedTimeMS()); break;
+            case RT_vx: camUpdated = draw3DVX(s->elapsedTimeMS()); break;
             case RT_rt: camUpdated = draw3DRT(); break;
             case RT_pt: camUpdated = draw3DPT(); break;
         }
@@ -1543,3 +1547,20 @@ SLbool SLSceneView::draw3DPT()
     return updated;
 }
 //-----------------------------------------------------------------------------
+/*!
+Starts the cone tracing
+*/
+void SLSceneView::startConetracing()
+{
+    _renderType = RT_vx;
+    _conetracer.init(_scrW, _scrH);
+}
+//-----------------------------------------------------------------------------
+SLbool SLSceneView::draw3DVX(SLfloat elapsedTimeSec)
+{
+    //SL_LOG("Rendering VXC \n");
+    SLbool rendered = _conetracer.render(this);
+
+    //this->draw3DGL(elapsedTimeSec);
+    return true;
+}

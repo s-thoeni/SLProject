@@ -861,7 +861,8 @@ void AppDemoGui::buildMenuBar(SLScene* s, SLSceneView* sv)
                         s->onLoad(s, sv, SID_ShaderSkyBox);
                     if (ImGui::MenuItem("Earth Shader", nullptr, sid == SID_ShaderEarth))
                         s->onLoad(s, sv, SID_ShaderEarth);
-
+                    if (ImGui::MenuItem("Voxel Cone Tracing Shader", nullptr, sid == SID_ShaderVoxelConeDemo))
+                        s->onLoad(s, sv, SID_ShaderVoxelConeDemo);
                     ImGui::EndMenu();
                 }
 
@@ -1122,6 +1123,9 @@ void AppDemoGui::buildMenuBar(SLScene* s, SLSceneView* sv)
 
             if (ImGui::MenuItem("Path Tracing (PT)", nullptr, rType == RT_pt))
                 sv->startPathtracing(5, 10);
+
+            if (ImGui::MenuItem("Voxel Cone Tracing (VX)", nullptr, rType == RT_vx))
+                sv->startConetracing();
 
             ImGui::EndMenu();
         }

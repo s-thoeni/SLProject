@@ -26,7 +26,8 @@ extern SLfloat rnd01();
 //-----------------------------------------------------------------------------
 SLLightRect::SLLightRect(SLfloat w,
                          SLfloat h,
-                         SLbool  hasMesh) : SLNode("LightRect Node")
+                         SLbool  hasMesh,
+                         SLVec3f meshOffset) : SLNode("LightRect Node")
 {
     width(w);
     height(h);
@@ -42,10 +43,14 @@ SLLightRect::SLLightRect(SLfloat w,
 
     if (hasMesh)
     {
+        // add the mesh as a child
         SLMaterial* mat = new SLMaterial("LightRect Mesh Mat",
                                          SLCol4f::BLACK,
                                          SLCol4f::BLACK);
-        addMesh(new SLPolygon(w, h, "LightRect Mesh", mat));
+
+        SLNode* lightMeshNode = new SLNode(new SLPolygon(w, h, "LightRect Mesh", mat));
+        lightMeshNode->translate(meshOffset, TS_object);
+        addChild(lightMeshNode);
     }
     init();
 }
@@ -73,9 +78,11 @@ void SLLightRect::init()
     _stateGL->numLightsUsed = (SLint)SLApplication::scene->lights().size();
 
     // Set emissive light material to the lights diffuse color
-    if (_meshes.size() > 0)
-        if (_meshes[0]->mat())
-            _meshes[0]->mat()->emissive(_isOn ? diffuse() : SLCol4f::BLACK);
+    if (_children.size() > 0 && _children[0]->meshes().size() > 0) {
+        if (_children[0]->meshes()[0]->mat()) {
+            _children[0]->meshes()[0]->mat()->emissive(_isOn ? diffuse() : SLCol4f::BLACK);
+        }
+    }
 }
 //-----------------------------------------------------------------------------
 /*!
@@ -136,10 +143,10 @@ void SLLightRect::drawMeshes(SLSceneView* sv)
         _stateGL->numLightsUsed = (SLint)SLApplication::scene->lights().size();
 
         // Set emissive light material to the lights diffuse color
-        if (_meshes.size() > 0)
-        {
-            if (_meshes[0]->mat())
-                _meshes[0]->mat()->emissive(_isOn ? diffuse() : SLCol4f::BLACK);
+        if (_children.size() > 0 && _children[0]->meshes().size() > 0) {
+            if (_children[0]->meshes()[0]->mat()) {
+                _children[0]->meshes()[0]->mat()->emissive(_isOn ? diffuse() : SLCol4f::BLACK);
+            }
         }
 
         // now draw the meshes of the node

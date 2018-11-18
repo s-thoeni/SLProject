@@ -269,6 +269,22 @@ void SLNode::drawMeshes(SLSceneView* sv)
 }
 //-----------------------------------------------------------------------------
 
+void SLNode::draw(SLuint programId){
+    // upload model and mvp matrix:
+    //_om.print("model matrix: ");
+
+    glUniformMatrix4fv(glGetUniformLocation(programId, "u_mMatrix"), 1, GL_FALSE, (SLfloat*) & this->updateAndGetWM());
+
+    // TODO: upload material parameters
+
+    // draw meshes:
+    for(auto mesh: _meshes){
+        //SL_LOG("drawing mesh: ");
+        mesh->mat()->upload(programId);
+        mesh->draw(programId);
+    }
+}
+
 //-----------------------------------------------------------------------------
 /*!
 Adds a child node to the children vector

@@ -20,6 +20,7 @@
 #include <SLNode.h>
 #include <SLPathtracer.h>
 #include <SLRaytracer.h>
+#include <SLConetracer.h>
 #include <SLScene.h>
 #include <SLSkybox.h>
 
@@ -62,6 +63,7 @@ class SLSceneView : public SLObject
     friend class SLNode;
     friend class SLRaytracer;
     friend class SLPathtracer;
+    friend class SLConetracer;
 
     public:
     SLSceneView();
@@ -116,6 +118,7 @@ class SLSceneView : public SLObject
     void   draw2DGLNodes();
     SLbool draw3DRT();
     SLbool draw3DPT();
+    SLbool draw3DVX(SLfloat elapsedTimeSec);
 
     // SceneView camera
     void   initSceneViewCamera(const SLVec3f& dir  = -SLVec3f::AXISZ,
@@ -128,6 +131,7 @@ class SLSceneView : public SLObject
     SLstring windowTitle();
     void     startRaytracing(SLint maxDepth);
     void     startPathtracing(SLint maxDepth, SLint samples);
+    void     startConetracing();
     void     printStats() { _stats3D.print(); }
     SLbool   testRunIsFinished();
 
@@ -169,6 +173,7 @@ class SLSceneView : public SLObject
     SLVNode*      blendNodes() { return &_blendNodes; }
     SLRaytracer*  raytracer() { return &_raytracer; }
     SLPathtracer* pathtracer() { return &_pathtracer; }
+    SLConetracer* conetracer() { return &_conetracer; }
     SLRenderType  renderType() const { return _renderType; }
     SLGLOculusFB* oculusFB() { return &_oculusFB; }
     SLDrawBits*   drawBits() { return &_drawBits; }
@@ -178,6 +183,7 @@ class SLSceneView : public SLObject
     SLfloat       draw2DTimeMS() const { return _draw2DTimeMS; }
     SLNodeStats&  stats2D() { return _stats2D; }
     SLNodeStats&  stats3D() { return _stats3D; }
+    SLGLState*    stateGL() { return _stateGL; }
 
     static const SLint LONGTOUCH_MS; //!< Milliseconds duration of a long touch event
 
@@ -232,6 +238,8 @@ class SLSceneView : public SLObject
 
     SLPathtracer _pathtracer; //!< Pathtracer
     SLbool       _stopPT;     //!< Flag to stop the PT
+
+    SLConetracer _conetracer; //!< Conetracer
 };
 //-----------------------------------------------------------------------------
 #endif

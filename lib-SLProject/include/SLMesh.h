@@ -123,6 +123,7 @@ class SLMesh : public SLObject
 
     virtual void init(SLNode* node);
     virtual void draw(SLSceneView* sv, SLNode* node);
+    void         draw(SLuint progId);
     void         addStats(SLNodeStats& stats);
     virtual void buildAABB(SLAABBox& aabb, SLMat4f wmNode);
     void         updateAccelStruct();
@@ -198,6 +199,9 @@ class SLMesh : public SLObject
     SLVVec3f*   _finalN;        //!< pointer to final vertex normal vector
 
     void notifyParentNodesAABBUpdate() const;
+
+private:
+    void generateVAO(SLuint progId);
 };
 //-----------------------------------------------------------------------------
 typedef std::vector<SLMesh*> SLVMesh;

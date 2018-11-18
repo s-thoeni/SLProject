@@ -46,7 +46,8 @@ class SLMaterial : public SLObject
                SLfloat       shininess = 100.0f,
                SLfloat       kr        = 0.0,
                SLfloat       kt        = 0.0f,
-               SLfloat       kn        = 1.0f);
+               SLfloat       kn        = 1.0f,
+               SLGLProgram*  program   = nullptr);
 
     //! Ctor for textures
     SLMaterial(const SLchar* name,
@@ -72,11 +73,19 @@ class SLMaterial : public SLObject
         if (m) set(m);
     }
 
+    //! Ctor for textures
+    SLMaterial(const SLchar* name,
+               SLGLProgram*  program);
+
     ~SLMaterial();
 
     //! Sets the material states and passes all variables to the shader program
     void activate(SLGLState* state,
                   SLDrawBits drawBits);
+
+    //! Upload material settings to the GPU for a given Shader Program
+    //! This is useful if one wants to handle shader and material separatly from one another
+    void upload(SLuint program);
 
     //! Returns true if there is any transparency in diffuse alpha or textures
     SLbool hasAlpha() { return (_diffuse.a < 1.0f ||

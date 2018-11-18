@@ -42,7 +42,8 @@ class SLLightRect : public SLNode
     public:
     SLLightRect(SLfloat width   = 1,
                 SLfloat height  = 1,
-                SLbool  hasMesh = true);
+                SLbool  hasMesh = true,
+                SLVec3f meshOffset = SLVec3f(0.0f, 0.0f, 0.0f));
     ~SLLightRect() { ; }
 
     void init();
