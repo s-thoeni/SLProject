@@ -171,6 +171,9 @@ void SLConetracer::uploadLights(SLuint progId) {
 
 // Renders scene using a given Program
 void SLConetracer::renderSceneGraph(SLuint progId){
+    // set viewport:
+    glViewport(0, 0, _sv->_scrW, _sv->_scrH);
+
     // upload light settings:
     GET_GL_ERROR;
     this->uploadLights(progId);
