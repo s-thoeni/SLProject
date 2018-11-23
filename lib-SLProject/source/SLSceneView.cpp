@@ -1560,8 +1560,12 @@ void SLSceneView::startConetracing()
 SLbool SLSceneView::draw3DVX(SLfloat elapsedTimeSec)
 {
     //SL_LOG("Rendering VXC \n");
+    SLScene* s = SLApplication::scene;
+    SLfloat startMS = s->timeMilliSec();
+
     SLbool rendered = _conetracer.render(this);
 
-    //this->draw3DGL(elapsedTimeSec);
+    _draw3DTimeMS = s->timeMilliSec() - startMS;
+
     return true;
 }
