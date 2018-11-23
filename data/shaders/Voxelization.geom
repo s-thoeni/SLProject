@@ -8,7 +8,7 @@
 //             This software is provide under the GNU General Public License
 //             Please visit: http://opensource.org/licenses/GPL-3.0
 //#############################################################################
-#version 450 core
+#version 430 core
 
 layout(triangles) in;
 layout(triangle_strip, max_vertices = 3) out;

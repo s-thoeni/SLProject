@@ -1,4 +1,4 @@
-#version 450 core
+#version 430 core
 
 #define INV_STEP_LENGTH (1.0f/STEP_LENGTH)
 #define STEP_LENGTH 0.005f

@@ -22,10 +22,6 @@ SLConetracer::SLConetracer() {
 }
 
 void SLConetracer::init(SLint scrW, SLint scrH){
-    SL_LOG("initializing      : SLConetracer\n");
-    SL_LOG("Viewport Width    : %d\n", scrW);
-    SL_LOG("Viewport Height   : %d\n", scrH);
-
     // Initialize voxel 3D-Texture:
     const std::vector<GLfloat> texture3D(4 * _voxelTextureSize * _voxelTextureSize * _voxelTextureSize, 0.0f);
     _voxelTexture = new SLGLTexture3D(texture3D, _voxelTextureSize, _voxelTextureSize, _voxelTextureSize, true);

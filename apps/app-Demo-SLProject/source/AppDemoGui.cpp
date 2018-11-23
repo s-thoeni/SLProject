@@ -863,6 +863,7 @@ void AppDemoGui::buildMenuBar(SLScene* s, SLSceneView* sv)
                         s->onLoad(s, sv, SID_ShaderEarth);
                     if (ImGui::MenuItem("Voxel Cone Tracing Shader", nullptr, sid == SID_ShaderVoxelConeDemo))
                         s->onLoad(s, sv, SID_ShaderVoxelConeDemo);
+
                     ImGui::EndMenu();
                 }
 
@@ -1124,8 +1125,14 @@ void AppDemoGui::buildMenuBar(SLScene* s, SLSceneView* sv)
             if (ImGui::MenuItem("Path Tracing (PT)", nullptr, rType == RT_pt))
                 sv->startPathtracing(5, 10);
 
-            if (ImGui::MenuItem("Voxel Cone Tracing (VX)", nullptr, rType == RT_vx))
-                sv->startConetracing();
+            // Voxel cone tracing needs following extensions to work:
+            if (glewIsSupported("GL_ARB_clear_texture GL_ARB_shader_image_load_store GL_ARB_texture_storage")) {
+                if (ImGui::MenuItem("Cone Tracing (CT)", nullptr, rType == RT_ct))
+                    sv->startConetracing();
+            } else{
+                if (ImGui::MenuItem("Cone Tracing (CT) (GL 4.4 or higher)", nullptr, rType == RT_ct, false))
+                    sv->startConetracing();
+            }
 
             ImGui::EndMenu();
         }

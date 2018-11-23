@@ -344,8 +344,10 @@ void SLSceneView::onInitialize()
 
     initSceneViewCamera();
 
-    // init conetracer
-    _conetracer.init(_scrW, _scrH);
+    // init conetracer if possible:
+    if (glewIsSupported("GL_ARB_clear_texture GL_ARB_shader_image_load_store GL_ARB_texture_storage")) {
+        _conetracer.init(_scrW, _scrH);
+    }
 
     _gui.onResize(_scrW, _scrH);
 }
@@ -412,7 +414,7 @@ SLbool SLSceneView::onPaint()
         switch (_renderType)
         {
             case RT_gl: camUpdated = draw3DGL(s->elapsedTimeMS()); break;
-            case RT_vx: camUpdated = draw3DVX(s->elapsedTimeMS()); break;
+            case RT_ct: camUpdated = draw3DVX(s->elapsedTimeMS()); break;
             case RT_rt: camUpdated = draw3DRT(); break;
             case RT_pt: camUpdated = draw3DPT(); break;
         }
@@ -1552,8 +1554,7 @@ Starts the cone tracing
 */
 void SLSceneView::startConetracing()
 {
-    _renderType = RT_vx;
-    _conetracer.init(_scrW, _scrH);
+    _renderType = RT_ct;
 }
 //-----------------------------------------------------------------------------
 SLbool SLSceneView::draw3DVX(SLfloat elapsedTimeSec)
