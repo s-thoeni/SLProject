@@ -120,8 +120,11 @@ SLbool SLConetracer::render(SLSceneView* sv){
 
     voxelize();
 
-    //visualizeVoxelization();
-    renderConetraced();
+    if(this->_voxelVisualization){
+        visualizeVoxelization();
+    } else {
+        renderConetraced();
+    }
     GET_GL_ERROR;
     // reset vp after voxelization:
     // GL Settings.
@@ -169,11 +172,21 @@ void SLConetracer::uploadLights(SLuint progId) {
     }
 }
 
+void SLConetracer::uploadRenderSettings(SLuint progId){
+    glUniform1f(glGetUniformLocation(progId, "s_diffuseConeAngle"), _diffuseConeAngle);
+
+    glUniform1i(glGetUniformLocation(progId, "s_directEnabled"), _directIllumination);
+    glUniform1i(glGetUniformLocation(progId, "s_diffuseEnabled"), _diffuseIllumination);
+    glUniform1i(glGetUniformLocation(progId, "s_specEnabled"), _specIllumination);
+    glUniform1i(glGetUniformLocation(progId, "s_shadowsEnabled"), _shadows);
+}
+
 // Renders scene using a given Program
 void SLConetracer::renderSceneGraph(SLuint progId){
     // set viewport:
     glViewport(0, 0, _sv->_scrW, _sv->_scrH);
 
+    this->uploadRenderSettings(progId);
     // upload light settings:
     GET_GL_ERROR;
     this->uploadLights(progId);

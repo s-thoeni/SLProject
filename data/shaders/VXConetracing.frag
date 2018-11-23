@@ -12,6 +12,12 @@
 in vec3 o_P_WS;
 in vec3 o_N_WS;
 
+// general settings:
+uniform float   s_diffuseConeAngle;
+uniform bool    s_directEnabled;
+uniform bool    s_diffuseEnabled;
+uniform bool    s_specEnabled;
+uniform bool    s_shadowsEnabled;
 
 // camera settings:
 uniform vec3 u_EyePos;
@@ -49,24 +55,24 @@ float shadowCone(vec3 from, vec3 dir, float lightDistance){
   // offset a little...  vec3 N = ;
   from += normalize(o_N_WS) * 0.05f;
   
-  	float res = 0;
+  float res = 0;
 
-	float dist = 3 * 0.015625;
-    // STOP 4 voxels before reaching the light source
-	const float STOP = lightDistance - 4 * 0.015625;
+  float dist = 3 * 0.015625;
+  // STOP 4 voxels before reaching the light source
+  const float STOP = lightDistance - 4 * 0.015625;
 
-	while(dist < STOP && res < 1){	
-		vec3 c = from + dist * dir;
-		if(!isInsideCube(c, 0)) break;
-		c = 0.5*c + 0.5;
-		float l = pow(dist, 2); // Experimenting with inverse square falloff for shadows.
-        float s1 = 0.062 * textureLod(texture3D, c, 1 + 0.75 * l).a;
-		float s2 = 0.135 * textureLod(texture3D, c, 4.5 * l).a;
-		float s = s1 + s2;
-		res += (1 - res) * s;
-		dist += 0.9 * 0.015625 * (1 + 0.05 * l);
-	}
-	return 1 - pow(smoothstep(0, 1, res * 1.4), 1.0 / 1.4);//res;
+  while(dist < STOP && res < 1){	
+    vec3 c = from + dist * dir;
+    if(!isInsideCube(c, 0)) break;
+    c = 0.5*c + 0.5;
+    float l = pow(dist, 2); // Experimenting with inverse square falloff for shadows.
+    float s1 = 0.062 * textureLod(texture3D, c, 1 + 0.75 * l).a;
+    float s2 = 0.135 * textureLod(texture3D, c, 4.5 * l).a;
+    float s = s1 + s2;
+    res += (1 - res) * s;
+    dist += 0.9 * 0.015625 * (1 + 0.05 * l);
+  }
+  return 1 - pow(smoothstep(0, 1, res * 1.4), 1.0 / 1.4);//res;
 }
 
 
@@ -77,21 +83,21 @@ void DirectLight(in    int  i,   // Light number
                  inout vec4 Id,  // Diffuse light intesity
                  inout vec4 Is)  // Specular light intesity
 {  
-    // We use the spot light direction as the light direction vector
-    vec3 L = normalize(-u_lightSpotDirWS[i].xyz);
+  // We use the spot light direction as the light direction vector
+  vec3 L = normalize(-u_lightSpotDirWS[i].xyz);
 
-    // Half vector H between L and E
-    vec3 H = normalize(L+E);
+  // Half vector H between L and E
+  vec3 H = normalize(L+E);
    
-    // Calculate diffuse & specular factors
-    float diffFactor = max(dot(N,L), 0.0);
-    float specFactor = 0.0;
-    if (diffFactor!=0.0) 
-        specFactor = pow(max(dot(N,H), 0.0), u_matShininess);
+  // Calculate diffuse & specular factors
+  float diffFactor = max(dot(N,L), 0.0);
+  float specFactor = 0.0;
+  if (diffFactor!=0.0) 
+    specFactor = pow(max(dot(N,H), 0.0), u_matShininess);
    
-    // accumulate directional light intesities w/o attenuation
-    Id += u_lightDiffuse[i] * diffFactor;
-    Is += u_lightSpecular[i] * specFactor;
+  // accumulate directional light intesities w/o attenuation
+  Id += u_lightDiffuse[i] * diffFactor;
+  Is += u_lightSpecular[i] * specFactor;
 
     
 }
@@ -103,40 +109,44 @@ void PointLight (in    int  i,      // Light number
                  inout vec4 Id,     // Diffuse light intensity
                  inout vec4 Is)     // Specular light intensity
 {
-      // Vector from v_P_VS to the light in VS
-    vec3 L = u_lightPosWS[i].xyz - P_WS;
-    float lengthL = length(L);
-    L = L / lengthL;
+  // Vector from v_P_VS to the light in VS
+  vec3 L = u_lightPosWS[i].xyz - P_WS;
+  float lengthL = length(L);
+  L = L / lengthL;
 
-    float lightAngle = dot(N,L);
+  float lightAngle = dot(N,L);
 
-    // Shadows: 
-    float shadow = shadowCone(P_WS, L, length(L));
+  // Shadows: 
+  float shadow = 1;
+  if(s_shadowsEnabled){
+    shadow = shadowCone(P_WS, L, length(L));
+  }
+
     
-    // Normalized halfvector between the eye and the light vector
-    vec3 H = normalize(E + L);
+  // Normalized halfvector between the eye and the light vector
+  vec3 H = normalize(E + L);
 
-    // Calculate diffuse
-    float diffFactor = min(shadow, max(lightAngle, 0.0));
-    //& specular factors
+  // Calculate diffuse
+  float diffFactor = min(shadow, max(lightAngle, 0.0));
+  //& specular factors
 
-    float specFactor = 0.0;
-    if (diffFactor!=0.0) 
-        specFactor = pow(max(dot(N,H), 0.0), u_matShininess);
+  float specFactor = 0.0;
+  if (diffFactor!=0.0) 
+    specFactor = pow(max(dot(N,H), 0.0), u_matShininess);
    
-    // Calculate attenuation
-    float att = 1.0;
-    if (u_lightDoAtt[i])
+  // Calculate attenuation
+  float att = 1.0;
+  if (u_lightDoAtt[i])
     {   vec3 att_dist;
-        att_dist.x = 1.0;
-        att_dist.z = lengthL;
-        att_dist.y = lengthL * lengthL;
-        att = 1.0 / dot(att_dist, u_lightAtt[i]);
+      att_dist.x = 1.0;
+      att_dist.z = lengthL;
+      att_dist.y = lengthL * lengthL;
+      att = 1.0 / dot(att_dist, u_lightAtt[i]);
     }
 
-    // Accumulate light intesities   
-    Id += att * u_lightDiffuse[i] * diffFactor;
-    Is += att * u_lightSpecular[i] * specFactor;
+  // Accumulate light intesities   
+  Id += att * u_lightDiffuse[i] * diffFactor;
+  Is += att * u_lightSpecular[i] * specFactor;
 }
 
 vec4 direct(){
@@ -225,13 +235,10 @@ vec4 indirectDiffuse(){
   // a vector orthogonal to N and ortho1
   vec3 ortho2 = normalize(cross(N, ortho1));
 
-  // cone angle in rad: (half angle of the total cone)
-  float coneAng = 0.16; // 20deg total cone
-
   // offset 4 voxels along the normal
   const vec3 OFFSET = N * 4 * (1/64);
   const vec3 from = o_P_WS + OFFSET;
-  res += diffuseConeTrace(from , N, coneAng);
+  res += diffuseConeTrace(from , N, s_diffuseConeAngle);
 
   // Trace 4 side cones.
 
@@ -241,10 +248,10 @@ vec4 indirectDiffuse(){
   const vec3 s4 = mix(N, -ortho2, 0.5);
 
   float cos45 = 0.52;
-  res += cos45 * diffuseConeTrace(from, s1, coneAng);
-  res += cos45 * diffuseConeTrace(from, s2, coneAng);
-  res += cos45 * diffuseConeTrace(from, s3, coneAng);
-  res += cos45 * diffuseConeTrace(from, s4, coneAng);
+  res += cos45 * diffuseConeTrace(from, s1, s_diffuseConeAngle);
+  res += cos45 * diffuseConeTrace(from, s2, s_diffuseConeAngle);
+  res += cos45 * diffuseConeTrace(from, s3, s_diffuseConeAngle);
+  res += cos45 * diffuseConeTrace(from, s4, s_diffuseConeAngle);
 
   const vec3 corner1 = 0.5f * (ortho1 + ortho2);
   const vec3 corner2 = 0.5f * (ortho1 - ortho2);
@@ -254,10 +261,10 @@ vec4 indirectDiffuse(){
   const vec3 c3 = mix(N, corner2, 0.5);
   const vec3 c4 = mix(N, -corner2, 0.5);
     
-  res += cos45 * diffuseConeTrace(from, c1, coneAng);
-  res += cos45 * diffuseConeTrace(from, c2, coneAng);
-  res += cos45 * diffuseConeTrace(from, c3, coneAng);
-  res += cos45 * diffuseConeTrace(from, c4, coneAng);
+  res += cos45 * diffuseConeTrace(from, c1, s_diffuseConeAngle);
+  res += cos45 * diffuseConeTrace(from, c2, s_diffuseConeAngle);
+  res += cos45 * diffuseConeTrace(from, c3, s_diffuseConeAngle);
+  res += cos45 * diffuseConeTrace(from, c4, s_diffuseConeAngle);
 
   return res * u_matDiffuse;
 }
@@ -279,11 +286,17 @@ vec4 indirectSpecularLight(){
 void main(){
   color = vec4(0, 0, 0, 1);  
 
-  color += direct();
+  if(s_directEnabled){
+    color += direct();
+  }
 
-  color += indirectDiffuse();
+  if(s_diffuseEnabled){
+    color += indirectDiffuse();
+  }
 
-  color += indirectSpecularLight();
+  if(s_specEnabled){
+    color += indirectSpecularLight();
+  }
 
   color.rgb = pow(color.rgb, vec3(1.0 / 2.2));
 }

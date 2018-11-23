@@ -1136,7 +1136,31 @@ void AppDemoGui::buildMenuBar(SLScene* s, SLSceneView* sv)
 
             ImGui::EndMenu();
         }
+        if (rType == RT_ct)
+        {
+            if (ImGui::BeginMenu("CT-Setting")) {
+                if (ImGui::MenuItem("Show Voxelization", nullptr , sv->conetracer()->voxelVisualization()))
+                    sv->conetracer()->toggleVoxelvisualization();
 
+                if (ImGui::MenuItem("Direct illumination", nullptr , sv->conetracer()->directIllumination()))
+                    sv->conetracer()->toggleDirectIllumination();
+
+                if (ImGui::MenuItem("Diffuse indirect illumination", nullptr , sv->conetracer()->diffuseIllumination()))
+                    sv->conetracer()->toggleDiffuseIllumination();
+
+                if (ImGui::MenuItem("Specular indirect illumination", nullptr , sv->conetracer()->specIllumination()))
+                    sv->conetracer()->toggleSpecIllumination();
+
+                if (ImGui::MenuItem("Shadows", nullptr , sv->conetracer()->shadows()))
+                    sv->conetracer()->toggleShadows();
+
+                SLfloat angle = sv->conetracer()->diffuseConeAngle();
+                if (ImGui::SliderFloat("Diffuse cone angle (rad)", &angle, 0.f, 1.5f))
+                    sv->conetracer()->diffuseConeAngle(angle);
+
+                ImGui::EndMenu();
+            }
+        }
         if (rType == RT_gl)
         {
             if (ImGui::BeginMenu("GL-Setting"))
