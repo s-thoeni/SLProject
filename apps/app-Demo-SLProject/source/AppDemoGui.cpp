@@ -1158,6 +1158,19 @@ void AppDemoGui::buildMenuBar(SLScene* s, SLSceneView* sv)
                 if (ImGui::SliderFloat("Diffuse cone angle (rad)", &angle, 0.f, 1.5f))
                     sv->conetracer()->diffuseConeAngle(angle);
 
+                SLfloat specAngle = sv->conetracer()->specularConeAngle();
+                if (ImGui::SliderFloat("Specular cone angle (rad)", &specAngle, 0.004f, 0.5f))
+                    sv->conetracer()->specularConeAngle(specAngle);
+
+
+                SLfloat shadowAngle = sv->conetracer()->shadowConeAngle();
+                if (ImGui::SliderFloat("Shadow cone angle (rad)", &shadowAngle, 0.f, 1.5f))
+                    sv->conetracer()->shadowConeAngle(shadowAngle);
+
+                SLfloat shadowInt = sv->conetracer()->shadowInt();
+                if (ImGui::SliderFloat("Shadow intensity", &shadowInt, 0.f, 200.f))
+                    sv->conetracer()->shadowInt(shadowInt);
+
                 ImGui::EndMenu();
             }
         }

@@ -2,9 +2,9 @@
 //  File:      VXConetracing.frag
 //  Purpose:   Calculated direct illumination using Blinn-Phong
 //             and indirect illumination using voxel cone tracing
-//  Author:    Stefan Thöni
+//  Author:    Stefan ThÃ¶ni
 //  Date:      September 2018
-//  Copyright: Stefan Thöni
+//  Copyright: Stefan ThÃ¶ni
 //             This software is provide under the GNU General Public License
 //             Please visit: http://opensource.org/licenses/GPL-3.0
 //#############################################################################
@@ -257,7 +257,7 @@ vec4 specularConeTrace(vec3 from, vec3 dir, float theta){
     res.rgb += voxel.rgb * voxel.a * f; //* pow(1 - voxel.a, 2);
     res.a += 0.25 * voxel.a * (1 - res.a);
     dist += min(VOXEL_SIZE, r + r * (1 - sin(theta)) / (1 + sin(theta)));
-
+    
   }
   return res;
 }

@@ -1467,11 +1467,17 @@ void appDemoLoadScene(SLScene* s, SLSceneView* sv, SLSceneID sceneID)
         teapot->rotate(30, 0, -1, 0);
         scene->addChild(teapot);
 
+        SLCol4f grayRGB(0.75f, 0.75f, 0.75f);
+        SLCol4f redRGB(0.75f, 0.25f, 0.25f);
+        SLCol4f blueRGB(0.25f, 0.25f, 0.75f);
+        SLCol4f blackRGB(0.00f, 0.00f, 0.00f);
+
+        SLMaterial *red = new SLMaterial("red", redRGB,  SLCol4f::BLACK, 100.f, 0.f, 0.f, 1.f, s->programs()[SP_perPixBlinn]);
         // Material for mirror sphere
         SLMaterial *refl = new SLMaterial("refl", SLCol4f::BLACK, SLCol4f::WHITE, 1000, 1.0f);
 
-        SLNode *sphere = new SLNode(new SLSphere(0.3f, 32, 32, "Sphere1", refl));
-        sphere->translate(SLVec3f(0.3, 0.2, -0.3));
+        SLNode *sphere = new SLNode(new SLBox(0,0,0,0.3, 0.3, 0.3, "Box", refl));//new SLNode(new SLSphere(0.3f, 32, 32, "Sphere1", refl));
+        //sphere->translate(SLVec3f(0.3, 0.2, -0.3));
 
         //SLNode *polo = importer.load("FBX/polo.fbx", true, refl);
         //polo->scale(0.05);
@@ -1479,20 +1485,17 @@ void appDemoLoadScene(SLScene* s, SLSceneView* sv, SLSceneID sceneID)
         scene->addChild(sphere);
 
         // animate teapot
-        /*
-        SLAnimation *light2Anim = SLAnimation::create("teapot_anim", 2.0f, true, EC_linear);
+
+        SLAnimation *light2Anim = SLAnimation::create("sphere_anim", 5.0f, true, EC_linear);
         SLNodeAnimTrack *track = light2Anim->createNodeAnimationTrack();
-        track->animatedNode(teapot);
+        track->animatedNode(sphere);
         SLTransformKeyframe* k1 = track->createNodeKeyframe(0.0f);
-        k1->translation(SLVec3f(0, -0.98, 0));
-        k1->scale(SLVec3f(0.5, 0.5, 0.5));
-        SLTransformKeyframe* k2 = track->createNodeKeyframe(1.0f);
-        k2->translation(SLVec3f(0, 0.5, 0));
-        k2->scale(SLVec3f(0.5, 0.5, 0.5));
-        SLTransformKeyframe* k3 = track->createNodeKeyframe(2.0f);
-        k3->translation(SLVec3f(0, -0.98, 0));
-        k3->scale(SLVec3f(0.5, 0.5, 0.5));
-*/
+        k1->translation(SLVec3f(0.3, 0.2, -0.3));
+        SLTransformKeyframe* k2 = track->createNodeKeyframe(2.5f);
+        k2->translation(SLVec3f(0.3, -0.73, -0.3));
+        SLTransformKeyframe* k3 = track->createNodeKeyframe(5.0f);
+        k3->translation(SLVec3f(0.3, 0.2, -0.3));
+
         //track->translationInterpolation(AI_bezier);
         /*
         SLAnimation *light2Anim = SLAnimation::create("teapot_anim", 2.0f, true, EC_linear);
@@ -1525,13 +1528,10 @@ void appDemoLoadScene(SLScene* s, SLSceneView* sv, SLSceneID sceneID)
         SLfloat pB = -0.99f, pT = 0.99f; // bottom/top
         SLfloat pN = 0.99f, pF = -0.99f; // near/far
 
-        SLCol4f grayRGB(0.75f, 0.75f, 0.75f);
-        SLCol4f redRGB(0.75f, 0.25f, 0.25f);
-        SLCol4f blueRGB(0.25f, 0.25f, 0.75f);
-        SLCol4f blackRGB(0.00f, 0.00f, 0.00f);
+
 
         SLMaterial *cream = new SLMaterial("cream", grayRGB,  SLCol4f::BLACK, 100.f, 0.f, 0.f, 1.f, s->programs()[SP_perPixBlinn]);
-        SLMaterial *red = new SLMaterial("red", redRGB,  SLCol4f::BLACK, 100.f, 0.f, 0.f, 1.f, s->programs()[SP_perPixBlinn]);
+
         SLMaterial *blue = new SLMaterial("blue", blueRGB,  SLCol4f::BLACK, 100.f, 0.f, 0.f, 1.f, s->programs()[SP_perPixBlinn]);
 
         // bottom plane
@@ -1565,9 +1565,10 @@ void appDemoLoadScene(SLScene* s, SLSceneView* sv, SLSceneID sceneID)
 
 
         // Rectangular light
-        SLLightRect *light0 = new SLLightRect(0.9, 0.6f, true, SLVec3f(0.0f, 0.0f, 0.28f));
+        SLLightRect *light0 = new SLLightRect(0.9, 0.6f, false, SLVec3f(0.0f, 0.0f, 0.18f));
+        //SLLightRect *light0 = new SLLightRect(0.9, 0.6f, true);
         light0->rotate(90, -1.0f, 0.0f, 0.0f);
-        light0->translate(0.0f, 0.f, 0.7f, TS_object);
+        light0->translate(0.0f, 0.f, 0.8f, TS_object);
         //light0->init();
         light0->spotCutOffDEG(360);
         light0->spotExponent(1.0);
@@ -1576,7 +1577,6 @@ void appDemoLoadScene(SLScene* s, SLSceneView* sv, SLSceneID sceneID)
         light0->specular(SLCol4f::WHITE);
         light0->attenuation(1, 0, 1);
 
-        light0->samplesXY(51, 51);
         /*
         SLLightSpot *light0 = new SLLightSpot(0.1, 180.0f, false);
         light0->ambient(SLCol4f(0, 0, 0));

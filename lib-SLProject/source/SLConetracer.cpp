@@ -22,6 +22,8 @@ SLConetracer::SLConetracer() {
 }
 
 void SLConetracer::init(SLint scrW, SLint scrH){
+    // enable multisampling
+    glEnable(GL_MULTISAMPLE);
     // Initialize voxel 3D-Texture:
     const std::vector<GLfloat> texture3D(4 * _voxelTextureSize * _voxelTextureSize * _voxelTextureSize, 0.0f);
     _voxelTexture = new SLGLTexture3D(texture3D, _voxelTextureSize, _voxelTextureSize, _voxelTextureSize, true);
@@ -174,7 +176,11 @@ void SLConetracer::uploadLights(SLuint progId) {
 
 void SLConetracer::uploadRenderSettings(SLuint progId){
     glUniform1f(glGetUniformLocation(progId, "s_diffuseConeAngle"), _diffuseConeAngle);
-
+    glUniform1f(glGetUniformLocation(progId, "s_specularConeAngle"), _specularConeAngle);
+    glUniform1f(glGetUniformLocation(progId, "s_specularConeOffset"), _specularConeOffset);
+    glUniform1f(glGetUniformLocation(progId, "s_specularConeInitDist"), _specularConeInitDist);
+    glUniform1f(glGetUniformLocation(progId, "s_shadowConeAngle"), _shadowConeAngle);
+    glUniform1f(glGetUniformLocation(progId, "s_shadowInt"), _shadowInt);
     glUniform1i(glGetUniformLocation(progId, "s_directEnabled"), _directIllumination);
     glUniform1i(glGetUniformLocation(progId, "s_diffuseEnabled"), _diffuseIllumination);
     glUniform1i(glGetUniformLocation(progId, "s_specEnabled"), _specIllumination);

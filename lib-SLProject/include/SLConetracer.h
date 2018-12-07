@@ -38,6 +38,20 @@ public:
     void     renderConetraced();
     SLfloat  diffuseConeAngle() {return _diffuseConeAngle; };
     void     diffuseConeAngle(SLfloat angle) { _diffuseConeAngle = angle; };
+    SLfloat  specularConeAngle() {return _specularConeAngle; };
+    void     specularConeAngle(SLfloat angle) { _specularConeAngle = angle; };
+
+    // For testing purposes:
+    SLfloat  specularConeOffset() {return _specularConeOffset; };
+    void     specularConeOffset(SLfloat offset) { _specularConeOffset = offset; };
+
+    SLfloat  specularConeInitdist() {return _specularConeInitDist; };
+    void     specularConeInitdist(SLfloat dist) { _specularConeInitDist = dist; };
+
+    SLfloat  shadowInt() {return _shadowInt; };
+    void     shadowInt(SLfloat angle) { _shadowInt = angle; };
+    SLfloat  shadowConeAngle() {return _shadowConeAngle; };
+    void     shadowConeAngle(SLfloat angle) { _shadowConeAngle = angle; };
     void     toggleVoxelvisualization() {_voxelVisualization = !_voxelVisualization;}
     SLbool   voxelVisualization() { return this->_voxelVisualization;}
     void     toggleDirectIllumination() {_directIllumination = !_directIllumination;}
@@ -67,6 +81,12 @@ private:
     SLEyeType    _oldET;
     SLbool       _first = true;
     SLfloat      _diffuseConeAngle = 0.16f;
+    SLfloat      _specularConeAngle = 0.004f;
+    SLfloat      _specularConeOffset = 0.093;
+    SLfloat      _specularConeInitDist = 0.093;
+    SLfloat      _shadowConeAngle = 0.13f;
+    SLfloat      _shadowInt = 60.0f;
+
     SLbool       _voxelVisualization = false;
     SLbool       _directIllumination = true;
     SLbool       _diffuseIllumination = true;
