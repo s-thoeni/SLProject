@@ -180,6 +180,22 @@ void SLLightSpot::drawMeshes(SLSceneView* sv)
 }
 //-----------------------------------------------------------------------------
 /*!
+SLLightDirect::draw sets the light states and calls then the draw
+method of its node.
+*/
+void SLLightSpot::draw(SLuint progId)
+{
+    if (_id != -1)
+    {
+        // Set the OpenGL light states
+        SLLightSpot::setState();
+
+        // now draw the meshes of the node
+        SLNode::draw(progId);
+    }
+}
+//-----------------------------------------------------------------------------
+/*!
 SLLightSpot::shadowTest returns 0.0 if the hit point is completely shaded and 
 1.0 if it is 100% lighted. A return value inbetween is calculate by the ratio 
 of the shadow rays not blocked to the total number of casted shadow rays.

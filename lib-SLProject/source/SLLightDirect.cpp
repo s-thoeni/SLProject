@@ -152,6 +152,22 @@ void SLLightDirect::drawMeshes(SLSceneView* sv)
 }
 //-----------------------------------------------------------------------------
 /*!
+SLLightDirect::drawMeshes sets the light states and calls then the drawMeshes
+method of its node.
+*/
+void SLLightDirect::draw(SLuint progId)
+{
+    if (_id != -1)
+    {
+        // Set the OpenGL light states
+        SLLightDirect::setState();
+
+        // now draw the meshes of the node
+        SLNode::draw(progId);
+    }
+}
+//-----------------------------------------------------------------------------
+/*!
 SLLightDirect::shadowTest returns 0.0 if the hit point is completely shaded and 
 1.0 if it is 100% lighted. A directional light can not generate soft shadows.
 */

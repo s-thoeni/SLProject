@@ -30,8 +30,6 @@ public:
     SLbool   render(SLSceneView* sv);
     void     renderSceneGraph(SLuint progId); // <-- this could ev. be private
     void     voxelize();
-    void     setCameraOrthographic();
-    void     resetCamera();
     void     renderNode(SLNode* node, const SLuint progid); // <-- renders a node with all its children
     void     uploadLights(SLuint programId);
     void     visualizeVoxelization();
@@ -41,15 +39,9 @@ public:
     SLfloat  specularConeAngle() {return _specularConeAngle; };
     void     specularConeAngle(SLfloat angle) { _specularConeAngle = angle; };
 
-    // For testing purposes:
-    SLfloat  specularConeOffset() {return _specularConeOffset; };
-    void     specularConeOffset(SLfloat offset) { _specularConeOffset = offset; };
-
-    SLfloat  specularConeInitdist() {return _specularConeInitDist; };
-    void     specularConeInitdist(SLfloat dist) { _specularConeInitDist = dist; };
-
-    SLfloat  shadowInt() {return _shadowInt; };
-    void     shadowInt(SLfloat angle) { _shadowInt = angle; };
+    void     setCameraOrthographic();
+    SLfloat  lightMeshSize() {return _lightMeshSize; };
+    void     lightMeshSize(SLfloat size) { _lightMeshSize = size; };
     SLfloat  shadowConeAngle() {return _shadowConeAngle; };
     void     shadowConeAngle(SLfloat angle) { _shadowConeAngle = angle; };
     void     toggleVoxelvisualization() {_voxelVisualization = !_voxelVisualization;}
@@ -77,20 +69,23 @@ protected:
     SLBox*         _cubeMesh;
 private:
     void         uploadRenderSettings(SLuint progId);
+    void         calcWsToVoxelSpaceTransformation();
+    void         voxelSpaceTransform(const SLfloat l, const SLfloat r, const SLfloat b,
+                                       const SLfloat t, const SLfloat n, const SLfloat f);
     SLProjection _oldProjection;
     SLEyeType    _oldET;
     SLbool       _first = true;
-    SLfloat      _diffuseConeAngle = 0.16f;
-    SLfloat      _specularConeAngle = 0.004f;
-    SLfloat      _specularConeOffset = 0.093;
-    SLfloat      _specularConeInitDist = 0.093;
-    SLfloat      _shadowConeAngle = 0.13f;
-    SLfloat      _shadowInt = 60.0f;
+    SLfloat      _diffuseConeAngle = 0.5f;
+    SLfloat      _specularConeAngle = 0.01f;
+    SLfloat      _shadowConeAngle = 0.f;
+    SLfloat      _lightMeshSize = 2.7f;
 
     SLbool       _voxelVisualization = false;
     SLbool       _directIllumination = true;
     SLbool       _diffuseIllumination = true;
     SLbool       _specIllumination = true;
     SLbool       _shadows = true;
+
+    SLMat4f*     _wsToVoxelSpace = new SLMat4f();
 };
 #endif SLCONETRACER_H

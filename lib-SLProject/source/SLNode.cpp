@@ -271,15 +271,10 @@ void SLNode::drawMeshes(SLSceneView* sv)
 
 void SLNode::draw(SLuint programId){
     // upload model and mvp matrix:
-    //_om.print("model matrix: ");
-
     glUniformMatrix4fv(glGetUniformLocation(programId, "u_mMatrix"), 1, GL_FALSE, (SLfloat*) & this->updateAndGetWM());
-
-    // TODO: upload material parameters
 
     // draw meshes:
     for(auto mesh: _meshes){
-        //SL_LOG("drawing mesh: ");
         mesh->mat()->upload(programId);
         mesh->draw(programId);
     }
@@ -817,15 +812,14 @@ SLNode::updateAABBRec()
 
     // Merge children in WS except for cameras except if cameras have children
     for (auto child : _children)
-    { /*
+    {
         bool childIsCamera = typeid(*child)==typeid(SLCamera);
         bool cameraHasChildren = false;
         if (childIsCamera)
             cameraHasChildren = child->children().size() > 0;
             
         if (!childIsCamera || cameraHasChildren)
-        */
-        _aabb.mergeWS(child->updateAABBRec());
+            _aabb.mergeWS(child->updateAABBRec());
     }
 
     // We need min & max also in OS for the uniform grid intersection in OS

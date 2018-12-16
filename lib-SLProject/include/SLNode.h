@@ -167,7 +167,7 @@ class SLNode
                                      SLbool      recursive = true);
     SLbool       containsMesh(const SLMesh* mesh);
     virtual void drawMeshes(SLSceneView* sv);
-    void         draw(SLuint programId);
+    virtual void draw(SLuint programId);
 
     // Children methods (see impl. for details)
     SLint numChildren() { return (SLint)_children.size(); }

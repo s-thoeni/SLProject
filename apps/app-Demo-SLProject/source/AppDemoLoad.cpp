@@ -1463,20 +1463,22 @@ void appDemoLoadScene(SLScene* s, SLSceneView* sv, SLSceneID sceneID)
         SLNode *teapot = importer.load("FBX/Teapot/Teapot.fbx", true);
 
         teapot->scale(0.5);
-        teapot->translate(0, -0.90, 0.3, TS_world);
-        teapot->rotate(30, 0, -1, 0);
+        teapot->translate(-0.6, -0.2, -0.4, TS_world);
+        //teapot->rotate(30, 0, -1, 0);
         scene->addChild(teapot);
 
         SLCol4f grayRGB(0.75f, 0.75f, 0.75f);
         SLCol4f redRGB(0.75f, 0.25f, 0.25f);
+        SLCol4f yellowRGB(1.0f, 1.0f, 0.0);
         SLCol4f blueRGB(0.25f, 0.25f, 0.75f);
         SLCol4f blackRGB(0.00f, 0.00f, 0.00f);
 
         SLMaterial *red = new SLMaterial("red", redRGB,  SLCol4f::BLACK, 100.f, 0.f, 0.f, 1.f, s->programs()[SP_perPixBlinn]);
+        SLMaterial *yellow = new SLMaterial("yellow", yellowRGB,  SLCol4f::BLACK, 100.f, 0.f, 0.f, 1.f, s->programs()[SP_perPixBlinn]);
         // Material for mirror sphere
         SLMaterial *refl = new SLMaterial("refl", SLCol4f::BLACK, SLCol4f::WHITE, 1000, 1.0f);
 
-        SLNode *sphere = new SLNode(new SLBox(0,0,0,0.3, 0.3, 0.3, "Box", refl));//new SLNode(new SLSphere(0.3f, 32, 32, "Sphere1", refl));
+        SLNode *sphere = new SLNode(new SLSphere(0.3f, 32, 32, "Sphere1", refl));
         //sphere->translate(SLVec3f(0.3, 0.2, -0.3));
 
         //SLNode *polo = importer.load("FBX/polo.fbx", true, refl);
@@ -1484,6 +1486,9 @@ void appDemoLoadScene(SLScene* s, SLSceneView* sv, SLSceneID sceneID)
         //polo->translate(0, -0.6, 0, TS_world);
         scene->addChild(sphere);
 
+        SLNode *box = new SLNode(new SLBox(0,0,0,0.6, 0.8, 0.8, "Box", yellow));
+        box->translation(SLVec3f(-0.9, -1, -0.7));
+        scene->addChild(box);
         // animate teapot
 
         SLAnimation *light2Anim = SLAnimation::create("sphere_anim", 5.0f, true, EC_linear);
@@ -1492,7 +1497,7 @@ void appDemoLoadScene(SLScene* s, SLSceneView* sv, SLSceneID sceneID)
         SLTransformKeyframe* k1 = track->createNodeKeyframe(0.0f);
         k1->translation(SLVec3f(0.3, 0.2, -0.3));
         SLTransformKeyframe* k2 = track->createNodeKeyframe(2.5f);
-        k2->translation(SLVec3f(0.3, -0.73, -0.3));
+        k2->translation(SLVec3f(0.3, -0.65, -0.3));
         SLTransformKeyframe* k3 = track->createNodeKeyframe(5.0f);
         k3->translation(SLVec3f(0.3, 0.2, -0.3));
 
@@ -1565,17 +1570,18 @@ void appDemoLoadScene(SLScene* s, SLSceneView* sv, SLSceneID sceneID)
 
 
         // Rectangular light
-        SLLightRect *light0 = new SLLightRect(0.9, 0.6f, false, SLVec3f(0.0f, 0.0f, 0.18f));
+
+        SLLightRect *light0 = new SLLightRect(0.9, 0.6f, true, SLVec3f(0.0f, 0.0f, 0.02f));
         //SLLightRect *light0 = new SLLightRect(0.9, 0.6f, true);
         light0->rotate(90, -1.0f, 0.0f, 0.0f);
-        light0->translate(0.0f, 0.f, 0.8f, TS_object);
+        light0->translate(0.0f, 0.f, 0.95f, TS_object);
         //light0->init();
-        light0->spotCutOffDEG(360);
+        light0->spotCutOffDEG(170);
         light0->spotExponent(1.0);
         light0->ambient(SLCol4f(0.0f, 0.0f, 0.0f));
-        light0->diffuse(SLCol4f(1.0f, 1.0f, 1.0f));
+        light0->diffuse(SLCol4f(3.0f, 3.0f, 3.0f));
         light0->specular(SLCol4f::WHITE);
-        light0->attenuation(1, 0, 1);
+        light0->attenuation(0, 0, 1);
 
         /*
         SLLightSpot *light0 = new SLLightSpot(0.1, 180.0f, false);
@@ -2675,6 +2681,7 @@ void appDemoLoadScene(SLScene* s, SLSceneView* sv, SLSceneID sceneID)
         //lightRect->specular(SLCol4f::BLACK);
         lightRect->attenuation(0, 0, 1);
         lightRect->samplesXY(11, 7);
+
 
         //_globalAmbiLight.set(SLCol4f::BLACK);
         s->globalAmbiLight().set(lightEmisRGB * 0.05f);

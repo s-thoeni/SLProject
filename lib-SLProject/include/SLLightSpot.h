@@ -56,6 +56,7 @@ class SLLightSpot : public SLNode
     bool hitRec(SLRay* ray);
     void statsRec(SLNodeStats& stats);
     void drawMeshes(SLSceneView* sv);
+    void draw(SLuint progId);
 
     void    setState();
     SLfloat shadowTest(SLRay*         ray,

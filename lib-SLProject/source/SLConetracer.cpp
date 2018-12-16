@@ -60,6 +60,15 @@ void SLConetracer::init(SLint scrW, SLint scrH){
 
     _quadMesh = new SLRectangle(SLVec2f(-1, -1), SLVec2f(1, 1), 1, 1);
     _cubeMesh = new SLBox(-1, -1, -1);
+
+    /* not used yet, the idea is to calculate only in voxel-texure space
+    _scaleAndBiasMatrix = new SLMat4f(0.5, 0.0, 0.0, 0.5,
+                                      0.0, 0.5, 0.0, 0.5,
+                                      0.0, 0.0, 0.5, 0.5,
+                                      0.0, 0.0, 0.0, 1.0); */
+
+    // The world's bounding box should not change during runtime.
+    this->calcWsToVoxelSpaceTransformation();
 }
 
 void SLConetracer::visualizeVoxelization(){
@@ -159,9 +168,16 @@ void SLConetracer::uploadLights(SLuint progId) {
     //glUniform1f(glGetUniformLocation(program, "u_matShininess"), this->_shininess);
     glUniform1i(glGetUniformLocation(progId, "u_numLightsUsed"), stateGL->numLightsUsed);
 
+    SLVec4f lightsVoxelSpace[SL_MAX_LIGHTS];
+
+    for(int i = 0; i < stateGL->numLightsUsed; i++) {
+        lightsVoxelSpace[i] = _wsToVoxelSpace->multVec(stateGL->lightPosWS[i]);
+    }
+
     if (stateGL->numLightsUsed > 0) {
         SLint nL = SL_MAX_LIGHTS;
         glUniform1iv(glGetUniformLocation(progId, "u_lightIsOn"), nL, (SLint *) stateGL->lightIsOn);
+        glUniform4fv(glGetUniformLocation(progId, "u_lightPosVS"), nL, (SLfloat *) lightsVoxelSpace);
         glUniform4fv(glGetUniformLocation(progId, "u_lightPosWS"), nL, (SLfloat *) stateGL->lightPosWS);
         glUniform4fv(glGetUniformLocation(progId, "u_lightDiffuse"), nL, (SLfloat *) stateGL->lightDiffuse);
         glUniform4fv(glGetUniformLocation(progId, "u_lightSpecular"), nL, (SLfloat *) stateGL->lightSpecular);
@@ -177,14 +193,39 @@ void SLConetracer::uploadLights(SLuint progId) {
 void SLConetracer::uploadRenderSettings(SLuint progId){
     glUniform1f(glGetUniformLocation(progId, "s_diffuseConeAngle"), _diffuseConeAngle);
     glUniform1f(glGetUniformLocation(progId, "s_specularConeAngle"), _specularConeAngle);
-    glUniform1f(glGetUniformLocation(progId, "s_specularConeOffset"), _specularConeOffset);
-    glUniform1f(glGetUniformLocation(progId, "s_specularConeInitDist"), _specularConeInitDist);
     glUniform1f(glGetUniformLocation(progId, "s_shadowConeAngle"), _shadowConeAngle);
-    glUniform1f(glGetUniformLocation(progId, "s_shadowInt"), _shadowInt);
     glUniform1i(glGetUniformLocation(progId, "s_directEnabled"), _directIllumination);
     glUniform1i(glGetUniformLocation(progId, "s_diffuseEnabled"), _diffuseIllumination);
     glUniform1i(glGetUniformLocation(progId, "s_specEnabled"), _specIllumination);
     glUniform1i(glGetUniformLocation(progId, "s_shadowsEnabled"), _shadows);
+
+    glUniform1f(glGetUniformLocation(progId, "s_lightMeshSize"), _lightMeshSize);
+}
+
+void SLConetracer::voxelSpaceTransform(const SLfloat l, const SLfloat r, const SLfloat b, const SLfloat t,
+                           const SLfloat n, const SLfloat f){
+    _wsToVoxelSpace->setMatrix( 1/(r-l), 0, 0, -l/(r-l),
+                                0, 1/(t-b), 0, -b/(t-b),
+                                0, 0, 1/(f-n), -n/(f-n),
+                                0, 0, 0, 1              );
+}
+
+void SLConetracer::calcWsToVoxelSpaceTransformation(){
+    // upload ws to vs settings:
+    SLScene* s = SLApplication::scene;
+
+    SLNode* root = s->root3D();
+    SLAABBox* aabb = root->aabb();
+
+    SLVec3f minWs = aabb->minWS();
+    SLVec3f maxWs = aabb->maxWS();
+
+    // figure out biggest component:
+    SLVec3f p1 = maxWs - minWs;
+
+    SLfloat maxComp = p1.comp[p1.maxComp()];
+
+    this->voxelSpaceTransform(minWs.x, minWs.x + maxComp , minWs.y, minWs.y + maxComp , minWs.z, minWs.z + maxComp);
 }
 
 // Renders scene using a given Program
@@ -192,31 +233,31 @@ void SLConetracer::renderSceneGraph(SLuint progId){
     // set viewport:
     glViewport(0, 0, _sv->_scrW, _sv->_scrH);
 
+    //this->calcAndUploadWsToVoxelSpace(progId);
+    GLint loc = glGetUniformLocation(progId, "u_wsToVs");
+    glUniformMatrix4fv(loc, 1, GL_FALSE, (SLfloat*) _wsToVoxelSpace->m());
+
     this->uploadRenderSettings(progId);
     // upload light settings:
     GET_GL_ERROR;
     this->uploadLights(progId);
     GET_GL_ERROR;
     // upload camera position:
-    SLVec3f camPos = _sv->camera()->translationWS();
+    SLVec3f camPosWS = _sv->camera()->translationWS();
+    SLVec3f camPos = _wsToVoxelSpace->multVec(camPosWS);
+
     glUniform3fv(glGetUniformLocation(progId, "u_EyePos"),1,  (SLfloat *) &camPos);
+    glUniform3fv(glGetUniformLocation(progId, "u_EyePosWS"),1,  (SLfloat *) &camPosWS);
     GET_GL_ERROR;
-    SLScene* s = SLApplication::scene;
-    this->renderNode(s->root3D(), progId);
+
+    this->renderNode(SLApplication::scene->root3D(), progId);
 }
 
 void SLConetracer::setCameraOrthographic(){
     // _sv->camera()->projection(P_monoOrthographic);
-    GET_GL_ERROR;
     _sv->camera()->setProjection(_sv, ET_center);
     _sv->camera()->setView(_sv, ET_center);
     GET_GL_ERROR;
-}
-
-void SLConetracer::resetCamera(){
-    SLCamera* cam = _sv->camera();
-    cam->projection(_oldProjection);
-    cam->setProjection(_sv, _oldET);
 }
 
 
@@ -225,6 +266,7 @@ void SLConetracer::renderNode(SLNode* node, const SLuint progId){
     assert(node);
 
     GET_GL_ERROR;
+
     SLGLState* stateGL   = SLGLState::getInstance();
 
     // set view transform:
@@ -237,6 +279,7 @@ void SLConetracer::renderNode(SLNode* node, const SLuint progId){
     //stateGL->mvpMatrix()->print("mvp matrix: ");
 
     GLint loc = glGetUniformLocation(progId, "u_mvpMatrix");
+
     glUniformMatrix4fv(loc, 1, GL_FALSE, (SLfloat*) stateGL->mvpMatrix());
 
     node->draw(progId);
@@ -276,8 +319,9 @@ void SLConetracer::voxelize(){
     glBindImageTexture(0, this->_voxelTexture->textureID, 0, GL_TRUE, 0, GL_WRITE_ONLY, GL_RGBA8);
 
     GET_GL_ERROR;
-    // Set the camera into orthographic mode:
+
     this->setCameraOrthographic();
+
     this->renderSceneGraph(prog->progid());
     //this->resetCamera();
 

@@ -10,6 +10,7 @@
 //#############################################################################
 #version 430 core
 in vec3 o_F_WS;
+in vec3 o_F_VS;
 in vec3 o_N_WS;
 
 
@@ -107,9 +108,8 @@ void PointLight (in    int  i,      // Light number
     }
    
     // Accumulate light intesities
-    Ia += att * u_lightAmbient[i];
     Id += att * u_lightDiffuse[i] * diffFactor;
-    Is += att * u_lightSpecular[i] * specFactor;
+
 }
 
 void main(){
@@ -137,12 +137,8 @@ void main(){
                Is * u_matSpecular;
   
   // Output lighting to 3D texture.
-  vec3 voxel = 0.5f*o_F_WS + 0.5f;
   ivec3 dim = imageSize(texture3D);
 
-  // transparency not yet supported
-  float alpha = pow(u_matDiffuse.a, 4); // For soft shadows to work better with transparent materials.
-
-  vec4 res = alpha * vec4(vec3(color.xyz), 1);
-  imageStore(texture3D,  ivec3(dim * voxel), res);
+  vec4 res = vec4(vec3(color.xyz), 1);
+  imageStore(texture3D,  ivec3(dim * o_F_VS), res);
 }
