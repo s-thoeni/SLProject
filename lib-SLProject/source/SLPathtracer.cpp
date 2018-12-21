@@ -33,10 +33,9 @@ extern SLfloat rnd01();
 SLPathtracer::SLPathtracer()
 {
     name("PathTracer");
-    _gamma        = 2.2f;
-    _applyGamma   = true;
     _calcDirect   = true;
     _calcIndirect = true;
+    gamma(2.2f);
 }
 
 //-----------------------------------------------------------------------------
@@ -105,7 +104,6 @@ void SLPathtracer::renderSlices(const bool isMainThread, SLint currentSample)
 {
     // Time points
     double        t1           = 0;
-    const SLfloat oneOverGamma = 1.0f / _gamma;
 
     while (_next < (SLint)_images[0]->width())
     {
@@ -152,13 +150,7 @@ void SLPathtracer::renderSlices(const bool isMainThread, SLint currentSample)
                 // save image without gamma
                 _images[1]->setPixeliRGB(x, (SLint)y, color);
 
-                // gamma correction
-                if (_applyGamma)
-                {
-                    color.x = pow((color.x), oneOverGamma);
-                    color.y = pow((color.y), oneOverGamma);
-                    color.z = pow((color.z), oneOverGamma);
-                }
+                color.gammaCorrect(_oneOverGamma);
 
                 // image to render
                 _images[0]->setPixeliRGB(x, (SLint)y, color);
