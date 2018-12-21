@@ -21,6 +21,9 @@ SLConetracer::SLConetracer() {
     SL_LOG("Constructor      : SLConetracer\n");
 }
 
+SLfloat SLConetracer::oneOverGamma(){
+    return (1.0 / _gamma);
+}
 void SLConetracer::init(SLint scrW, SLint scrH){
     // enable multisampling
     glEnable(GL_MULTISAMPLE);
@@ -200,6 +203,9 @@ void SLConetracer::uploadRenderSettings(SLuint progId){
     glUniform1i(glGetUniformLocation(progId, "s_shadowsEnabled"), _shadows);
 
     glUniform1f(glGetUniformLocation(progId, "s_lightMeshSize"), _lightMeshSize);
+
+    glUniform1f(glGetUniformLocation(progId, "u_oneOverGamma"), oneOverGamma());
+
 }
 
 void SLConetracer::voxelSpaceTransform(const SLfloat l, const SLfloat r, const SLfloat b, const SLfloat t,

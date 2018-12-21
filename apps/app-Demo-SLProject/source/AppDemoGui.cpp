@@ -1171,6 +1171,10 @@ void AppDemoGui::buildMenuBar(SLScene* s, SLSceneView* sv)
                 if (ImGui::SliderFloat("Max. size of a lightsource mesh", &lightSize, 0.0f, 100.0f))
                     sv->conetracer()->lightMeshSize(lightSize);
 
+                SLfloat gamma = sv->conetracer()->gamma();
+                if (ImGui::SliderFloat("Gamma", &gamma, 1.0f, 3.0f))
+                    sv->conetracer()->gamma(gamma);
+
                 ImGui::EndMenu();
             }
         }

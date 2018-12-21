@@ -57,6 +57,8 @@ uniform vec4   u_matEmissive;       //!< emissive color for selfshining material
 uniform float  u_matShininess;      //!< shininess exponent
 uniform float  u_matKr;             //!< reflection factor (kr)
 
+uniform float  u_oneOverGamma;
+
 uniform sampler3D texture3D; // Voxelization texture.
 
 out vec4 color;
@@ -287,5 +289,5 @@ void main(){
     color += indirectSpecularLight();
   }
 
-  color.rgb = pow(color.rgb, vec3(1.0 / 2.2));
+  color.rgb = pow(color.rgb, vec3(u_oneOverGamma));
 }

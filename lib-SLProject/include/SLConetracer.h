@@ -54,6 +54,8 @@ public:
     SLbool   specIllumination() { return this->_specIllumination;}
     void     toggleShadows() {_shadows = !_shadows;}
     SLbool   shadows() { return this->_shadows;}
+    SLfloat  gamma() {return _gamma; };
+    void     gamma(SLfloat gamma) { _gamma = gamma; };
 protected:
     SLSceneView*   _sv;
     SLCamera*      _cam;
@@ -72,6 +74,8 @@ private:
     void         calcWsToVoxelSpaceTransformation();
     void         voxelSpaceTransform(const SLfloat l, const SLfloat r, const SLfloat b,
                                        const SLfloat t, const SLfloat n, const SLfloat f);
+    SLfloat      oneOverGamma();
+    SLfloat      _gamma = 2.2;
     SLProjection _oldProjection;
     SLEyeType    _oldET;
     SLbool       _first = true;
