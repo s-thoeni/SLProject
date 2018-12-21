@@ -1459,19 +1459,24 @@ void appDemoLoadScene(SLScene* s, SLSceneView* sv, SLSceneID sceneID)
 
         scene->addChild(cam1);
 
+        SLCol4f grayRGB(0.75f, 0.75f, 0.75f);
+        SLCol4f redRGB(0.75f, 0.25f, 0.25f);
+        SLCol4f yellowRGB(1.0f, 1.0f, 0.0);
+        SLCol4f blueRGB(0.25f, 0.25f, 0.75f);
+        SLCol4f blackRGB(0.00f, 0.00f, 0.00f);
+
+        SLMaterial *cream = new SLMaterial("cream", grayRGB,  SLCol4f::BLACK, 100.f, 0.f, 0.f, 1.f, s->programs()[SP_perPixBlinn]);
+        SLMaterial *teapotMat = new SLMaterial("teapot", grayRGB,  SLCol4f::WHITE, 100.f, 0.f, 0.f, 1.f, s->programs()[SP_perPixBlinn]);
+
         SLAssimpImporter importer;
-        SLNode *teapot = importer.load("FBX/Teapot/Teapot.fbx", true);
+        SLNode *teapot = importer.load("FBX/Teapot/Teapot.fbx", true, teapotMat);
 
         teapot->scale(0.5);
         teapot->translate(-0.6, -0.2, -0.4, TS_world);
         //teapot->rotate(30, 0, -1, 0);
         scene->addChild(teapot);
 
-        SLCol4f grayRGB(0.75f, 0.75f, 0.75f);
-        SLCol4f redRGB(0.75f, 0.25f, 0.25f);
-        SLCol4f yellowRGB(1.0f, 1.0f, 0.0);
-        SLCol4f blueRGB(0.25f, 0.25f, 0.75f);
-        SLCol4f blackRGB(0.00f, 0.00f, 0.00f);
+
 
         SLMaterial *red = new SLMaterial("red", redRGB,  SLCol4f::BLACK, 100.f, 0.f, 0.f, 1.f, s->programs()[SP_perPixBlinn]);
         SLMaterial *yellow = new SLMaterial("yellow", yellowRGB,  SLCol4f::BLACK, 100.f, 0.f, 0.f, 1.f, s->programs()[SP_perPixBlinn]);
@@ -1535,7 +1540,7 @@ void appDemoLoadScene(SLScene* s, SLSceneView* sv, SLSceneID sceneID)
 
 
 
-        SLMaterial *cream = new SLMaterial("cream", grayRGB,  SLCol4f::BLACK, 100.f, 0.f, 0.f, 1.f, s->programs()[SP_perPixBlinn]);
+
 
         SLMaterial *blue = new SLMaterial("blue", blueRGB,  SLCol4f::BLACK, 100.f, 0.f, 0.f, 1.f, s->programs()[SP_perPixBlinn]);
 
@@ -1578,8 +1583,8 @@ void appDemoLoadScene(SLScene* s, SLSceneView* sv, SLSceneID sceneID)
         //light0->init();
         light0->spotCutOffDEG(170);
         light0->spotExponent(1.0);
-        light0->ambient(SLCol4f(0.0f, 0.0f, 0.0f));
-        light0->diffuse(SLCol4f(3.0f, 3.0f, 3.0f));
+        light0->ambient(SLCol4f(0.3f, 0.3f, 0.3f));
+        light0->diffuse(SLCol4f(2.0f, 2.0f, 2.0f));
         light0->specular(SLCol4f::WHITE);
         light0->attenuation(0, 0, 1);
 
@@ -1819,7 +1824,15 @@ void appDemoLoadScene(SLScene* s, SLSceneView* sv, SLSceneID sceneID)
         // Create textures and materials
         SLGLTexture* tex1 = new SLGLTexture("Checkerboard0512_C.png");
         SLMaterial*  m1   = new SLMaterial("m1", tex1);
-        m1->kr(0.5f);
+        m1->kr(0.2f);
+
+        SLCol4f redRGB(1.0f, 0.0f, 0.0f);
+        SLCol4f yellowRGB(1.0f, 1.0f, 0.0);
+        SLCol4f blueRGB(0.0f, 0.0f, 1.0f);
+        SLMaterial *red = new SLMaterial("red", redRGB,  SLCol4f::BLACK, 100.f, 0.f, 0.f, 1.f, s->programs()[SP_perPixBlinn]);
+        SLMaterial *yellow = new SLMaterial("yellow", yellowRGB,  SLCol4f::BLACK, 100.f, 0.f, 0.f, 1.f, s->programs()[SP_perPixBlinn]);
+        SLMaterial *blue = new SLMaterial("blue", blueRGB,  SLCol4f::BLACK, 100.f, 0.f, 0.f, 1.f, s->programs()[SP_perPixBlinn]);
+
         SLMaterial* m2 = new SLMaterial("m2", SLCol4f::WHITE * 0.5, SLCol4f::WHITE, 128, 0.5f, 0.0f, 1.0f);
 
         SLMesh* floorMesh = new SLRectangle(SLVec2f(-5, -5), SLVec2f(5, 5), 20, 20, "FloorMesh", m1);
@@ -1833,12 +1846,12 @@ void appDemoLoadScene(SLScene* s, SLSceneView* sv, SLSceneID sceneID)
         SLAnimation* ball1Anim = SLAnimation::create("Ball1_anim", 1.0f, true, EC_linear, AL_pingPongLoop);
         ball1Anim->createSimpleTranslationNodeTrack(ball1, SLVec3f(0.0f, -5.2f, 0.0f));
 
-        SLNode* ball2 = new SLNode(new SLSphere(0.3f, 16, 16, "Ball2", m2));
+        SLNode* ball2 = new SLNode(new SLSphere(0.3f, 16, 16, "Ball2", red));
         ball2->translate(-1.5f, 0, 4, TS_object);
         SLAnimation* ball2Anim = SLAnimation::create("Ball2_anim", 1.0f, true, EC_inQuad, AL_pingPongLoop);
         ball2Anim->createSimpleTranslationNodeTrack(ball2, SLVec3f(0.0f, -5.2f, 0.0f));
 
-        SLNode* ball3 = new SLNode(new SLSphere(0.3f, 16, 16, "Ball3", m2));
+        SLNode* ball3 = new SLNode(new SLSphere(0.3f, 16, 16, "Ball3", yellow));
         ball3->translate(-2.5f, 0, 4, TS_object);
         SLAnimation* ball3Anim = SLAnimation::create("Ball3_anim", 1.0f, true, EC_outQuad, AL_pingPongLoop);
         ball3Anim->createSimpleTranslationNodeTrack(ball3, SLVec3f(0.0f, -5.2f, 0.0f));
@@ -1848,7 +1861,7 @@ void appDemoLoadScene(SLScene* s, SLSceneView* sv, SLSceneID sceneID)
         SLAnimation* ball4Anim = SLAnimation::create("Ball4_anim", 1.0f, true, EC_inOutQuad, AL_pingPongLoop);
         ball4Anim->createSimpleTranslationNodeTrack(ball4, SLVec3f(0.0f, -5.2f, 0.0f));
 
-        SLNode* ball5 = new SLNode(new SLSphere(0.3f, 16, 16, "Ball5", m2));
+        SLNode* ball5 = new SLNode(new SLSphere(0.3f, 16, 16, "Ball5", blue));
         ball5->translate(2.5f, 0, 4, TS_object);
         SLAnimation* ball5Anim = SLAnimation::create("Ball5_anim", 1.0f, true, EC_outInQuad, AL_pingPongLoop);
         ball5Anim->createSimpleTranslationNodeTrack(ball5, SLVec3f(0.0f, -5.2f, 0.0f));
